@@ -1,11 +1,35 @@
-
-/**
- * Module dependencies.
- */
-
 var express = require('express');
+var everyauth = require('everyauth');
+var mongoose = require('mongoose');
+
+var conf = require('./conf');
+                 
+var models = require('./lib/models');
+var auth = require('./lib/auth');
+
+mongoose.connect(conf.mongo.uri);
+
+everyauth.password
+    .getLoginPath('/login')
+    .postLoginPath('/login')
+    .loginView('login')
+    .authenticate(auth.authenticate)
+    .loginSuccessRedirect('/')
+    .getRegisterPath('/register')
+    .postRegisterPath('/register')
+    .registerView('register')
+    .extractExtraRegistrationParams(function (req) {
+        return {
+            userParams: req.body.userParams,
+        };
+    })
+    .validateRegistration(auth.validateRegistration)
+    .registerUser(auth.registerUser)
+    .registerSuccessRedirect('/');
 
 var app = module.exports = express.createServer();
+
+everyauth.helpExpress(app);
 
 // Configuration
 
@@ -14,6 +38,11 @@ app.configure(function(){
   app.set('view engine', 'jade');
   app.use(express.bodyParser());
   app.use(express.methodOverride());
+  app.use(express.cookieParser());
+  app.use(express.session({
+      secret: conf.session.secret,
+  }));
+  app.use(everyauth.middleware());
   app.use(app.router);
   app.use(express.static(__dirname + '/public'));
 });
