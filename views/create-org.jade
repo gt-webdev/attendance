@@ -1,13 +1,13 @@
 h1= title
 
 form#create-org(action='/orgs', method='POST')
-    div
-        label(for='name') Name:
-        input(type='text', name='name')
+  input(type='hidden', name='_method', value='PUT')
+  p
+    label(for='name') Name:
+    input(type='text', name='name')
 
-    div
-        label(for='desc') Description:
-        textarea(name='desc', rows=4, cols=80)
+  p
+    label(for='desc') Description:
+    textarea(name='desc', rows=4, cols=80)
 
-    input(type='hidden', name='_method', value='PUT')
-    input(type='submit', value='Create org')
+  input(type='submit', value='Create org')
