@@ -1,0 +1,10 @@
+h1= title
+
+if (typeof flash != 'undefined')
+  p= flash
+
+if (typeof orgs != 'undefined')
+  each org in orgs
+    .org
+      p= org.name
+      p= org.desc
