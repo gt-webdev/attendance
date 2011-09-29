@@ -43,6 +43,7 @@ app.configure(function(){
         secret: conf.session.secret,
     }));
     app.use(everyauth.middleware());
+    app.use(auth.middleware);
     app.use(app.router);
     app.use(express.static(__dirname + '/public'));
 });
@@ -53,6 +54,13 @@ app.configure('development', function(){
 
 app.configure('production', function(){
     app.use(express.errorHandler()); 
+});
+
+
+app.dynamicHelpers({
+    user: function(req, res) {
+        return req.user;
+    },
 });
 
 // Routes
