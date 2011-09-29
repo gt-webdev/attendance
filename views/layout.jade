@@ -1,6 +1,13 @@
 !!!
 html
   head
-    title= title
+    title Attendance
     link(rel='stylesheet', href='/stylesheets/style.css')
-  body!= body
+  body
+    #header
+      h1 Attendance
+      if everyauth.loggedIn
+        p Hello, #{user.name.first} (#{user.gt_userid})
+      else
+        a(href='/login') Login
+    #content!= body
