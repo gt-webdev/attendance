@@ -71,13 +71,6 @@ app.get('/', function(req, res){
     });
 });
 
-app.get('/events', function(req, res) {
-    res.render('event', {
-	title: 'Events',
-	events: [],
-    });
-});
-
 app.get('/orgs', function(req, res){
   // TODO: actually read list of all orgs
   var orgs = [{name: "Name1", desc: "Desc1"}, {name: "Name2", desc: "Desc2"}];
