@@ -10,6 +10,6 @@
     , "bcrypt": ">= 0.3.2"
   }
   , "scripts": {
-      "install-defaults": "if [ ! -e conf.local.js ]; then cp conf.sample.js conf.local.js; echo 'Default conf settings installed in conf.local.js'; else echo 'conf.local.js already exists... not installing.'; fi"
+      "install-defaults": "scripts/install-defaults.sh"
   }
 }
