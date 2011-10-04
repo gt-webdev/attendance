@@ -1,7 +1,9 @@
 /*
- * Default conf.local.js file... to use:
+ * Default conf.local.js file.
  *
- * $ cp conf.sample.js conf.local.js
+ * To use:
+ *
+ * $ npm run-script install-defaults
  */
 module.exports = {
     mongo: {

@@ -1,11 +1,15 @@
 {
     "name": "attendance"
-  , "version": "1.0.0"
+  , "version": "0.0.1"
+  , "homepage": "https://github.com/cc-wit/attendance/"
   , "dependencies": {
       "express": "2.4.6"
     , "jade": ">= 0.0.1"
     , "mongoose": ">= 2.2.1"
     , "everyauth": ">= 0.2.20"
     , "bcrypt": ">= 0.3.2"
+  }
+  , "scripts": {
+      "install-defaults": "if [ ! -e conf.local.js ]; then cp conf.sample.js conf.local.js; echo 'Default conf settings installed in conf.local.js'; else echo 'conf.local.js already exists... not installing.'; fi"
   }
 }
