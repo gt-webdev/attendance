@@ -1,4 +1,4 @@
-!!!
+!!! 5
 html
   head
     title Attendance
@@ -6,14 +6,21 @@ html
     script(type='text/javascript', src='http://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js')
   body
     #header
-      h1
-        a(href='/') Attendance
-      if everyauth.loggedIn
-        p Hello, #{user.name.first} (#{user.gt_userid}) 
-          a(href='/logout') Logout
-      else
-        p
-          a(href='/login') Login
-        p
-          a(href='/register') Register
+      nav
+        ul#list-nav
+          li
+            a(href='/') Home
+          li
+            a(href='/orgs') Orgs
+          li
+            a(href='/events') Events
+          if everyauth.loggedIn
+            li.right
+              a(href='/logout') Logout
+            if user && user.name
+              li.right
+                p Welcome, #{user.name.first}
+          else
+            li.right
+              a(href='/login') Login
     #content!= body
