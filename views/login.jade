@@ -9,9 +9,12 @@ h1 Login
 form(action='/login', method='POST')
   p
     label(for='login') GT User ID
-    input(type='text', name=everyauth.password.loginFormFieldName)#login
+    input(type='text', name=everyauth.password.loginFormFieldName, id='login')#login
   p
     label(for='password') Password
     input(type='password', name=everyauth.password.passwordFormFieldName)#password
   p
     input(type='submit', value='Login')
+
+script
+    document.getElementById('login').focus()
