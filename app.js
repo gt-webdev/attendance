@@ -99,11 +99,23 @@ app.get('/orgs/:id', function(req, res){
     });
 });
 
-app.put('/orgs', function(req, res){
-    req.flash('info', 'Org created: ' + req.body.name);
-    // TODO: actually create org
-    var id = 1;
-    res.redirect('/orgs/' + id);
+app.put('/orgs', function(req, res, next) {
+    async.waterfall([
+        function(cb) {
+            var org = new models.Org({
+                name: req.body.name,
+                description: req.body.desc,
+                slug: req.body.slug,
+            });
+            org.save(cb);
+        },
+    ], function(err) {
+        if (err) {
+            return next(err);
+        }
+        req.flash('info', 'Org created: ' + req.body.name);
+        res.redirect('/orgs/' + req.body.slug);
+    });
 });
 
 app.get('/create-org', function(req, res){
