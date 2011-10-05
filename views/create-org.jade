@@ -5,13 +5,16 @@ form#create-org(action='/orgs', method='POST')
   p
     label(for='name') Name:
     input(type='text', name='name')#name
-
   p
     label(for='slug') Slug:
     input(type='text', name='slug')#slug
-
   p
     label(for='desc') Description:
     textarea(name='desc', rows=4, cols=80)#desc
 
   input(type='submit', value='Create Org')
+
+script(type='text/javascript')
+    $(function() {
+        $('#name').focus();
+    });
