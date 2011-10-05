@@ -88,14 +88,19 @@ app.get('/orgs', function(req, res, next) {
     });
 });
 
-app.get('/orgs/:id', function(req, res){
-    // TODO: actually read org
-    var id = req.params.id;
-    var name = "This org's name";
-
-    res.render('orgs', {
-        title: 'Organization: ' + name,
-        flash: req.flash().info,
+app.get('/orgs/:slug', function(req, res){
+    async.waterfall([
+        function(cb) {
+            models.Org.findOne({slug: req.params.slug}, cb);
+        },
+    ], function(err, org) {
+        if (err) {
+            return next(err);
+        }
+        res.render('orgs', {
+            title: org.name,
+            flash: req.flash().info,
+        });
     });
 });
 
