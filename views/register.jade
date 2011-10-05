@@ -29,4 +29,6 @@ form(action='/register', method='POST')
     input(type='submit', value='Register')
 
 script
-    document.getElementById('first_name').focus()
+    $(function() {
+        $('#first_name').focus();
+    });
