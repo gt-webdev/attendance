@@ -66,10 +66,8 @@ app.dynamicHelpers({
 
 // Routes
 
-app.get('/', function(req, res){
-    res.render('index', {
-        title: 'Express'
-    });
+app.get('/', function(req, res) {
+    res.redirect('/orgs');
 });
 
 app.get('/orgs', function(req, res, next) {
