@@ -72,13 +72,19 @@ app.get('/', function(req, res){
     });
 });
 
-app.get('/orgs', function(req, res){
-  // TODO: actually read list of all orgs
-  var orgs = [{name: "Name1", desc: "Desc1"}, {name: "Name2", desc: "Desc2"}];
-
-    res.render('orgs', {
-        title: 'All Organizations',
-        orgs: orgs,
+app.get('/orgs', function(req, res, next) {
+    async.waterfall([
+        function(cb) {
+            models.Org.find({}, cb);
+        },
+    ], function(err, orgs) {
+        if (err) {
+            return next(err);
+        }
+        res.render('orgs', {
+            title: 'All Organizations',
+            orgs: orgs,
+        });
     });
 });
 
