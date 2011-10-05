@@ -1,6 +1,7 @@
 var express = require('express');
 var everyauth = require('everyauth');
 var mongoose = require('mongoose');
+var async = require('async');
 
 var conf = require('./conf');
 
