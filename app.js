@@ -124,7 +124,7 @@ app.put('/orgs', function(req, res, next) {
     });
 });
 
-app.get('/create-org', function(req, res){
+app.get('/create-org', function(req, res) {
     res.render('create-org', {
         title: 'Create new org'
     });

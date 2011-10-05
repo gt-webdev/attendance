@@ -6,5 +6,6 @@ if (typeof flash != 'undefined')
 if (typeof orgs != 'undefined')
   each org in orgs
     .org
-      p= org.name
+      h2
+        a(href='/orgs/' + org.slug)= org.name
       p= org.desc
