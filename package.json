@@ -8,6 +8,7 @@
     , "mongoose": ">= 2.2.1"
     , "everyauth": ">= 0.2.20"
     , "bcrypt": ">= 0.3.2"
+    , "async": ">= 0.1.10"
   }
   , "scripts": {
       "install-defaults": "scripts/install-defaults.sh"

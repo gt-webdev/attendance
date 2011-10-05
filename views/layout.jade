@@ -5,7 +5,8 @@ html
     link(rel='stylesheet', href='/stylesheets/style.css')
   body
     #header
-      h1 Attendance
+      h1
+        a(href='/') Attendance
       if everyauth.loggedIn
         p Hello, #{user.name.first} (#{user.gt_userid}) 
           a(href='/logout') Logout

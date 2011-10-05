@@ -1,6 +1,7 @@
 var express = require('express');
 var everyauth = require('everyauth');
 var mongoose = require('mongoose');
+var async = require('async');
 
 var conf = require('./conf');
 
@@ -65,41 +66,65 @@ app.dynamicHelpers({
 
 // Routes
 
-app.get('/', function(req, res){
-    res.render('index', {
-        title: 'Express'
+app.get('/', function(req, res) {
+    res.redirect('/orgs');
+});
+
+app.get('/orgs', function(req, res, next) {
+    async.waterfall([
+        function(cb) {
+            models.Org.find({}, cb);
+        },
+    ], function(err, orgs) {
+        if (err) {
+            return next(err);
+        }
+        res.render('orgs', {
+            title: 'All Organizations',
+            orgs: orgs,
+        });
     });
 });
 
-app.get('/orgs', function(req, res){
-  // TODO: actually read list of all orgs
-  var orgs = [{name: "Name1", desc: "Desc1"}, {name: "Name2", desc: "Desc2"}];
-
-    res.render('orgs', {
-        title: 'All Organizations',
-        orgs: orgs,
+app.get('/orgs/:slug', function(req, res) {
+    async.waterfall([
+        function(cb) {
+            models.Org.findOne({slug: req.params.slug}, cb);
+        },
+    ], function(err, org) {
+        if (err) {
+            return next(err);
+        }
+        if (!org) {
+            return res.send(404);
+        }
+        res.render('orgs', {
+            title: org.name,
+            flash: req.flash().info,
+        });
     });
 });
 
-app.get('/orgs/:id', function(req, res){
-    // TODO: actually read org
-    var id = req.params.id;
-    var name = "This org's name";
-
-    res.render('orgs', {
-        title: 'Organization: ' + name,
-        flash: req.flash().info,
+app.put('/orgs', function(req, res, next) {
+    async.waterfall([
+        function(cb) {
+            var org = new models.Org({
+                name: req.body.name,
+                description: req.body.desc,
+                slug: req.body.slug,
+            });
+            org.save(cb);
+        },
+    ], function(err) {
+        if (err) {
+            return next(err);
+        }
+        req.flash('info', 'Org created: ' + req.body.name);
+        res.redirect('/orgs/' + req.body.slug);
     });
 });
 
-app.put('/orgs', function(req, res){
-    req.flash('info', 'Org created: ' + req.body.name);
-    // TODO: actually create org
-    var id = 1;
-    res.redirect('/orgs/' + id);
-});
-
-app.get('/create-org', function(req, res){
+app.get('/create-org', function(req, res) {
     res.render('create-org', {
         title: 'Create new org'
     });
