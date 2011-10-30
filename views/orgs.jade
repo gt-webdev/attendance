@@ -3,9 +3,13 @@ h1= title
 if (typeof flash != 'undefined')
   p= flash
 
+a(href='/create-org/') Create an org
+
 if (typeof orgs != 'undefined')
   each org in orgs
     .org
       h2
         a(href='/orgs/' + org.slug)= org.name
       p= org.desc
+
+
