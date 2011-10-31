@@ -87,6 +87,9 @@ app.get('/orgs', function(req, res, next) {
 });
 
 app.get('/orgs/:slug', function(req, res) {
+    
+    console.log(req);
+    
     async.waterfall([
         function(cb) {
             models.Org.findOne({slug: req.params.slug}, cb);
@@ -98,9 +101,10 @@ app.get('/orgs/:slug', function(req, res) {
         if (!org) {
             return res.send(404);
         }
-        res.render('orgs', {
+        res.render('org-page', {
             title: org.name,
             flash: req.flash().info,
+            description: org.description,
         });
     });
 });
