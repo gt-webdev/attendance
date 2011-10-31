@@ -98,9 +98,10 @@ app.get('/orgs/:slug', function(req, res) {
         if (!org) {
             return res.send(404);
         }
-        res.render('orgs', {
+        res.render('org', {
             title: org.name,
             flash: req.flash().info,
+            description: org.description,
         });
     });
 });
