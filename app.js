@@ -88,8 +88,6 @@ app.get('/orgs', function(req, res, next) {
 
 app.get('/orgs/:slug', function(req, res) {
     
-    console.log(req);
-    
     async.waterfall([
         function(cb) {
             models.Org.findOne({slug: req.params.slug}, cb);
