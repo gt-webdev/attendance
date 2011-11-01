@@ -1,0 +1,12 @@
+h1= title
+
+if (typeof flash != 'undefined')
+  p= flash
+
+if (typeof events != 'undefined')
+  each event in events
+    .event
+      h2
+        a(href='/events/' + event.passkey)= event.title
+      p= event.start_time + ' - ' + event.stop_time
+      p= event.description
