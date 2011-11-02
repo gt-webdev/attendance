@@ -9,9 +9,9 @@ p= event.start_time + ' - ' + event.stop_time
 if (place != null)
   p= place.name
 
-if (attendees.length != 0) 
+if (attendees.length != 0)
     h3 Who's going
     ul
-      each attendant in attendees
-        .attendant
-          li= attendant.name.first + ' ' + attendant.name.last
+      each attendee in attendees
+        .attendee
+          li= attendee.name.first + ' ' + attendee.name.last
