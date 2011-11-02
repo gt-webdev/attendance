@@ -86,7 +86,7 @@ app.get('/orgs', function(req, res, next) {
     });
 });
 
-app.get('/orgs/:slug', function(req, res) {
+app.get('/orgs/:slug', function(req, res, next) {
     async.waterfall([
         function(cb) {
             models.Org.findOne({slug: req.params.slug}, cb);
@@ -154,7 +154,6 @@ app.get('/events/:_id', function(req, res, next) {
         	});
         },
     ], function(err, event, org, place, attendees) {
-        console.log(attendees);
         if (err) {
             return next(err);
         }
@@ -167,7 +166,7 @@ app.get('/events/:_id', function(req, res, next) {
             event: event,
             org: org,
             place: place,
-            attendees: attendees
+            attendees: attendees,
         });
     });
 });
