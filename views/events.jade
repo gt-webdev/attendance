@@ -4,9 +4,10 @@ if (typeof flash != 'undefined')
   p= flash
 
 if (typeof events != 'undefined')
-  each event in events
+  each e in events
     .event
       h2
-        a(href='/events/' + event.passkey)= event.title
-      p= event.start_time + ' - ' + event.stop_time
-      p= event.description
+        a(href='/events/' + e.event._id)= e.event.title
+      p= e.org.name
+      p= e.event.start_time + ' - ' + e.event.stop_time
+      p= e.event.description

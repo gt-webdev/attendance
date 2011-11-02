@@ -131,10 +131,67 @@ app.get('/create-org', function(req, res) {
     });
 });
 
+app.get('/events/:_id', function(req, res, next) {
+    async.waterfall([
+        function(cb) {
+            models.Event.findOne({_id: req.params._id}, cb);
+        },
+        function(event, cb) {
+        	models.Org.findOne({_id: event.org}, function(err, org) {
+        		cb(err, org, event);
+        	});
+        },
+        function(event, org, cb) {
+        	models.Place.findOne({_id: event.place}, function(err, place) {
+        		cb(err, org, event, place);
+        	});
+        },
+        function(event, org, place, cb) {
+        	async.map(event.attendees, function(user_id, cb) {
+        		models.User.findOne({_id: user_id}, cb);
+        	}, function(err, attendees) {
+				cb(err, event, org, place, attendees);
+        	});
+        },
+    ], function(err, event, org, place, attendees) {
+        console.log(attendees);
+        if (err) {
+            return next(err);
+        }
+        if (!event) {
+            return res.send(404);
+        }
+        res.render('event', {
+            title:  event.title,
+            flash: req.flash().info,
+            event: event,
+            org: org,
+            place: place,
+            attendees: attendees
+        });
+    });
+});
+
+
 app.get('/events', function(req, res, next) {
     async.waterfall([
         function(cb) {
             models.Event.find({}, cb);
+        },
+        function(events, cb) {
+        	async.map(events, function(event, cb) {
+        		models.Org.findOne({_id: event.org}, cb);
+        	}, function(err, orgs) {
+				cb(err, events, orgs);
+        	});
+        },
+        function(events, orgs, cb) {
+        	cb(null, events.map(function(x,i) {
+    			return {
+    				event: x,
+    				org: orgs[i],
+    			};
+    		}));
         },
     ], function(err, events) {
         if (err) {
