@@ -1,0 +1,17 @@
+a(href='/events/') Back to event list
+
+h1= title
+
+h2= org.name
+p= 'Description: ' + event.description
+p= event.start_time + ' - ' + event.stop_time
+
+if (place != null)
+  p= place.name
+
+if (attendees.length != 0)
+    h3 Who's going
+    ul
+      each attendee in attendees
+        .attendee
+          li= attendee.name.first + ' ' + attendee.name.last
