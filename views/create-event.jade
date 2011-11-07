@@ -1,0 +1,28 @@
+h1= title
+
+form#create-event(action='/events', method='POST')
+  input(type='hidden', name='_method', value='PUT')
+  p
+    label(for='title') Title:
+    input(type='text', name='title')#title
+  p
+    label(for='org') Organization:
+    select(name='org')
+      each org in orgs 
+        option(value= org._id)= org.name
+  p
+    label(for='start_time') Start time:
+    input(type='text', name='start_time')#start_time
+  p
+    label(for='end_time') End time:
+    input(type='text', name='end_time')#end_time
+  p
+    label(for='desc') Description:
+    textarea(name='desc', rows=4, cols=80)#desc
+
+  input(type='submit', value='Create Event')
+
+script(type='text/javascript')
+    $(function() {
+        $('#name').focus();
+    });
