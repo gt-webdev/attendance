@@ -34,7 +34,7 @@ everyauth.helpExpress(app);
 
 // Configuration
 
-app.configure(function() { 
+app.configure(function() {
     app.set('views', __dirname + '/views');
     app.set('view engine', 'jade');
     app.use(express.bodyParser());
@@ -159,8 +159,8 @@ app.get('/create-event', function(req, res, next) {
        },
     ], function(err, orgs) {
         if(err) {
-            return next(err); 
-        } 
+            return next(err);
+        }
         console.log(auth);
         res.render('create-event', {
             title: 'Create New Event',

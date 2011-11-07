@@ -8,7 +8,7 @@ form#create-event(action='/events', method='POST')
   p
     label(for='org') Organization:
     select(name='org')
-      each org in orgs 
+      each org in orgs
         option(value= org._id)= org.name
   p
     label(for='start_time') Start time:
