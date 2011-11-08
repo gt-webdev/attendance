@@ -39,6 +39,12 @@ exports.details = function(req, res, next) {
 exports.post = function(req, res, next) {
     async.waterfall([
         function(cb) {
+            if (!req.user.is_admin) {
+                return cb('User is not an admin');
+            }
+            cb();
+        },
+        function(cb) {
             var org = new models.Org({
                 name: req.body.name,
                 description: req.body.desc,

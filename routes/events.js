@@ -2,14 +2,32 @@ var async = require('async');
 var models = require('../lib/models');
 
 exports.post = function(req, res, next) {
-    var event = new models.Event({
-        title: req.body.title,
-        org: req.body.org,
-        start_time: req.body.start_time,
-        stop_time: req.body.end_time,
-        description: req.body.desc,
-    });
-    event.save(function(err) {
+    async.waterfall([
+        function(cb) {
+            models.Org.findOne({_id: req.body.org}, cb);
+        },
+        function(org, cb) {
+            // to make an event, must be either an admin
+            if (req.user.is_admin) {
+                return cb();
+            }
+            // or an admin of the Org
+            if (org.admins.indexOf(req.user.id)) {
+                return cb();
+            }
+            return cb('User is not an admin of this Org');
+        },
+        function(cb) {
+            var event = new models.Event({
+                title: req.body.title,
+                org: req.body.org,
+                start_time: req.body.start_time,
+                stop_time: req.body.end_time,
+                description: req.body.desc,
+            });
+            event.save(cb);
+        },
+    ], function(err) {
         if (err) {
             return next(err);
         }
