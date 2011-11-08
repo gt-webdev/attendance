@@ -34,7 +34,7 @@ everyauth.helpExpress(app);
 
 // Configuration
 
-app.configure(function(){
+app.configure(function() {
     app.set('views', __dirname + '/views');
     app.set('view engine', 'jade');
     app.use(express.bodyParser());
@@ -127,7 +127,36 @@ app.put('/orgs', function(req, res, next) {
 
 app.get('/create-org', function(req, res) {
     res.render('create-org', {
-        title: 'Create new org'
+        title: 'Create New Org'
+    });
+});
+
+app.put('/events', function(req, res, next) {
+    var event = new models.Event({
+        title: req.body.title,
+        org: req.body.org,
+        start_time: req.body.start_time,
+        stop_time: req.body.end_time,
+        description: req.body.desc,
+    });
+    event.save(function(err) {
+        if (err) {
+            return next(err);
+        }
+        req.flash('info', 'Event created: ' + req.body.title);
+        res.redirect('/events/' + event._id);
+    });
+});
+
+app.get('/create-event', function(req, res, next) {
+    models.Org.find({}, function(err, orgs) {
+        if(err) {
+            return next(err);
+        }
+        res.render('create-event', {
+            title: 'Create New Event',
+            orgs: orgs, 
+        });
     });
 });
 
