@@ -1,7 +1,6 @@
 h1= title
 
 form#create-event(action='/events', method='POST')
-  input(type='hidden', name='_method', value='PUT')
   p
     label(for='title') Title:
     input(type='text', name='title')#title

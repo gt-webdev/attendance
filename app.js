@@ -77,12 +77,12 @@ app.get('/', function(req, res) {
 app.get('/orgs', routes.orgs.list);
 app.get('/create-org', routes.orgs.create);
 app.get('/orgs/:slug', routes.orgs.details);
-app.put('/orgs', routes.orgs.post);
+app.post('/orgs', routes.orgs.post);
 
 app.get('/events', routes.events.list);
 app.get('/create-event', routes.events.create);
 app.get('/events/:_id', routes.events.details);
-app.put('/events', routes.events.post);
+app.post('/events', routes.events.post);
 
 app.listen(3000);
 console.log("Express server listening on port %d in %s mode", app.address().port, app.settings.env);
