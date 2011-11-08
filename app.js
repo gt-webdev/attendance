@@ -132,18 +132,14 @@ app.get('/create-org', function(req, res) {
 });
 
 app.put('/events', function(req, res, next) {
-    async.waterfall([
-        function(cb) {
-            var event = new models.Event({
-                title: req.body.title,
-                org: req.body.org,
-                start_time: req.body.start_time,
-                stop_time: req.body.end_time,
-                description: req.body.desc,
-            });
-            event.save(cb);
-        },
-    ], function(err, event) {
+    var event = new models.Event({
+        title: req.body.title,
+        org: req.body.org,
+        start_time: req.body.start_time,
+        stop_time: req.body.end_time,
+        description: req.body.desc,
+    });
+    event.save(function(err) {
         if (err) {
             return next(err);
         }
@@ -153,15 +149,10 @@ app.put('/events', function(req, res, next) {
 });
 
 app.get('/create-event', function(req, res, next) {
-    async.waterfall([
-       function(cb) {
-         models.Org.find({}, cb);
-       },
-    ], function(err, orgs) {
+    models.Org.find({}, function(err, orgs) {
         if(err) {
             return next(err);
         }
-        console.log(auth);
         res.render('create-event', {
             title: 'Create New Event',
             orgs: orgs, 
