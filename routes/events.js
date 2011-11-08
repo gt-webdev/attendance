@@ -13,7 +13,7 @@ exports.post = function(req, res, next) {
         if (err) {
             return next(err);
         }
-        req.flash('info', 'Event created: ' + req.body.title);
+        req.flash('info', 'Event created: %s', req.body.title);
         res.redirect('/events/' + event._id);
     });
 };
@@ -61,7 +61,6 @@ exports.details = function(req, res, next) {
         }
         res.render('event', {
             title:  event.title,
-            flash: req.flash().info,
             event: event,
             org: org,
             place: place,

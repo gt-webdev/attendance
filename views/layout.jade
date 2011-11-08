@@ -23,4 +23,9 @@ html
           else
             li.right
               a(href='/login') Login
+    #flash
+      each msgs, type in flash_messages
+        ul(class=type)
+          each msg in msgs
+            li= msg
     #content!= body
