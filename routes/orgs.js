@@ -31,7 +31,6 @@ exports.details = function(req, res, next) {
         }
         res.render('org', {
             title: org.name,
-            flash: req.flash().info,
             description: org.description,
         });
     });
@@ -51,7 +50,7 @@ exports.post = function(req, res, next) {
         if (err) {
             return next(err);
         }
-        req.flash('info', 'Org created: ' + req.body.name);
+        req.flash('info', 'Org created: %s', req.body.name);
         res.redirect('/orgs/' + req.body.slug);
     });
 };
