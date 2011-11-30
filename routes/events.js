@@ -25,9 +25,11 @@ exports.post = function(req, res, next) {
                 stop_time: req.body.end_time,
                 description: req.body.desc,
             });
-            event.save(cb);
+            event.save(function(err) {
+                cb(err, event);
+            });
         },
-    ], function(err) {
+    ], function(err, event) {
         if (err) {
             return next(err);
         }
