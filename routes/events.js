@@ -38,6 +38,25 @@ exports.post = function(req, res, next) {
     });
 };
 
+exports.delete = function(req, res, next) {
+    async.waterfall([
+        function(cb) {
+            models.Event.findOne({_id: req.params.id}, cb);
+        },
+        function(event, cb) {
+            models.Event.remove({_id: event.id}, function(err) {
+                cb(err, event);
+            });
+        },
+    ], function(err, event) {
+        if (err) {
+            return next(err);
+        }
+        req.flash('info', 'Event deleted: %s', event.title);
+        res.redirect('/events/');
+    });
+};
+
 exports.create = function(req, res, next) {
     models.Org.find({}, function(err, orgs) {
         if(err) {

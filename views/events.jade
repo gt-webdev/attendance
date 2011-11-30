@@ -10,3 +10,7 @@ if (typeof events != 'undefined')
       p= e.org.name
       p= e.event.start_time + ' - ' + e.event.stop_time
       p= e.event.description
+
+      form(action='/events/' + e.event.id, method='POST')
+        input(type='hidden', name='_method', value='DELETE')
+        input(type='submit', value='Delete')
