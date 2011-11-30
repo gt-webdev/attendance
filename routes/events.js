@@ -53,7 +53,7 @@ exports.create = function(req, res, next) {
 exports.details = function(req, res, next) {
     async.waterfall([
         function(cb) {
-            models.Event.findOne({_id: req.params._id}, cb);
+            models.Event.findOne({_id: req.params.id}, cb);
         },
         function(event, cb) {
             models.Org.findOne({_id: event.org}, function(err, org) {

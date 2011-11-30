@@ -81,7 +81,7 @@ app.post('/orgs', auth.loginRequired, routes.orgs.post);
 app.delete('/orgs/:slug', auth.loginRequired, routes.orgs.delete);
 
 app.get('/events', routes.events.list);
-app.get('/events/:_id', routes.events.details);
+app.get('/events/:id', routes.events.details);
 app.get('/create-event', auth.loginRequired, routes.events.create);
 app.post('/events', auth.loginRequired, routes.events.post);
 
