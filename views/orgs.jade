@@ -8,3 +8,6 @@ if (typeof orgs != 'undefined')
       h2
         a(href='/orgs/' + org.slug)= org.name
       p= org.description
+      form(action='/orgs/' + org.slug, method='POST')
+        input(type='hidden', name='_method', value='DELETE')
+        input(type='submit', value='Delete')
