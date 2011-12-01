@@ -61,6 +61,36 @@ exports.post = function(req, res, next) {
     });
 };
 
+exports.delete = function(req, res, next) {
+    async.waterfall([
+        function(cb) {
+            models.Org.findOne({slug: req.params.slug}, cb);
+        },
+        function(org, cb) {
+            if (req.user.is_admin || org.admins.indexOf(req.user.id) != -1) {
+                return cb(null, org);
+            }
+            cb('User does not have permissions to delete this group');
+        },
+        function(org, cb) {
+            models.Event.remove({org: org.id}, function(err) {
+                cb(err, org);
+            });
+        },
+        function(org, cb) {
+            models.Org.remove({_id: org.id}, function(err) {
+                cb(err, org);
+            });
+        },
+    ], function(err, org) {
+        if (err) {
+            return next(err);
+        }
+        req.flash('info', 'Org deleted: %s', org.name);
+        res.redirect('/orgs/');
+    });
+};
+
 exports.create = function(req, res) {
     res.render('create-org', {
         title: 'Create New Org'
