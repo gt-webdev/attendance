@@ -67,6 +67,12 @@ exports.delete = function(req, res, next) {
             models.Org.findOne({slug: req.params.slug}, cb);
         },
         function(org, cb) {
+            if (req.user.is_admin || org.admins.indexOf(req.user.id) != -1) {
+                return cb(null, org);
+            }
+            cb('User does not have permissions to delete this group');
+        },
+        function(org, cb) {
             models.Event.remove({org: org.id}, function(err) {
                 cb(err, org);
             });
