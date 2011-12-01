@@ -24,4 +24,12 @@ form#create-event(action='/events', method='POST')
 script(type='text/javascript')
     $(function() {
         $('#name').focus();
+        var dp_opts = {
+            changeMonth: true,
+            changeYear: true,
+            showOtherMonths: true,
+            selectOtherMonths: true
+        };
+        $('#start_time').datepicker(dp_opts);
+        $('#end_time').datepicker(dp_opts);
     });
