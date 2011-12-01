@@ -49,7 +49,7 @@ exports.delete = function(req, res, next) {
                     return cb(err);
                 }
                 if (req.user.is_admin ||
-                    (org && org.admins.indexOf(req.user.id) != -1)) {
+                        (org && org.admins.indexOf(req.user.id) != -1)) {
                     return cb(null, event);
                 }
                 cb('User does not have permissions to delete this event');
