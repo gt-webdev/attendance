@@ -16,7 +16,16 @@ everyauth.password
     .postLoginPath('/login')
     .loginView('login')
     .authenticate(auth.authenticate)
-    .loginSuccessRedirect('/')
+    .respondToLoginSucceed( function (res, user, data) {
+        if (user) {
+            res.writeHead(303, {'Location': data.session.redirectTo});
+            res.end();
+        }
+    })
+    .respondToRegistrationSucceed( function (res, user, data) {
+        res.writeHead(303, {'Location': data.session.redirectTo});
+        res.end();
+    })
     .getRegisterPath('/register')
     .postRegisterPath('/register')
     .registerView('register')
