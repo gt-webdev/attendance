@@ -14,6 +14,7 @@ form(action='/login', method='POST')
     label(for='password') Password
     input(type='password', name=everyauth.password.passwordFormFieldName)#password
   p
+    input(type='hidden', name='next', value=next)
     input(type='submit', value='Login')
 
   a(href='/register') Register

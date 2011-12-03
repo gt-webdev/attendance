@@ -16,15 +16,27 @@ everyauth.password
     .postLoginPath('/login')
     .loginView('login')
     .authenticate(auth.authenticate)
+    .loginLocals( function (req, res) {
+        return {
+            next: req.query.next
+        };
+    })
     .respondToLoginSucceed( function (res, user, data) {
-        if (user) {
-            res.writeHead(303, {'Location': data.session.redirectTo});
+        if (user && data.req && data.req.body && data.req.body.next) {
+            res.writeHead(303, {'Location': data.req.body.next});
             res.end();
         }
     })
+    .registerLocals( function (req, res) {
+        return {
+            next: req.query.next
+        };
+    })
     .respondToRegistrationSucceed( function (res, user, data) {
-        res.writeHead(303, {'Location': data.session.redirectTo});
-        res.end();
+        if (data.req && data.req.body && data.req.body.next) {
+            res.writeHead(303, {'Location': data.req.body.next});
+            res.end();
+        }
     })
     .getRegisterPath('/register')
     .postRegisterPath('/register')
