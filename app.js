@@ -37,8 +37,7 @@ everyauth.password
         };
     })
     .validateRegistration(auth.validateRegistration)
-    .registerUser(auth.registerUser)
-    .registerSuccessRedirect('/');
+    .registerUser(auth.registerUser);
 
 var app = module.exports = express.createServer();
 
