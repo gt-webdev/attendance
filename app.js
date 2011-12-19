@@ -80,21 +80,7 @@ app.dynamicHelpers({
 
 // Routes
 
-app.get('/', function(req, res) {
-    res.redirect('/orgs');
-});
-
-app.get('/orgs', routes.orgs.list);
-app.get('/orgs/:slug', routes.orgs.details);
-app.get('/create-org', auth.loginRequired, routes.orgs.create);
-app.post('/orgs', auth.loginRequired, routes.orgs.post);
-app.delete('/orgs/:slug', auth.loginRequired, routes.orgs.delete);
-
-app.get('/events', routes.events.list);
-app.get('/events/:id', routes.events.details);
-app.get('/create-event', auth.loginRequired, routes.events.create);
-app.post('/events', auth.loginRequired, routes.events.post);
-app.delete('/events/:id', auth.loginRequired, routes.events.delete);
+routes.registerOn(app);
 
 app.listen(3000);
 console.log("Express server listening on port %d in %s mode", app.address().port, app.settings.env);
