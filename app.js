@@ -16,7 +16,18 @@ everyauth.password
     .postLoginPath('/login')
     .loginView('login')
     .authenticate(auth.authenticate)
-    .loginSuccessRedirect('/')
+    .loginLocals(function(req, res) {
+        return {
+            next: req.query.next
+        };
+    })
+    .respondToLoginSucceed(auth.respondToLoginSucceed)
+    .registerLocals(function(req, res) {
+        return {
+            next: req.query.next
+        };
+    })
+    .respondToRegistrationSucceed(auth.respondToRegistrationSucceed)
     .getRegisterPath('/register')
     .postRegisterPath('/register')
     .registerView('register')
@@ -26,8 +37,7 @@ everyauth.password
         };
     })
     .validateRegistration(auth.validateRegistration)
-    .registerUser(auth.registerUser)
-    .registerSuccessRedirect('/');
+    .registerUser(auth.registerUser);
 
 var app = module.exports = express.createServer();
 
