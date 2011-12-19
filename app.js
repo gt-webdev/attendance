@@ -21,23 +21,13 @@ everyauth.password
             next: req.query.next
         };
     })
-    .respondToLoginSucceed( function (res, user, data) {
-        if (user && data.req && data.req.body && data.req.body.next) {
-            res.writeHead(303, {'Location': data.req.body.next});
-            res.end();
-        }
-    })
+    .respondToLoginSucceed(auth.respondToLoginSucceed)
     .registerLocals( function (req, res) {
         return {
             next: req.query.next
         };
     })
-    .respondToRegistrationSucceed( function (res, user, data) {
-        if (data.req && data.req.body && data.req.body.next) {
-            res.writeHead(303, {'Location': data.req.body.next});
-            res.end();
-        }
-    })
+    .respondToRegistrationSucceed(auth.respondToRegistrationSucceed)
     .getRegisterPath('/register')
     .postRegisterPath('/register')
     .registerView('register')
