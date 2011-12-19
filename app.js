@@ -16,13 +16,13 @@ everyauth.password
     .postLoginPath('/login')
     .loginView('login')
     .authenticate(auth.authenticate)
-    .loginLocals( function (req, res) {
+    .loginLocals(function(req, res) {
         return {
             next: req.query.next
         };
     })
     .respondToLoginSucceed(auth.respondToLoginSucceed)
-    .registerLocals( function (req, res) {
+    .registerLocals(function(req, res) {
         return {
             next: req.query.next
         };
