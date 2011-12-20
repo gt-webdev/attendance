@@ -1,53 +1,7 @@
-body {
-  padding: 0px;
-  margin: 0px;
+.topbar input {
+    margin-right: 3px;
 }
 
-#header {
-  padding: 0px;
-  margin: 0px;
-}
-
-#content {
-  padding: 50px;
-  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
-}
-
-ul#list-nav {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  height: 2em;
-  background: black;
-}
-
-ul#list-nav li {
-  float: left;
-  line-height: 2em;
-  width: auto;
-}
-
-ul#list-nav li.right {
-  float: right;
-}
-
-ul#list-nav li a, ul#list-nav li p {
-  text-decoration: none;
-  display: block;
-  padding: 0 1.5em;
-  margin: 0;
-  background: #e6ae27;
-  color: #eee;
-  font-weight: bold;
-  float: left;
-  text-align: center;
-  border-left: 1px solid #000;
-}
-
-ul#list-nav li a:hover {
-  background:#e6a300;
-}
-
-a {
-  color: #e6ae27;
+.topbar button {
+    margin-left: 2px;
 }

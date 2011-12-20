@@ -2,32 +2,39 @@
 html
   head
     title Attendance
+    link(rel='stylesheet', href='/stylesheets/bootstrap.css')
     link(rel='stylesheet', href='/stylesheets/style.css')
     link(rel='stylesheet', href='http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/themes/smoothness/jquery-ui.css')
     script(type='text/javascript', src='http://ajax.googleapis.com/ajax/libs/jquery/1.7.0/jquery.min.js')
     script(type='text/javascript', src='http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/jquery-ui.min.js')
+
   body
-    #header
-      nav
-        ul#list-nav
-          li
-            a(href='/') Home
-          li
-            a(href='/orgs') Orgs
-          li
-            a(href='/events') Events
-          if everyauth.loggedIn
-            li.right
-              a(href='/logout') Logout
-            if user && user.name
-              li.right
-                p Welcome, #{user.name.first}
-          else
-            li.right
-              a(href='/login') Login
-    #flash
-      each msgs, type in flash_messages
-        ul(class=type)
-          each msg in msgs
-            li= msg
-    #content!= body
+    .topbar
+      .fill
+        .container
+          h3
+            a(href='/') CoC Student Organizations
+          ul.nav
+            - var header_elements = [{url: '/orgs', name: 'Orgs'}, {url: '/events', name: 'Events'}];
+            each h in header_elements
+              if h.url == req.url
+                li.active
+                  a(href=h.url)= h.name
+              else
+                li
+                  a(href=h.url)= h.name
+          ul.nav.secondary-nav
+            if everyauth.loggedIn
+              li.dropdown(data-dropdown='dropdown')
+                a(href='').dropdown-toggle= user.name.first
+                ul.dropdown-menu
+                  li
+                    a(href='/logout') Logout
+            else
+              li
+                form(action='/login', method='POST').pull-right
+                  input(type='text', name=everyauth.password.loginFormFieldName, placeholder='GT User ID').input-small
+                  input(type='password', name=everyauth.password.passwordFormFieldName, placeholder='Password').input-small
+                  button(type='submit').btn Login
+
+    #content.container(style='padding-top:40px')!= body
