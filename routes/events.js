@@ -151,3 +151,50 @@ exports.list = function(req, res, next) {
         });
     });
 };
+
+exports.attend = function(req, res, next) {
+    async.waterfall([
+        function(cb) {
+            models.Event.findOne({_id: req.params.id}, cb);
+        },
+        function(event, cb) {
+            if (event.attendees.indexOf(req.user.id) < 0
+                    && (!event.passkey || event.passkey === req.body.passkey)) {
+                event.attendees.push(req.user.id);
+                event.save();
+            }
+            cb();
+        },
+    ], function(err) {
+        if (err) {
+            return next(err);
+        }
+        res.redirect(req.url);
+    });
+};
+
+exports.update = function(req, res, next) {
+    if (req.body.type != 'unattend') {
+        return next('Unexpected update type');
+    }
+
+    async.waterfall([
+        function(cb) {
+            models.Event.findOne({_id: req.params.id}, cb);
+        },
+        function(event, cb) {
+            var index = event.attendees.indexOf(req.user.id);
+            if (index < 0) {
+                return cb('User is not attending this event');
+            }
+            event.attendees.splice(index, 1);
+            event.save();
+            cb();
+        },
+    ], function(err) {
+        if (err) {
+            return next(err);
+        }
+        res.redirect(req.url);
+    });
+};

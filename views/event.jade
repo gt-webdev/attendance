@@ -9,9 +9,26 @@ p= event.start_time + ' - ' + event.stop_time
 if (place != null)
   p= place.name
 
+if user && event.attendees.indexOf(user.id) < 0
+  form(action='/events/' + event.id, method='POST')
+    input(type='hidden', name='_method', value='PUT')
+
+    if event.passkey
+      label(for='passkey') Passkey:
+      input(type='text', name='passkey')#passkey
+  
+    input(type='submit', value="I'm here!")
+  
 if (attendees.length != 0)
     h3 Who's going
     ul
       each attendee in attendees
         .attendee
-          li= attendee.name.first + ' ' + attendee.name.last
+          if user && attendee.id == user.id
+            li= attendee.name.first + ' ' + attendee.name.last
+              form(action='/events/' + event.id, method='POST')
+                input(type='hidden', name='_method', value='UPDATE')
+                input(type='hidden', name='type', value='unattend')
+                input(type='submit', value='X')
+          else
+            li= attendee.name.first + ' ' + attendee.name.last
