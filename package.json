@@ -3,7 +3,7 @@
   , "version": "0.0.1"
   , "homepage": "https://github.com/cc-wit/attendance/"
   , "dependencies": {
-      "express": "2.4.6"
+      "express": "2.x"
     , "jade": ">= 0.0.1"
     , "mongoose": ">= 2.2.1"
     , "everyauth": ">= 0.2.20"
