@@ -1,9 +1,9 @@
 VERSION=1.4.0
 DATE=$(shell DATE)
-BOOTSTRAP = ./bootstrap.css
-BOOTSTRAP_MIN = ./bootstrap.min.css
+BOOTSTRAP = ../public/stylesheets/bootstrap.css
+BOOTSTRAP_MIN = ../public/stylesheets/bootstrap.min.css
 BOOTSTRAP_LESS = ./lib/bootstrap.less
-LESS_COMPRESSOR ?= `which lessc`
+LESS_COMPRESSOR = ../node_modules/less/bin/lessc
 WATCHR ?= `which watchr`
 
 build:
