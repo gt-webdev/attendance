@@ -1,5 +1,15 @@
+body {
+    background: #EEE;
+}
+
 #content {
-    padding-top: 50px;
+    background: #FFF;
+    padding: 50px 20px 20px;
+    border: 1px #DDD solid;
+}
+
+p {
+    font-size: 110%;
 }
 
 .topbar input {
