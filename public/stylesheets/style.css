@@ -9,3 +9,11 @@
 .topbar button {
     margin-left: 2px;
 }
+
+.page-header .btn {
+    margin-top: 4px;
+}
+
+h2 form {
+    margin-top: 4px;
+}

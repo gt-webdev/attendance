@@ -1,13 +1,14 @@
-a(href='/create-org/') Create an org
+.content
+  .page-header
+    if user && user.is_admin
+      a(href='/create-org/').pull-right.btn Create an org
+    h1 All Organizations
 
-h1= title
-
-if (typeof orgs != 'undefined')
   each org in orgs
-    .org
-      h2
-        a(href='/orgs/' + org.slug)= org.name
-      p= org.description
-      form(action='/orgs/' + org.slug, method='POST')
-        input(type='hidden', name='_method', value='DELETE')
-        input(type='submit', value='Delete')
+    h2
+      a(href='/orgs/' + org.slug)= org.name
+      if user && (user.is_admin || org.admins.indexOf(user.id) >= 0)
+        form(action='/orgs/' + org.slug, method='POST').pull-right
+          input(type='hidden', name='_method', value='DELETE')
+          input(type='submit', value='Delete').btn.error
+    p= org.description
