@@ -1,17 +1,23 @@
-h1= title
-
-form#create-org(action='/orgs', method='POST')
-  p
+.content
+  .page-header
+    h2 Create Org
+  
+  form#create-org(action='/orgs', method='POST').main-form
     label(for='name') Name:
-    input(type='text', name='name')#name
-  p
+    .input
+      input(type='text', name='name')#name
+  
     label(for='slug') Slug:
-    input(type='text', name='slug')#slug
-  p
+    .input
+      input(type='text', name='slug')#slug
+  
     label(for='desc') Description:
-    textarea(name='desc', rows=4, cols=80)#desc
+    .input
+      textarea(name='desc', rows=4, cols=80)#desc
+  
+    .actions
+      input(type='submit', value='Create Org').btn.primary
 
-  input(type='submit', value='Create Org')
 
 script(type='text/javascript')
     $(function() {
