@@ -111,7 +111,6 @@ exports.details = function(req, res, next) {
             return res.send(404);
         }
         res.render('event', {
-            title:  event.title,
             event: event,
             org: org,
             place: place,
