@@ -1,34 +1,46 @@
-a(href='/events/') Back to event list
+.content
+  .page-header
+    if user && (user.is_admin || org.admins.indexOf(user.id) >= 0)
+      form(action=req.url, method='POST').pull-right
+        input(type='hidden', name='_method', value='DELETE')
+        input(type='submit', value='Delete').btn.error
+    h1= event.title
+      small= org.name
 
-h1= title
+  if place != null
+    p= place.name
 
-h2= org.name
-p= 'Description: ' + event.description
-p= event.start_time + ' - ' + event.stop_time
+  h3 Description
+  p= event.description
 
-if (place != null)
-  p= place.name
+  h3 Time
+  p= event.start_time + ' - ' + event.stop_time
 
-if user && event.attendees.indexOf(user.id) < 0
-  form(action='/events/' + event.id, method='POST')
-    input(type='hidden', name='_method', value='PUT')
-
-    if event.passkey
-      label(for='passkey') Passkey:
-      input(type='text', name='passkey')#passkey
+  if user && event.attendees.indexOf(user.id) < 0
+    form(action='/events/' + event.id, method='POST')
+      input(type='hidden', name='_method', value='PUT')
   
-    input(type='submit', value="I'm here!")
+      if event.passkey
+        label(for='passkey') Passkey:
+        .input
+          input(type='text', name='passkey')#passkey
+    
+      input(type='submit', value="I'm here!").btn.large
   
-if (attendees.length != 0)
+  if (attendees.length != 0)
     h3 Who's going
-    ul
-      each attendee in attendees
-        .attendee
+    table.span5
+      tbody
+        each attendee in attendees
           if user && attendee.id == user.id
-            li= attendee.name.first + ' ' + attendee.name.last
-              form(action='/events/' + event.id, method='POST')
-                input(type='hidden', name='_method', value='UPDATE')
-                input(type='hidden', name='type', value='unattend')
-                input(type='submit', value='X')
+            tr
+              td= attendee.name.first + ' ' + attendee.name.last
+              td
+                form(action='/events/' + event.id, method='POST')
+                  input(type='hidden', name='_method', value='UPDATE')
+                  input(type='hidden', name='type', value='unattend')
+                  input(type='submit', value='X').btn
           else
-            li= attendee.name.first + ' ' + attendee.name.last
+            tr
+              td= attendee.name.first + ' ' + attendee.name.last
+              td

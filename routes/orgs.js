@@ -30,8 +30,7 @@ exports.details = function(req, res, next) {
             return res.send(404);
         }
         res.render('org', {
-            title: org.name,
-            description: org.description,
+            org: org,
         });
     });
 };

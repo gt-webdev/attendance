@@ -76,6 +76,9 @@ app.dynamicHelpers({
     flash_messages: function(req, res) {
         return req.flash();
     },
+    req: function(req, res) {
+        return req;
+    },
 });
 
 // Routes

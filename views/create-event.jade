@@ -1,26 +1,34 @@
-h1= title
+.content
+  .page-header
+    h2 Create Event
+  
+  form#create-event(action='/events', method='POST').main-form
+    label(for='title') Title
+    .input
+      input(type='text', name='title')#title
 
-form#create-event(action='/events', method='POST')
-  p
-    label(for='title') Title:
-    input(type='text', name='title')#title
-  p
-    label(for='org') Organization:
-    select(name='org')
-      each org in orgs
-        option(value= org._id)= org.name
-  p
-    label(for='start_time') Start time:
-    input(type='text', name='start_time')#start_time
-  p
-    label(for='end_time') End time:
-    input(type='text', name='end_time')#end_time
-  p
-    label(for='desc') Description:
-    textarea(name='desc', rows=4, cols=80)#desc
+    label(for='org') Organization
+    .input
+      select(name='org')
+        each org in orgs
+          option(value= org.id)= org.name
 
-  input(type='submit', value='Create Event')
+    label(for='start_time') Start time
+    .input
+      input(type='text', name='start_time')#start_time
 
+    label(for='end_time') End time
+    .input
+      input(type='text', name='end_time')#end_time
+
+    label(for='desc') Description
+    .input
+      textarea(name='desc', rows=4, cols=80)#desc
+
+    .actions
+      input(type='submit', value='Create Event').btn.primary
+
+  
 script(type='text/javascript')
     $(function() {
         $('#name').focus();

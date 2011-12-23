@@ -1,5 +1,9 @@
-a(href='/orgs/') Back to orgs list
+.content
+  .page-header
+    if user && (user.is_admin || org.admins.indexOf(user.id) >= 0)
+      form(action=req.url, method='POST').pull-right
+        input(type='hidden', name='_method', value='DELETE')
+        input(type='submit', value='Delete').btn.error
+    h1= org.name
 
-h1= title
-
-p= description
+  p= org.description
