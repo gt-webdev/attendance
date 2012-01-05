@@ -1,6 +1,6 @@
 if typeof errors != 'undefined'
   each error in errors
-    .alert-message.error.fade.in
+    .alert-message.error(data-alert="alert")
       a(href='#').close ×
       p
         strong= error
