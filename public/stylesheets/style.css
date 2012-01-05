@@ -35,3 +35,7 @@ h1 small, h2 small {
 .main-form .input {
     margin-bottom: 6px;
 }
+
+form .actions .btn {
+    margin-right: 3px;
+}

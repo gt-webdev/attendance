@@ -1,32 +1,47 @@
-h1 Register
+if typeof errors != 'undefined'
+  each error in errors
+    .alert-message.error.fade.in
+      a(href='#').close ×
+      p
+        strong= error
 
-.errors
-  if typeof errors != 'undefined'
-    ul
-      each error in errors
-        li= error
+.content
+  .page-header
+    h2 Register
 
-form(action='/register', method='POST')
-  p
-    label(for='first_name') First Name
-    input(type='text', name='userParams[first_name]')#first_name
-  p
-    label(for='last_name') Last Name
-    input(type='text', name='userParams[last_name]')#last_name
-  p
-    label(for='email') Email
-    input(type='text', name='userParams[email]')#email
-  p
-    label(for='gt_id') GT ID number (902 number)
-    input(type='text', name='userParams[gt_id]')#gt_id
-  p
-    label(for='gt_userid') GT User ID (e.g., jdoe3)
-    input(type='text', name=everyauth.password.loginFormFieldName)#gt_userid
-  p
-    label(for='password') Password
-    input(type='password', name=everyauth.password.passwordFormFieldName)#password
-  p
-    input(type='submit', value='Register')
+  form(action='/register', method='POST')
+    .clearfix
+      label(for='first_name') First Name
+      .input
+        input(type='text', name='userParams[first_name]')#first_name
+
+    .clearfix
+      label(for='last_name') Last Name
+      .input
+        input(type='text', name='userParams[last_name]')#last_name
+
+    .clearfix
+      label(for='email') Email
+      .input
+        input(type='text', name='userParams[email]')#email
+
+    .clearfix
+      label(for='gt_id') GT ID number (902 number)
+      .input
+        input(type='text', name='userParams[gt_id]')#gt_id
+
+    .clearfix
+      label(for='gt_userid') GT User ID (e.g., jdoe3)
+      .input
+        input(type='text', name=everyauth.password.loginFormFieldName)#gt_userid
+
+    .clearfix
+      label(for='password') Password
+      .input
+        input(type='password', name=everyauth.password.passwordFormFieldName)#password
+
+    .actions
+      input(type='submit', value='Register').btn.primary
 
 script(type='text/javascript')
     $(function() {
