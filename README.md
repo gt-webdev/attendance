@@ -1,13 +1,32 @@
 # Attendance
 
-This application will be used to keep track of attendance for Georgia Tech College of Computing student organizations.
+This application will be used to keep track of attendance for Georgia
+Tech College of Computing student organizations and act as a landing
+page for them as well.
 
-## Set Up
+## Dependencies
 
-Within the project, you're going to want to install all of the module dependencies in the project.
+To run the app locally, you'll need node, npm (packaged with node >=
+0.6), mongodb, 
 
-    npm install
+## Setting up the development environment
 
-You'll then want to run the install defaults script in order to configure the database
+First, fork the `cc-wit/attendance` repository on GitHub, then clone
+your fork. For example:
 
-    npm run-script install-defaults
+    $ git clone git@github.com:thelastnode/attendance.git
+
+Then, install all the dependencies and start mongodb:
+
+    $ cd attendance
+    $ npm install
+    $ sudo /etc/init.d/mongodb start  # or the variant for your system
+
+Start the app with:
+
+    $ node app.js
+
+## Submitting changes
+
+To submit changes, make a new branch for your change, and then add
+commits, and then submit a pull request on GitHub.
