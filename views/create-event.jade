@@ -1,32 +1,47 @@
 .content
   .page-header
-    h2 Create Event
-  
-  form#create-event(action='/events', method='POST').main-form
+    if update
+      h2 Edit Event
+    else
+      h2 Create Event
+
+  if update
+    - var form_url = '/events/' + req.params.id;
+  else
+    - var form_url = '/events';
+  form#create-event(action=form_url, method='POST').main-form
+    if update
+      input(type='hidden', name='_method', value='PUT')
+      input(type='hidden', name='_type', value='update')
+      
     label(for='title') Title
     .input
-      input(type='text', name='title')#title
+      input(type='text', name='title', value=event.title)#title
 
-    label(for='org') Organization
-    .input
-      select(name='org')
-        each org in orgs
-          option(value= org.id)= org.name
+    if !update
+      label(for='org') Organization
+      .input
+        select(name='org')
+          each org in orgs
+            option(value= org.id)= org.name
 
     label(for='start_time') Start time
     .input
-      input(type='text', name='start_time')#start_time
+      input(type='text', name='start_time', value=event.start_time)#start_time
 
     label(for='end_time') End time
     .input
-      input(type='text', name='end_time')#end_time
+      input(type='text', name='end_time', value=event.end_time)#end_time
 
-    label(for='desc') Description
+    label(for='description') Description
     .input
-      textarea(name='desc', rows=4, cols=80)#desc
+      textarea(name='description', rows=4, cols=80)#description!= event.description
 
     .actions
-      input(type='submit', value='Create Event').btn.primary
+      if update
+        input(type='submit', value='Save').btn.primary
+      else
+        input(type='submit', value='Create Event').btn.primary
 
   
 script(type='text/javascript')

@@ -12,5 +12,5 @@
           input(type='submit', value='Delete').btn.error
       a(href='/events/' + e.event.id)= e.event.title
       small= e.org.name
-    p= e.event.start_time + ' - ' + e.event.stop_time
+    p= e.event.start_time + ' - ' + e.event.end_time
     p= e.event.description
