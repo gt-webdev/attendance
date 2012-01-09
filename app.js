@@ -79,6 +79,9 @@ app.dynamicHelpers({
     req: function(req, res) {
         return req;
     },
+    md: function(req, res) {
+        return require('discount');
+    },
 });
 
 // Routes

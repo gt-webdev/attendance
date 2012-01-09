@@ -11,7 +11,7 @@
     p= place.name
 
   h3 Description
-  p= event.description
+  div!= md.parse(event.description)
 
   h3 Time
   p= event.start_time + ' - ' + event.stop_time
