@@ -22,8 +22,8 @@ exports.post = function(req, res, next) {
                 title: req.body.title,
                 org: req.body.org,
                 start_time: req.body.start_time,
-                stop_time: req.body.end_time,
-                description: req.body.desc,
+                end_time: req.body.end_time,
+                description: req.body.description,
             });
             event.save(function(err) {
                 cb(err, event);
@@ -84,16 +84,26 @@ exports.create = function(req, res, next) {
 exports.details = function(req, res, next) {
     async.waterfall([
         function(cb) {
-            models.Event.findOne({_id: req.params.id}, cb);
+            models.Event.findOne({_id: req.params.id}, function(err, event) {
+                if (event == null) {
+                    cb('Event not found');
+                } else {
+                    cb(err, event);
+                }
+            });
         },
         function(event, cb) {
             models.Org.findOne({_id: event.org}, function(err, org) {
-                cb(err, org, event);
+                if (org == null) {
+                    cb('Org not found');
+                } else {
+                    cb(err, event, org);
+                }
             });
         },
         function(event, org, cb) {
             models.Place.findOne({_id: event.place}, function(err, place) {
-                cb(err, org, event, place);
+                cb(err, event, org, place);
             });
         },
         function(event, org, place, cb) {
