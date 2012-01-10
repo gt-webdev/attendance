@@ -11,4 +11,3 @@
         form(action='/orgs/' + org.slug, method='POST').pull-right
           input(type='hidden', name='_method', value='DELETE')
           input(type='submit', value='Delete').btn.error
-    p= org.description

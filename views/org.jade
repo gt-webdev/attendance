@@ -6,4 +6,4 @@
         input(type='submit', value='Delete').btn.error
     h1= org.name
 
-  p= org.description
+  p!= md.parse(escape(org.description))
