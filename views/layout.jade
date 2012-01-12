@@ -37,7 +37,9 @@ html
                   input(type='password', name=everyauth.password.passwordFormFieldName, placeholder='Password').input-small
                   button(type='submit').btn Login
 
-    #content.container!= body
+    #content.container
+      != messages()
+      != body
 
     script(type='text/javascript', src='/javascripts/bootstrap-dropdown.js')
     script(type='text/javascript', src='/javascripts/bootstrap-alerts.js')
