@@ -46,7 +46,7 @@ exports.post = function(req, res, next) {
         function(cb) {
             var org = new models.Org({
                 name: req.body.name,
-                description: req.body.desc,
+                description: req.body.description,
                 slug: req.body.slug,
             });
             org.save(cb);
@@ -57,6 +57,22 @@ exports.post = function(req, res, next) {
         }
         req.flash('success', 'Org created: %s', req.body.name);
         res.redirect('/orgs/' + req.body.slug);
+    });
+};
+
+exports.put = function(req, res, next) {
+    models.Org.findOne({slug: req.params.slug}, function(err, org) {
+        if (err) {
+            return next(err);
+        }
+        if (org == null) {
+            return res.send(404);
+        }
+        org.name = req.body.name;
+        org.description = req.body.description;
+        org.slug = req.body.slug;
+        org.save();
+        res.redirect('/orgs/' + org.slug);
     });
 };
 
@@ -90,8 +106,24 @@ exports.delete = function(req, res, next) {
     });
 };
 
-exports.create = function(req, res) {
+exports.create = function(req, res, next) {
     res.render('create-org', {
-        title: 'Create New Org'
+        update: false,
+        org: {},
+    });
+};
+
+exports.edit = function(req, res, next) {
+    models.Org.findOne({slug: req.params.slug}, function(err, org) {
+        if (err) {
+            return next(err);
+        }
+        if (org == null) {
+            return res.send(404);
+        }
+        res.render('create-org', {
+            update: true,
+            org: org,
+        });
     });
 };

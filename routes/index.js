@@ -12,13 +12,15 @@ exports.registerOn = function(app) {
 
     app.get('/orgs', orgs.list);
     app.get('/orgs/:slug', orgs.details);
+    app.get('/orgs/:slug/edit', auth.loginRequired, orgs.edit);
     app.get('/create-org', auth.loginRequired, orgs.create);
     app.post('/orgs', auth.loginRequired, orgs.post);
+    app.put('/orgs/:slug', auth.loginRequired, orgs.put);
     app.delete('/orgs/:slug', auth.loginRequired, orgs.delete);
 
     app.get('/events', events.list);
     app.get('/events/:id', events.details);
-    app.get('/events/:id/edit', events.edit);
+    app.get('/events/:id/edit', auth.loginRequired, events.edit);
     app.get('/create-event', auth.loginRequired, events.create);
     app.post('/events', auth.loginRequired, events.post);
     app.put('/events/:id', auth.loginRequired, events.put);

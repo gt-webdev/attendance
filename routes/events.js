@@ -237,6 +237,12 @@ exports.update = function(req, res, next) {
 
 exports.edit = function(req, res, next) {
     models.Event.findOne({_id: req.params.id}, function(err, event) {
+        if (err) {
+            return next(err);
+        }
+        if (event == null) {
+            return res.send(404);
+        }
         res.render('create-event', {
             event: event,
             update: true,
