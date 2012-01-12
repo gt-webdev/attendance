@@ -4,6 +4,7 @@
       form(action=req.url, method='POST').pull-right
         input(type='hidden', name='_method', value='DELETE')
         input(type='submit', value='Delete').btn.error
+      a(href=req.url + '/edit').btn.pull-right Edit
     h1= org.name
 
   p!= md.parse(escape(org.description))
