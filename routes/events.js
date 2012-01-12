@@ -33,7 +33,7 @@ exports.post = function(req, res, next) {
         if (err) {
             return next(err);
         }
-        req.flash('info', 'Event created: %s', req.body.title);
+        req.flash('success', 'Event created: %s', req.body.title);
         res.redirect('/events/' + event._id);
     });
 };
@@ -64,7 +64,7 @@ exports.delete = function(req, res, next) {
         if (err) {
             return next(err);
         }
-        req.flash('info', 'Event deleted: %s', event.title);
+        req.flash('success', 'Event deleted: %s', event.title);
         res.redirect('/events/');
     });
 };

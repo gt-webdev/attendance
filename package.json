@@ -11,5 +11,6 @@
     , "async": ">= 0.1.10"
     , "less": "1.x"
     , "discount": "0.2.x"
+    , "express-messages-bootstrap": "0.x"
   }
 }

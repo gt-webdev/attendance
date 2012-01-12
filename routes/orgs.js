@@ -55,7 +55,7 @@ exports.post = function(req, res, next) {
         if (err) {
             return next(err);
         }
-        req.flash('info', 'Org created: %s', req.body.name);
+        req.flash('success', 'Org created: %s', req.body.name);
         res.redirect('/orgs/' + req.body.slug);
     });
 };
@@ -85,7 +85,7 @@ exports.delete = function(req, res, next) {
         if (err) {
             return next(err);
         }
-        req.flash('info', 'Org deleted: %s', org.name);
+        req.flash('success', 'Org deleted: %s', org.name);
         res.redirect('/orgs/');
     });
 };
