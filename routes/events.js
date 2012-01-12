@@ -22,8 +22,8 @@ exports.post = function(req, res, next) {
                 title: req.body.title,
                 org: req.body.org,
                 start_time: req.body.start_time,
-                stop_time: req.body.end_time,
-                description: req.body.desc,
+                end_time: req.body.end_time,
+                description: req.body.description,
             });
             event.save(function(err) {
                 cb(err, event);
@@ -75,8 +75,9 @@ exports.create = function(req, res, next) {
             return next(err);
         }
         res.render('create-event', {
-            title: 'Create New Event',
-            orgs: orgs, 
+            event: {},
+            orgs: orgs,
+            update: false,
         });
     });
 };
@@ -84,16 +85,26 @@ exports.create = function(req, res, next) {
 exports.details = function(req, res, next) {
     async.waterfall([
         function(cb) {
-            models.Event.findOne({_id: req.params.id}, cb);
+            models.Event.findOne({_id: req.params.id}, function(err, event) {
+                if (event == null) {
+                    cb('Event not found');
+                } else {
+                    cb(err, event);
+                }
+            });
         },
         function(event, cb) {
             models.Org.findOne({_id: event.org}, function(err, org) {
-                cb(err, org, event);
+                if (org == null) {
+                    cb('Org not found');
+                } else {
+                    cb(err, event, org);
+                }
             });
         },
         function(event, org, cb) {
             models.Place.findOne({_id: event.place}, function(err, place) {
-                cb(err, org, event, place);
+                cb(err, event, org, place);
             });
         },
         function(event, org, place, cb) {
@@ -151,6 +162,19 @@ exports.list = function(req, res, next) {
     });
 };
 
+exports.put = function(req, res, next) {
+    if (!req.body._type) {
+        res.send(400); // Bad Request
+    }
+    if (req.body._type === 'attend') {
+        exports.attend(req, res, next);
+    } else if (req.body._type === 'unattend') {
+        exports.unattend(req, res, next);
+    } else if (req.body._type === 'update') {
+        exports.update(req, res, next);
+    }
+};
+
 exports.attend = function(req, res, next) {
     async.waterfall([
         function(cb) {
@@ -172,11 +196,7 @@ exports.attend = function(req, res, next) {
     });
 };
 
-exports.update = function(req, res, next) {
-    if (req.body.type != 'unattend') {
-        return next('Unexpected update type');
-    }
-
+exports.unattend = function(req, res, next) {
     async.waterfall([
         function(cb) {
             models.Event.findOne({_id: req.params.id}, cb);
@@ -195,5 +215,31 @@ exports.update = function(req, res, next) {
             return next(err);
         }
         res.redirect(req.url);
+    });
+};
+
+exports.update = function(req, res, next) {
+    models.Event.findOne({_id: req.params.id}, function(err, event) {
+        if (err) {
+            return next(err);
+        }
+        if (event == null) {
+            return res.send(404);
+        }
+        event.title = req.body.title;
+        event.start_time = req.body.start_time;
+        event.end_time = req.body.end_time;
+        event.description = req.body.description;
+        event.save();
+        res.redirect(req.url);
+    });
+};
+
+exports.edit = function(req, res, next) {
+    models.Event.findOne({_id: req.params.id}, function(err, event) {
+        res.render('create-event', {
+            event: event,
+            update: true,
+        });
     });
 };

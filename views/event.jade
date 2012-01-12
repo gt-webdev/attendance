@@ -4,6 +4,7 @@
       form(action=req.url, method='POST').pull-right
         input(type='hidden', name='_method', value='DELETE')
         input(type='submit', value='Delete').btn.error
+      a(href=req.url + '/edit').btn.pull-right Edit
     h1= event.title
       small= org.name
 
@@ -14,11 +15,12 @@
   div!= md.parse(escape(event.description))
 
   h3 Time
-  p= event.start_time + ' - ' + event.stop_time
+  p= event.start_time + ' - ' + event.end_time
 
   if user && event.attendees.indexOf(user.id) < 0
     form(action='/events/' + event.id, method='POST')
       input(type='hidden', name='_method', value='PUT')
+      input(type='hidden', name='_type', value='attend')
   
       if event.passkey
         label(for='passkey') Passkey:
@@ -37,8 +39,8 @@
               td= attendee.name.first + ' ' + attendee.name.last
               td
                 form(action='/events/' + event.id, method='POST')
-                  input(type='hidden', name='_method', value='UPDATE')
-                  input(type='hidden', name='type', value='unattend')
+                  input(type='hidden', name='_method', value='PUT')
+                  input(type='hidden', name='_type', value='unattend')
                   input(type='submit', value='X').btn
           else
             tr
