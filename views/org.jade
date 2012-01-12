@@ -1,10 +1,22 @@
 .content
   .page-header
     if user && (user.is_admin || org.admins.indexOf(user.id) >= 0)
-      form(action=req.url, method='POST').pull-right
+      form(action=req.url, method='POST', data-confirm='#confirm-dialog').pull-right
         input(type='hidden', name='_method', value='DELETE')
         input(type='submit', value='Delete').btn.error
       a(href=req.url + '/edit').btn.pull-right Edit
     h1= org.name
 
   p!= md.parse(escape(org.description))
+
+
+
+#confirm-dialog(style='display: none').modal.hide
+  .modal-header
+    a(href='#').close ×
+    h3 Delete #{org.name}?
+  .modal-body
+    p Are you sure you want to delete #{org.name}?
+  .modal-footer
+    a(href='#').btn.error.confirm Confirm
+    a(href='#').btn.secondary.cancel Cancel
