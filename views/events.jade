@@ -6,10 +6,6 @@
 
   each e in events
     h2
-      if user && (user.is_admin || e.org.admins.indexOf(user.id) >= 0)
-        form(action='/events/' + e.event.id, method='POST').pull-right
-          input(type='hidden', name='_method', value='DELETE')
-          input(type='submit', value='Delete').btn.error
       a(href='/events/' + e.event.id)= e.event.title
       small= e.org.name
     p= e.event.start_time + ' - ' + e.event.end_time
