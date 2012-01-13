@@ -51,9 +51,27 @@ app.configure(function() {
     app.use(express.bodyParser());
     app.use(express.methodOverride());
     app.use(express.cookieParser());
+});
+
+app.configure('development', function() {
     app.use(express.session({
         secret: conf.session.secret,
     }));
+});
+
+app.configure('production', function() {
+    var MongoStore = require('connect-mongo');
+    var oneWeek = 60 * 60 * 24 * 7;
+    app.use(express.session({
+        secret: conf.session.secret,
+        store: new MongoStore({
+            url: conf.mongo.uri,
+            clear_interval: oneWeek,
+        }),
+    }));
+});
+
+app.configure(function() {
     app.use(everyauth.middleware());
     app.use(auth.middleware());
     app.use(app.router);
