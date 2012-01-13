@@ -68,6 +68,9 @@ app.configure('production', function() {
             url: conf.mongo.uri,
             clear_interval: oneWeek,
         }),
+        cookie: {
+            maxAge: oneWeek * 1000, // milliseconds
+        },
     }));
 });
 
