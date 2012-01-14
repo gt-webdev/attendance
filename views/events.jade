@@ -8,4 +8,4 @@
     h2
       a(href='/events/' + e.event.id)= e.event.title
       small= e.org.name
-    p= alcohol(e.event.start_time)
+    p(title=e.event.start_time)= alcohol(e.event.start_time)
