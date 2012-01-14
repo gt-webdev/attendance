@@ -101,6 +101,9 @@ app.dynamicHelpers({
     md: function(req, res) {
         return require('discount');
     },
+    alcohol: function(req, res) {
+        return require('./lib/alcohol').stringify;
+    },
 });
 
 // Routes
