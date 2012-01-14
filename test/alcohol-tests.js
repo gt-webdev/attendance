@@ -10,7 +10,7 @@ vows.describe('alcohol.js').addBatch({
         topic: new Date(2000, 10 - 1, 2 - 1),
 
         'should display as just the date': function(date) {
-            assert.equal(alcohol.stringfy(date), '10/2/2000');
+            assert.equal(alcohol.stringify(date), '10/2/2000');
         },
     },
     'A Date yesterday': {
@@ -22,7 +22,7 @@ vows.describe('alcohol.js').addBatch({
         }(new Date()),
 
         'should display as "yesterday at " plus a time': function(date) {
-            assert.equal(alcohol.stringfy(date), 'yesterday at 3:14 pm');
+            assert.equal(alcohol.stringify(date), 'yesterday at 3:14 pm');
         },
     },
     'A Date in the past in the AM': {
@@ -34,7 +34,7 @@ vows.describe('alcohol.js').addBatch({
         }(new Date()),
 
         'should display with an "am"': function(date) {
-            assert.match(alcohol.stringfy(date), /\d?\d:\d\d am/);
+            assert.match(alcohol.stringify(date), /\d?\d:\d\d am/);
         },
     },
     'A Date in the past in the PM': {
@@ -46,7 +46,7 @@ vows.describe('alcohol.js').addBatch({
         }(new Date()),
 
         'should display with an "pm"': function(date) {
-            assert.match(alcohol.stringfy(date), /\d?\d:\d\d pm/);
+            assert.match(alcohol.stringify(date), /\d?\d:\d\d pm/);
         },
     },
     'A Date in the future in the AM': {
@@ -58,7 +58,7 @@ vows.describe('alcohol.js').addBatch({
         }(new Date()),
 
         'should display with an "am"': function(date) {
-            assert.match(alcohol.stringfy(date), /\d?\d:\d\d am/);
+            assert.match(alcohol.stringify(date), /\d?\d:\d\d am/);
         },
     },
     'A Date in the future in the PM': {
@@ -70,7 +70,7 @@ vows.describe('alcohol.js').addBatch({
         }(new Date()),
 
         'should display with an "pm"': function(date) {
-            assert.match(alcohol.stringfy(date), /\d?\d:\d\d pm/);
+            assert.match(alcohol.stringify(date), /\d?\d:\d\d pm/);
         },
     },
     'A Date tomorrow': {
@@ -80,7 +80,7 @@ vows.describe('alcohol.js').addBatch({
         }(new Date()),
 
         'should display with "tomorrow at" plus a time': function(date) {
-            assert.match(alcohol.stringfy(date), /tomorrow at \d?\d:\d\d (am|pm)/);
+            assert.match(alcohol.stringify(date), /tomorrow at \d?\d:\d\d (am|pm)/);
         },
     },
     'A Date after tomorrow before next week': {
@@ -90,7 +90,7 @@ vows.describe('alcohol.js').addBatch({
         }(new Date()),
 
         'should display with a day of the week plus a time': function(date) {
-            assert.match(alcohol.stringfy(date), /.+day at \d?\d:\d\d (am|pm)/);
+            assert.match(alcohol.stringify(date), /.+day at \d?\d:\d\d (am|pm)/);
         },
     },
 }).export(module);
