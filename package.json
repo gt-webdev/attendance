@@ -13,6 +13,6 @@
     , "discount": "0.2.x"
     , "express-messages-bootstrap": "0.x"
     , "connect-mongo": "0.x"
-    , "vows"; "0.x"
+    , "vows": "0.x"
   }
 }
