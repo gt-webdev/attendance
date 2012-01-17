@@ -39,3 +39,7 @@ h1 small, h2 small {
 form .actions .btn {
     margin-right: 3px;
 }
+
+textarea#description {
+    width: 400px;
+}
