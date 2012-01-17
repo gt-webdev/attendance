@@ -150,7 +150,15 @@ exports.list = function(req, res, next) {
                 };
             }));
         },
-    ], function(err, events) {
+        function(events, cb) {
+            if (!req.user) {
+                return cb(null, events, false);
+            }
+            models.Org.find().$where('this.admins.indexOf("' + req.user.id + '") >= 0').count(function(err, count) {
+                return cb(null, events, count > 0);
+            });
+        },
+    ], function(err, events, user_is_admin) {
         if (err) {
             return next(err);
         }
@@ -158,6 +166,7 @@ exports.list = function(req, res, next) {
         res.render('events', {
             title: 'Events',
             events: events,
+            user_is_admin: user_is_admin,
         });
     });
 };
