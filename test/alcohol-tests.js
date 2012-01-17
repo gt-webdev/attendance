@@ -4,6 +4,7 @@ var assert = require('assert');
 var alcohol = require('../lib/alcohol');
 
 var ONE_DAY = 1000 * 60 * 60 * 24;
+var ONE_MINUTE = 1000 * 60;
 
 vows.describe('alcohol.js').addBatch({
     'A Date way in the past': {
@@ -71,6 +72,20 @@ vows.describe('alcohol.js').addBatch({
 
         'should display with an "pm"': function(date) {
             assert.match(alcohol.stringify(date), /\d?\d:\d\d pm/);
+        },
+    },
+    'A Date earlier today': {
+        topic: new Date(new Date() - ONE_MINUTE),
+
+        'should display with "today at" plus a time': function(date) {
+            assert.match(alcohol.stringify(date), /today at \d?\d:\d\d (am|pm)/);
+        },
+    },
+    'A Date later today': {
+        topic: new Date(new Date() + ONE_MINUTE),
+
+        'should display with "today at" plus a time': function(date) {
+            assert.match(alcohol.stringify(date), /today at \d?\d:\d\d (am|pm)/);
         },
     },
     'A Date tomorrow': {
