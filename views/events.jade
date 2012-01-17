@@ -1,6 +1,6 @@
 .content
   .page-header
-    if user && user.is_admin
+    if (user && user.is_admin) || user_is_admin
       a(href='/create-event/').pull-right.btn Create an event
     h1 All Events
 
