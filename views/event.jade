@@ -38,9 +38,9 @@
         each attendee in attendees
           if user && attendee.id == user.id
             tr
-              td= attendee.name.first + ' ' + attendee.name.last
+              td(style='padding-top: 15px')= attendee.name.first + ' ' + attendee.name.last
               td
-                form(action='/events/' + event.id, method='POST')
+                form(action='/events/' + event.id, method='POST', style='margin-bottom: 0')
                   input(type='hidden', name='_method', value='PUT')
                   input(type='hidden', name='_type', value='unattend')
                   input(type='submit', value='X').btn
