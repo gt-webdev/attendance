@@ -12,7 +12,7 @@ exports.post = function(req, res, next) {
                 return cb();
             }
             // or an admin of the Org
-            if (org.admins.indexOf(req.user.id)) {
+            if (org.admins.indexOf(req.user.id) >= 0) {
                 return cb();
             }
             return cb('User is not an admin of this Org');
