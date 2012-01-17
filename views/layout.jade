@@ -35,6 +35,7 @@ html
                 form(action='/register', method='GET').pull-right
                   button(type='submit').btn Register
                 form(action='/login', method='POST').pull-right
+                  input(type='hidden', name='next', value=req.url)
                   input(type='text', name=everyauth.password.loginFormFieldName, placeholder='GT User ID').input-small
                   input(type='password', name=everyauth.password.passwordFormFieldName, placeholder='Password').input-small
                   button(type='submit').btn Login
