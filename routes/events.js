@@ -77,6 +77,7 @@ exports.create = function(req, res, next) {
         res.render('create-event', {
             event: {},
             orgs: orgs,
+            selOrg: req.query.org,
             update: false,
         });
     });
