@@ -29,9 +29,19 @@
     .actions
       if update
       input(type='submit', value=title).btn.primary
+      input(type='button', name='previewBtn', value="Preview", onclick='onPreview();').btn
 
+    .div(display='hidden',name='preview')#preview
 
 script(type='text/javascript')
     $(function() {
         $('#name').focus();
     });
+    
+    function onPreview(event) {
+        //load the preview snippet based on the text currently contained in the discription box
+        //NOTE: this processes the mark down on the server, and gives it back to us in a div
+        $('#preview').load('/orgs/preview', 'markdown=' + $('#description').text());
+        $('#preview').display='visible';
+    }
+

@@ -11,6 +11,7 @@ exports.registerOn = function(app) {
     });
 
     app.get('/orgs', orgs.list);
+    app.get('/orgs/preview', orgs.preview);
     app.get('/orgs/:slug', orgs.details);
     app.get('/orgs/:slug/edit', auth.loginRequired, orgs.edit);
     app.get('/create-org', auth.loginRequired, orgs.create);
