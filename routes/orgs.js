@@ -4,7 +4,7 @@ var models = require('../lib/models');
 exports.list = function(req, res, next) {
     async.waterfall([
         function(cb) {
-            models.Org.find({}, cb);
+            models.Org.find().asc('name').run(cb);
         },
     ], function(err, orgs) {
         if (err) {
