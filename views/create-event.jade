@@ -24,7 +24,7 @@
         select(name='org')
           each org in orgs
             if user.is_admin || org.admins.indexOf(user.id) >= 0
-                option(value= org.id, selected=(req.query.org == org.name))= org.name
+              option(value= org.id, selected=(req.query.org == org.name))= org.name
 
     label(for='start_time') Start time
     .input
