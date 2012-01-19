@@ -18,12 +18,12 @@ vows.describe('alcohol.js').addBatch({
         topic: function(date) {
             var d = new Date(date - ONE_DAY);
             d.setHours(15);
-            d.setMinutes(14);
+            d.setMinutes(00);
             return d;
         }(new Date()),
 
         'should display as "yesterday at " plus a time': function(date) {
-            assert.equal(alcohol.stringify(date), 'yesterday at 3:14 pm');
+            assert.equal(alcohol.stringify(date), 'yesterday at 3:00 pm');
         },
     },
     'A Date in the past in the AM': {
