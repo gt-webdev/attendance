@@ -127,10 +127,3 @@ exports.edit = function(req, res, next) {
         });
     });
 };
-
-exports.preview = function(req, res, next) {
-  console.log(req);
-    res.render('preview', {
-        markdown : req.query.markdown,
-    });
-}
