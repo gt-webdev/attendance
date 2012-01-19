@@ -1,9 +1,0 @@
-label(for='preview') Preview:
-div(display='hidden, class='input', name='previewArea')#previewArea=md.parse(escape(markdown))
-
-script(type='text/javascript')
-    $(function() {
-        //if there is anything in the preview box, it will be placed html placed in as text
-        //...these lines will correct that and set the html to render correctly in the div
-        $('#previewArea').html($('#previewArea').text());
-    });
