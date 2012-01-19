@@ -74,21 +74,9 @@ exports.create = function(req, res, next) {
         if(err) {
             return next(err);
         }
-        //NOTE: look up the org in the query here, rather than pass it to the jade file
-        //...slightly more secure because we know the origin of the data here (http query) and can
-        // take appropriate protective steps, rather than relying on the .jade file to be safe
-        var selOrg;
-        for (inx in orgs) {
-            var org = orgs[inx];
-            if (org.name == req.query.org) {
-                selOrg = org.name;
-                break;
-            }
-        }
         res.render('create-event', {
             event: {},
             orgs: orgs,
-            selOrg: selOrg,
             update: false,
         });
     });
