@@ -26,13 +26,17 @@
             if user.is_admin || org.admins.indexOf(user.id) >= 0
               option(value= org.id, selected=(req.query.org == org.name))= org.name
 
-    label(for='start_time') Start time
+    label(for='start_time_date') Start time
     .input
-      input(type='text', name='start_time', value=event.start_time)#start_time
+      input(type='text', placeholder='Date')#start_time_date
+      input(type='text', placeholder='Time')#start_time_time
+      input(type='hidden', name='start_time', value=event.start_time)#start_time
 
-    label(for='end_time') End time
+    label(for='end_time_date') End time
     .input
-      input(type='text', name='end_time', value=event.end_time)#end_time
+      input(type='text', placeholder='Date')#end_time_date
+      input(type='text', placeholder='Time')#end_time_time
+      input(type='hidden', name='end_time', value=event.end_time)#end_time
 
     label(for='description') Description
     .input
@@ -46,7 +50,6 @@
 
   
 script(type='text/javascript')
-  /*
     $(function() {
         $('#name').focus();
         var dp_opts = {
@@ -55,7 +58,34 @@ script(type='text/javascript')
             showOtherMonths: true,
             selectOtherMonths: true
         };
-        $('#start_time').datepicker(dp_opts);
-        $('#end_time').datepicker(dp_opts);
+        $('#start_time_date').datepicker(dp_opts);
+        $('#end_time_date').datepicker(dp_opts);
+
+        var fix_time = function(time) {
+          var digits = time.match(/\\d?\\d:\\d\\d/);
+          if (digits) {
+            var ampm = time.match(/(am|pm)/i);
+            if (ampm) {
+              return digits[0] + ' ' + ampm[0];
+            }
+            return digits[0];
+          }
+          return '0:00';
+        };
+
+        var update_hidden_date = function(selector, event) {
+          var hidden = $(selector);
+          var date = $(selector + '_date');
+          var time = $(selector + '_time');
+
+          hidden.val(new Date(date.val() + ' ' + fix_time(time.val())));
+        };
+
+        var hidden_start = '#start_time';
+        var hidden_end = '#end_time';
+
+        $('#start_time_date').change(update_hidden_date.bind(null, hidden_start));
+        $('#start_time_time').change(update_hidden_date.bind(null, hidden_start));
+        $('#end_time_date').change(update_hidden_date.bind(null, hidden_end));
+        $('#end_time_time').change(update_hidden_date.bind(null, hidden_end));
     });
-  */
