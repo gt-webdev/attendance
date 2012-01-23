@@ -89,3 +89,23 @@ script(type='text/javascript')
         $('#end_time_date').change(update_hidden_date.bind(null, hidden_end));
         $('#end_time_time').change(update_hidden_date.bind(null, hidden_end));
     });
+
+    $(function() {
+      var start_time = $('#start_time').val();
+      var end_time = $('#end_time').val();
+
+      var load_time = function(selector) {
+        var t = new Date($(selector).val());
+        $(selector + '_date').val((t.getMonth() + 1) + '/'
+          + t.getDate() + '/'
+          + t.getFullYear());
+        $(selector + '_time').val(t.getHours() + ':' + t.getMinutes());
+      };
+
+      if (start_time) {
+        load_time('#start_time');
+      }
+      if (end_time) {
+        load_time('#end_time');
+      }
+    });
