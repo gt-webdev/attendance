@@ -17,16 +17,8 @@
 
   .row.foot-actions
     .span2
-      if !req.query.before && !req.query.after
-        a(href='/events?before=' + events[0].id) &laquo Older Events
-      else if !req.query.before || events.length > 1
+      if !req.query.before || events.length > 1
         a(href='/events?before=' + events[events.length - 1].id) &laquo Older Events
-      else
-        p
     .span2.offset12
-      if !req.query.before && !req.query.after
-        a(href='/events?after=' + events[events.length - 1].id).pull-right Later Events &raquo
-      else if !req.query.after || events.length > 1
-        a(href='/events?after=' + events[events.length - 1].id).pull-right Later Events &raquo
-      else
-        p
+      if !req.query.after || events.length > 1
+        a(href='/events?after=' + events[0].id).pull-right Later Events &raquo

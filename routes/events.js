@@ -143,7 +143,7 @@ exports.list = function(req, res, next) {
                     .desc('start_time');
             } else if (req.query.after) {
                 q = q.where('_id').gte(req.query.after)
-                    .asc('start_time');
+                    .desc('start_time');
             } else {
                 q = q.where('end_time').gte(+new Date() + ONE_HOUR)
                     .where('start_time').lte(+new Date() + ONE_WEEK)
