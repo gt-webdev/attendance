@@ -84,10 +84,13 @@ script(type='text/javascript')
         var hidden_start = '#start_time';
         var hidden_end = '#end_time';
 
-        $('#start_time_date').change(update_hidden_date.bind(null, hidden_start));
-        $('#start_time_time').change(update_hidden_date.bind(null, hidden_start));
-        $('#end_time_date').change(update_hidden_date.bind(null, hidden_end));
-        $('#end_time_time').change(update_hidden_date.bind(null, hidden_end));
+        var update_start = _.bind(update_hidden_date, null, hidden_start);
+        var update_end = _.bind(update_hidden_date, null, hidden_end);
+
+        $('#start_time_date').change(update_start);
+        $('#start_time_time').change(update_start);
+        $('#end_time_date').change(update_end);
+        $('#end_time_time').change(update_end);
     });
 
     $(function() {
