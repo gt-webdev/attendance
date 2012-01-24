@@ -32,7 +32,7 @@
       input(type='submit', value="I'm here!").btn.large
   
   if (attendees.length != 0)
-    h3 Who's going
+    h3 Who's going (#{attendees.length})
     table.span5
       tbody
         each attendee in attendees
