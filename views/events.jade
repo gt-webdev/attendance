@@ -15,10 +15,10 @@
       small= event.org.name
     p(title=event.start_time)= alcohol(event.start_time)
 
-  .row
+  .row.foot-actions
     .span2
       if !req.query.before || events.length > 1
-        a(href='/events?before=' + events[events.length - 1].id) Older Events
+        a(href='/events?before=' + events[events.length - 1].id) &laquo Older Events
     .span2.offset12
       if !req.query.after || events.length > 1
-        a(href='/events?after=' + events[0].id).pull-right Later Events
+        a(href='/events?after=' + events[0].id).pull-right Later Events &raquo
