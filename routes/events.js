@@ -1,6 +1,9 @@
 var async = require('async');
 var models = require('../lib/models');
 
+var ONE_HOUR = 1000 * 60 * 60;
+var ONE_WEEK = ONE_HOUR * 24 * 7;
+
 exports.post = function(req, res, next) {
     async.waterfall([
         function(cb) {
@@ -133,28 +136,28 @@ exports.details = function(req, res, next) {
 exports.list = function(req, res, next) {
     async.waterfall([
         function(cb) {
-            models.Event.find({}, cb);
-        },
-        function(events, cb) {
-            async.map(events, function(event, cb) {
-                models.Org.findOne({_id: event.org}, cb);
-            }, function(err, orgs) {
-                cb(err, events, orgs);
-            });
-        },
-        function(events, orgs, cb) {
-            cb(null, events.map(function(x,i) {
-                return {
-                    event: x,
-                    org: orgs[i],
-                };
-            }));
+            var limit = req.query.limit || 10;
+            var q = models.Event.find().populate('org').limit(limit);
+            if (req.query.before) {
+                q = q.where('_id').lte(req.query.before)
+                    .desc('start_time');
+            } else if (req.query.after) {
+                q = q.where('_id').gte(req.query.after)
+                    .desc('start_time');
+            } else {
+                q = q.where('end_time').gte(+new Date() + ONE_HOUR)
+                    .where('start_time').lte(+new Date() + ONE_WEEK)
+                    .asc('start_time');
+            }
+            q.run(cb);
         },
         function(events, cb) {
             if (!req.user) {
                 return cb(null, events, false);
             }
-            models.Org.find().$where('this.admins.indexOf("' + req.user.id + '") >= 0').count(function(err, count) {
+            models.Org.find()
+                    .$where('this.admins.indexOf("' + req.user.id + '") >= 0')
+                    .count(function(err, count) {
                 return cb(null, events, count > 0);
             });
         },
