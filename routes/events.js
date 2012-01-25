@@ -21,6 +21,15 @@ exports.post = function(req, res, next) {
             return cb('User is not an admin of this Org');
         },
         function(cb) {
+            if (!req.body.end_time || (req.body.start_time
+                    && req.body.end_time < req.body.start_time)) {
+                req.body.start_time = new Date(req.body.start_time);
+                if (req.body.start_time != 'Invalid Date') {
+                    req.body.end_time = +req.body.start_time + ONE_HOUR;
+                } else {
+                    return next('Invalid start time');
+                }
+            }
             var event = new models.Event({
                 title: req.body.title,
                 org: req.body.org,
