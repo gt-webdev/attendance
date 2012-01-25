@@ -259,6 +259,9 @@ exports.update = function(req, res, next) {
         if (event == null) {
             return res.send(404);
         }
+        if (!req.user || event.org.admins.indexOf(req.user.id) < 0) {
+            return res.send(403);
+        }
         event.title = req.body.title;
         event.start_time = req.body.start_time;
         event.end_time = req.body.end_time;
