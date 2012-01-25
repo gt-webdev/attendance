@@ -68,6 +68,10 @@ exports.put = function(req, res, next) {
         if (org == null) {
             return res.send(404);
         }
+        if (!req.user || (org.admins.indexOf(req.user.id) < 0
+                          && !req.user.is_admin)) {
+            return next('User does not have permission to edit this Org');
+        }
         org.name = req.body.name;
         org.description = req.body.description;
         org.slug = req.body.slug;
@@ -82,10 +86,10 @@ exports.delete = function(req, res, next) {
             models.Org.findOne({slug: req.params.slug}, cb);
         },
         function(org, cb) {
-            if (req.user.is_admin || org.admins.indexOf(req.user.id) != -1) {
+            if (req.user.is_admin || org.admins.indexOf(req.user.id) >= 0) {
                 return cb(null, org);
             }
-            cb('User does not have permissions to delete this group');
+            cb('User does not have permissions to delete this Org');
         },
         function(org, cb) {
             models.Event.remove({org: org.id}, function(err) {
