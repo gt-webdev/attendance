@@ -157,7 +157,7 @@ exports.list = function(req, res, next) {
                 q = q.where('start_time').gte(reference_event.start_time)
                     .asc('start_time');
             } else {
-                q = q.where('end_time').gte(+new Date() + ONE_HOUR)
+                q = q.where('end_time').gte(+new Date() - ONE_HOUR)
                     .where('start_time').lte(+new Date() + ONE_WEEK)
                     .asc('start_time');
             }
