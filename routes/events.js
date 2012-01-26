@@ -18,7 +18,7 @@ exports.post = function(req, res, next) {
             if (org.admins.indexOf(req.user.id) >= 0) {
                 return cb();
             }
-            return cb('User is not an admin of this Org');
+            return res.send(403);
         },
         function(cb) {
             if (!req.body.end_time || (req.body.start_time
@@ -64,7 +64,7 @@ exports.delete = function(req, res, next) {
                         (org && org.admins.indexOf(req.user.id) != -1)) {
                     return cb(null, event);
                 }
-                cb('User does not have permissions to delete this event');
+                res.send(403);
             });
         },
         function(event, cb) {
@@ -99,7 +99,7 @@ exports.details = function(req, res, next) {
         function(cb) {
             models.Event.findOne({_id: req.params.id}, function(err, event) {
                 if (event == null) {
-                    cb('Event not found');
+                    return res.send(404);
                 } else {
                     cb(err, event);
                 }
@@ -108,7 +108,7 @@ exports.details = function(req, res, next) {
         function(event, cb) {
             models.Org.findOne({_id: event.org}, function(err, org) {
                 if (org == null) {
-                    cb('Org not found');
+                    res.send(404);
                 } else {
                     cb(err, event, org);
                 }
@@ -237,7 +237,7 @@ exports.unattend = function(req, res, next) {
         function(event, cb) {
             var index = event.attendees.indexOf(req.user.id);
             if (index < 0) {
-                return cb('User is not attending this event');
+                return res.send(404);
             }
             event.attendees.splice(index, 1);
             event.save();

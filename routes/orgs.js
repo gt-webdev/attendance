@@ -39,7 +39,7 @@ exports.post = function(req, res, next) {
     async.waterfall([
         function(cb) {
             if (!req.user.is_admin) {
-                return cb('User is not an admin');
+                return res.send(403);
             }
             cb();
         },
@@ -70,7 +70,7 @@ exports.put = function(req, res, next) {
         }
         if (!req.user || (org.admins.indexOf(req.user.id) < 0
                           && !req.user.is_admin)) {
-            return next('User does not have permission to edit this Org');
+            return res.send(403);
         }
         org.name = req.body.name;
         org.description = req.body.description;
@@ -89,7 +89,7 @@ exports.delete = function(req, res, next) {
             if (req.user.is_admin || org.admins.indexOf(req.user.id) >= 0) {
                 return cb(null, org);
             }
-            cb('User does not have permissions to delete this Org');
+            return res.send(403);
         },
         function(org, cb) {
             models.Event.remove({org: org.id}, function(err) {
