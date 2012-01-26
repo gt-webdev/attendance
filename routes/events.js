@@ -145,31 +145,22 @@ exports.details = function(req, res, next) {
 exports.list = function(req, res, next) {
     async.waterfall([
         function(cb) {
-            var id = req.query.before || req.query.after;
-            if (id) {
-                models.Event.findOne({_id: id}, cb);
-            } else {
-                cb(null, null);
-            }
-        },
-        function(reference_event, cb) {
-            if ((req.query.before || req.query.after) && !reference_event) {
-                // redirect if the query id wasn't found
-                return req.redirect('/events');
-            }
-            var limit = req.query.limit || 10;
-            var q = models.Event.find().populate('org').limit(limit);
-            if (req.query.before) {
-                q = q.where('start_time').lte(reference_event.start_time)
-                    .desc('start_time');
-            } else if (req.query.after) {
-                q = q.where('start_time').gte(reference_event.start_time)
-                    .asc('start_time');
-            } else {
+            var page = req.query.page || 0;
+            var limit = 10;
+            var q = models.Event.find().populate('org');
+
+            if (page == 0) {
                 q = q.where('end_time').gte(+new Date() - ONE_HOUR)
                     .where('start_time').lte(+new Date() + ONE_WEEK)
                     .asc('start_time');
+            } else if (page > 0) {
+                q = q.where('start_time').gte(+new Date() + ONE_WEEK)
+                    .asc('start_time').limit(limit).skip(limit * (page - 1));
+            } else if (page < 0) {
+                q = q.where('end_time').lte(+new Date() - ONE_HOUR)
+                    .desc('start_time').limit(limit).skip(limit * (-page - 1));
             }
+
             q.run(cb);
         },
         function(events, cb) {
