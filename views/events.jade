@@ -2,12 +2,12 @@
   .page-header
     if (user && user.is_admin) || user_is_admin
       a(href='/create-event/').pull-right.btn Create an event
-    if req.query.before
+    if req.query.page < 0
       h1 Older Events
-    else if req.query.after
+    else if req.query.page > 0
       h1 Later Events
     else
-      h1 All Events
+      h1 Events
 
   each event in events
     h2
@@ -15,18 +15,9 @@
       small= event.org.name
     p(title=event.start_time)= alcohol(event.start_time)
 
+  - var page = req.query.page || 0;
   .row.foot-actions
     .span2
-      if !req.query.before && !req.query.after
-        a(href='/events?before=' + events[0].id) &laquo Older Events
-      else if !req.query.before || events.length > 1
-        a(href='/events?before=' + events[events.length - 1].id) &laquo Older Events
-      else
-        p
+      a(href='/events?page=' + (+page - 1)) &laquo Older Events
     .span2.offset12
-      if !req.query.before && !req.query.after
-        a(href='/events?after=' + events[events.length - 1].id).pull-right Later Events &raquo
-      else if !req.query.after || events.length > 1
-        a(href='/events?after=' + events[events.length - 1].id).pull-right Later Events &raquo
-      else
-        p
+      a(href='/events?page=' + (+page + 1)).pull-right Later Events &raquo
