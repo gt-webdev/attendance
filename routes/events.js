@@ -243,7 +243,8 @@ exports.unattend = function(req, res, next) {
 };
 
 exports.update = function(req, res, next) {
-    models.Event.findOne({_id: req.params.id}, function(err, event) {
+    models.Event.findOne({_id: req.params.id}).populate('org')
+                .run(function(err, event) {
         if (err) {
             return next(err);
         }
