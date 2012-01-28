@@ -102,7 +102,12 @@ script(type='text/javascript')
         $(selector + '_date').val((t.getMonth() + 1) + '/'
           + t.getDate() + '/'
           + t.getFullYear());
-        $(selector + '_time').val(t.getHours() + ':' + t.getMinutes());
+        var minute_string = '';
+        if (t.getMinutes() < 10) {
+           minute_string += '0';
+        }
+        minute_string += t.getMinutes();
+        $(selector + '_time').val(t.getHours() + ':' + minute_string);
       };
 
       if (start_time) {
