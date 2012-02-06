@@ -1,5 +1,5 @@
 email = require 'mailer'
-conf = '../conf'
+conf = require '../conf'
 
 if conf.sendgrid.username
   # opts: to, subject, body
@@ -19,6 +19,6 @@ if conf.sendgrid.username
     }, cb)
 else
   exports.send = (opts, cb) ->
-  console.log 'Sending email:'
-  console.log opts
-  cb(null, true)
+    console.log 'Sending email:'
+    console.log opts
+    cb(null, true)

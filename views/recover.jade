@@ -1,0 +1,12 @@
+.content
+  .page-header
+    h2 Recover
+
+  form(action='/recover', method='POST')
+    .clearfix
+      label(for='email') Email:
+      .input
+        input(type='text', name='email')#email
+    
+    .actions
+      input(type='submit', value='Recover').btn.primary
