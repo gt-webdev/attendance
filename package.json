@@ -14,5 +14,7 @@
     , "express-messages-bootstrap": "0.x"
     , "connect-mongo": "0.x"
     , "vows": "0.x"
+    , "coffee-script": "1.x"
+    , "mailer": "0.x"
   }
 }

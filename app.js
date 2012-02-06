@@ -1,3 +1,4 @@
+var coffee = require('coffee-script');
 var express = require('express');
 var everyauth = require('everyauth');
 var mongoose = require('mongoose');
