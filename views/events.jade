@@ -2,10 +2,24 @@
   .page-header
     if (user && user.is_admin) || user_is_admin
       a(href='/create-event/').pull-right.btn Create an event
-    h1 All Events
+    if req.query.page < 0
+      h1 Older Events
+    else if req.query.page > 0
+      h1 Later Events
+    else
+      h1 Events
 
-  each e in events
+  each event in events
     h2
-      a(href='/events/' + e.event.id)= e.event.title
-      small= e.org.name
-    p(title=e.event.start_time)= alcohol(e.event.start_time)
+      a(href='/events/' + event.id)= event.title
+      small= event.org.name
+    p(title=event.start_time)= alcohol(event.start_time)
+
+  - var page = req.query.page || 0;
+  .row.foot-actions
+    .span2
+      if +page >= 0 || events.length > 0
+        a(href='/events?page=' + (+page - 1)) &laquo Older Events
+    .span2.offset12
+      if page <= 0 || events.length > 0
+        a(href='/events?page=' + (+page + 1)).pull-right Later Events &raquo

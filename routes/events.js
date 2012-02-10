@@ -1,6 +1,9 @@
 var async = require('async');
 var models = require('../lib/models');
 
+var ONE_HOUR = 1000 * 60 * 60;
+var ONE_WEEK = ONE_HOUR * 24 * 7;
+
 exports.post = function(req, res, next) {
     async.waterfall([
         function(cb) {
@@ -15,9 +18,18 @@ exports.post = function(req, res, next) {
             if (org.admins.indexOf(req.user.id) >= 0) {
                 return cb();
             }
-            return cb('User is not an admin of this Org');
+            return res.send(403);
         },
         function(cb) {
+            if (!req.body.end_time || (req.body.start_time
+                    && req.body.end_time < req.body.start_time)) {
+                req.body.start_time = new Date(req.body.start_time);
+                if (req.body.start_time != 'Invalid Date') {
+                    req.body.end_time = +req.body.start_time + ONE_HOUR;
+                } else {
+                    return next('Invalid start time');
+                }
+            }
             var event = new models.Event({
                 title: req.body.title,
                 org: req.body.org,
@@ -52,7 +64,7 @@ exports.delete = function(req, res, next) {
                         (org && org.admins.indexOf(req.user.id) != -1)) {
                     return cb(null, event);
                 }
-                cb('User does not have permissions to delete this event');
+                res.send(403);
             });
         },
         function(event, cb) {
@@ -87,7 +99,7 @@ exports.details = function(req, res, next) {
         function(cb) {
             models.Event.findOne({_id: req.params.id}, function(err, event) {
                 if (event == null) {
-                    cb('Event not found');
+                    return res.send(404);
                 } else {
                     cb(err, event);
                 }
@@ -96,7 +108,7 @@ exports.details = function(req, res, next) {
         function(event, cb) {
             models.Org.findOne({_id: event.org}, function(err, org) {
                 if (org == null) {
-                    cb('Org not found');
+                    res.send(404);
                 } else {
                     cb(err, event, org);
                 }
@@ -133,28 +145,31 @@ exports.details = function(req, res, next) {
 exports.list = function(req, res, next) {
     async.waterfall([
         function(cb) {
-            models.Event.find({}, cb);
-        },
-        function(events, cb) {
-            async.map(events, function(event, cb) {
-                models.Org.findOne({_id: event.org}, cb);
-            }, function(err, orgs) {
-                cb(err, events, orgs);
-            });
-        },
-        function(events, orgs, cb) {
-            cb(null, events.map(function(x,i) {
-                return {
-                    event: x,
-                    org: orgs[i],
-                };
-            }));
+            var page = req.query.page || 0;
+            var limit = 10;
+            var q = models.Event.find().populate('org');
+
+            if (page == 0) {
+                q = q.where('end_time').gte(+new Date() - ONE_HOUR)
+                    .where('start_time').lte(+new Date() + ONE_WEEK)
+                    .asc('start_time');
+            } else if (page > 0) {
+                q = q.where('start_time').gte(+new Date() + ONE_WEEK)
+                    .asc('start_time').limit(limit).skip(limit * (page - 1));
+            } else if (page < 0) {
+                q = q.where('end_time').lte(+new Date() - ONE_HOUR)
+                    .desc('start_time').limit(limit).skip(limit * (-page - 1));
+            }
+
+            q.run(cb);
         },
         function(events, cb) {
             if (!req.user) {
                 return cb(null, events, false);
             }
-            models.Org.find().$where('this.admins.indexOf("' + req.user.id + '") >= 0').count(function(err, count) {
+            models.Org.find()
+                    .$where('this.admins.indexOf("' + req.user.id + '") >= 0')
+                    .count(function(err, count) {
                 return cb(null, events, count > 0);
             });
         },
@@ -213,7 +228,7 @@ exports.unattend = function(req, res, next) {
         function(event, cb) {
             var index = event.attendees.indexOf(req.user.id);
             if (index < 0) {
-                return cb('User is not attending this event');
+                return res.send(404);
             }
             event.attendees.splice(index, 1);
             event.save();
@@ -228,12 +243,16 @@ exports.unattend = function(req, res, next) {
 };
 
 exports.update = function(req, res, next) {
-    models.Event.findOne({_id: req.params.id}, function(err, event) {
+    models.Event.findOne({_id: req.params.id}).populate('org')
+                .run(function(err, event) {
         if (err) {
             return next(err);
         }
         if (event == null) {
             return res.send(404);
+        }
+        if (!req.user || event.org.admins.indexOf(req.user.id) < 0) {
+            return res.send(403);
         }
         event.title = req.body.title;
         event.start_time = req.body.start_time;

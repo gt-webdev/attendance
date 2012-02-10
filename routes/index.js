@@ -1,8 +1,10 @@
 exports.events = require('./events');
 exports.orgs = require('./orgs');
+exports.users = require('./users');
 
 var orgs   = exports.orgs;
 var events = exports.events;
+var users = exports.users;
 var auth   = require('../lib/auth');
 
 exports.registerOn = function(app) {
@@ -25,4 +27,9 @@ exports.registerOn = function(app) {
     app.post('/events', auth.loginRequired, events.post);
     app.put('/events/:id', auth.loginRequired, events.put);
     app.delete('/events/:id', auth.loginRequired, events.delete);
+
+    app.get('/recover', users.recover);
+    app.post('/recover', users.recover_post);
+    app.get('/recover/:id', users.reset_password);
+    app.post('/recover/:id', users.reset_password_post);
 };

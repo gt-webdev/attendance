@@ -1,3 +1,4 @@
+var coffee = require('coffee-script');
 var express = require('express');
 var everyauth = require('everyauth');
 var mongoose = require('mongoose');
@@ -82,11 +83,11 @@ app.configure(function() {
 });
 
 app.configure('development', function(){
-    app.use(express.errorHandler({ dumpExceptions: true, showStack: true })); 
+    app.use(express.errorHandler({ dumpExceptions: true, showStack: true }));
 });
 
 app.configure('production', function(){
-    app.use(express.errorHandler()); 
+    app.use(express.errorHandler({ dumpExceptions: true}));
 });
 
 

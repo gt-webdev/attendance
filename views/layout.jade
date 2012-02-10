@@ -7,6 +7,7 @@ html
     link(rel='stylesheet', href='http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/themes/smoothness/jquery-ui.css')
     script(type='text/javascript', src='http://ajax.googleapis.com/ajax/libs/jquery/1.7.0/jquery.min.js')
     script(type='text/javascript', src='http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/jquery-ui.min.js')
+    script(type='text/javascript', src='http://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.2.2/underscore-min.js')
 
   body
     .topbar
@@ -24,7 +25,7 @@ html
                 li
                   a(href=h.url)= h.name
           ul.nav.secondary-nav
-            if everyauth.loggedIn
+            if req.user
               li.dropdown(data-dropdown='dropdown')
                 a(href='').dropdown-toggle= user.name.first + ' ' + user.name.last
                 ul.dropdown-menu
