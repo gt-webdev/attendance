@@ -20,6 +20,6 @@
     .span2
       if +page >= 0 || events.length > 0
         a(href='/events?page=' + (+page - 1)) &laquo Older Events
-    .span2.offset12
+    .span2.offset8
       if page <= 0 || events.length > 0
         a(href='/events?page=' + (+page + 1)).pull-right Later Events &raquo
