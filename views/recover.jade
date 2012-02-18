@@ -3,6 +3,7 @@
     h2 Recover
 
   form(action='/recover', method='POST').form-horizontal
+    input(type='hidden', name='_csrf', value=req.session._csrf)
     .control-group
       label.control-label(for='email') Email:
       .controls

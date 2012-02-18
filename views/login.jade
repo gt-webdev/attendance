@@ -9,6 +9,7 @@ if typeof errors != 'undefined'
     h2 Login
 
   form(action='/login', method='POST').form-horizontal
+    input(type='hidden', name='_csrf', value=req.session._csrf)
     input(type='hidden', name='next', value=next)
           
     .control-group
