@@ -69,7 +69,7 @@ textarea#description {
 
 .navbar .nav > li.collapse-hide {
     display:list-item;
-}
+  }
 
 .navbar .nav > .collapse-show {
     display:none;
