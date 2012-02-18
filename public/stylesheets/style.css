@@ -12,11 +12,11 @@ p {
     font-size: 110%;
 }
 
-.topbar input {
+.navbar input {
     margin-right: 3px;
 }
 
-.topbar button {
+.navbar button {
     margin-left: 2px;
 }
 
@@ -46,4 +46,36 @@ textarea#description {
 
 .foot-actions {
     margin-top: 20px;
+}
+
+@media (max-width: 979px) {
+.navbar .nav > .collapse-hide {
+    display:none;
+  }
+
+.navbar .nav > .collapse-show {
+    display:block;
+  }
+
+.navbar .nav > li.collapse-show {
+    display:list-item;
+  }
+}
+
+@media (min-width: 980px) {
+.navbar .nav > .collapse-hide {
+    display:block;
+  }
+
+.navbar .nav > li.collapse-hide {
+    display:list-item;
+}
+
+.navbar .nav > .collapse-show {
+    display:none;
+  }
+}
+
+.nav-collapse.in.collapse > .nav {
+  margin:0px;
 }
