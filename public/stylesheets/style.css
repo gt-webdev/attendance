@@ -12,38 +12,71 @@ p {
     font-size: 110%;
 }
 
-.topbar input {
+.btn {
+  padding: 5px 14px 6px;
+  color:#333;
+}
+
+.navbar input {
     margin-right: 3px;
 }
 
-.topbar button {
+.navbar button {
     margin-left: 2px;
 }
 
-.page-header .btn {
-    margin-top: 4px;
+.navbar .brand,
+.navbar .nav > li > a {
+    color:#BFBFBF
 }
 
-h2 form {
-    margin-top: 4px;
-}
-
-h1 small, h2 small {
-    margin-left: 8px;
-}
-
-.main-form .input {
-    margin-bottom: 6px;
-}
-
-form .actions .btn {
-    margin-right: 3px;
+.page-header { 
+  padding-bottom:0px;
+  margin-top:0px;
 }
 
 textarea#description {
-    width: 400px;
+    width: 86.5%;
 }
 
-.foot-actions {
-    margin-top: 20px;
+.btn-primary {
+  color: white;
+}
+@media (max-width: 979px) {
+.navbar .nav > .collapse-hide {
+    display:none;
+  }
+
+.navbar .nav > .collapse-show {
+    display:block;
+  }
+
+.navbar .nav > li.collapse-show {
+    display:list-item;
+  }
+}
+
+@media (min-width: 980px) {
+
+/* Fixes a bug where the collapse div has overflow:hidden, even after the window is expanded, causing any nav bar dropdowns to be hidden */
+  .nav-collapse {
+    overflow: visible;
+    height: 0;
+  }
+
+.navbar .nav > .collapse-hide {
+    display:block;
+  }
+
+.navbar .nav > li.collapse-hide {
+    display:list-item;
+  }
+
+.navbar .nav > .collapse-show {
+    display:none;
+  }
+}
+
+.nav-collapse.in.collapse > .nav {
+  margin:0px;
 }

@@ -10,26 +10,29 @@
     - var form_action = '/orgs/' + org.slug;
   else
     - var form_action = '/orgs';
-  form#create-org(action=form_action, method='POST').main-form
+  form#create-org(action=form_action, method='POST').form-horizontal
     if update
       input(type='hidden', name='_method', value='PUT')
 
-    label(for='name') Name:
-    .input
-      input(type='text', name='name', value=org.name)#name
+    .control-group
+      label.control-label(for='name') Name:
+      .controls
+        input(type='text', name='name', value=org.name)#name
   
-    label(for='slug') Slug:
-    .input
+    .control-group
+    label.control-label(for='slug') Slug:
+    .controls
       input(type='text', name='slug', value=org.slug)#slug
       .help-block This is the path that shows up in the URL (i.e., /orgs/slug)
   
-    label(for='description') Description:
-    .input
+    .control-group
+    label.control-label(for='description') Description:
+    .controls
       textarea(name='description', rows=20, cols=80)#description= org.description
   
-    .actions
+    .form-actions
       if update
-      input(type='submit', value=title).btn.primary
+      input(type='submit', value=title).btn.btn-primary
 
 
 script(type='text/javascript')
