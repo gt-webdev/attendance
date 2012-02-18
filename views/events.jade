@@ -12,7 +12,8 @@
   each event in events
     h2
       a(href='/events/' + event.id)= event.title
-      small= event.org.name
+      small
+        a(href='/orgs/' + event.org.slug)= event.org.name
     p(title=event.start_time)= alcohol(event.start_time)
 
   - var page = req.query.page || 0;

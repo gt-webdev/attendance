@@ -21,6 +21,18 @@ h2 small {
     margin-left: 6px;
 }
 
+h1 small a,
+h1 small a:link,
+h1 small a:visited,
+h1 small a:hover,
+h2 small a,
+h2 small a:link,
+h2 small a:visited,
+h2 small a:hover {
+    color: #999;
+    text-decoration: none;
+}
+
 .btn {
   padding: 5px 14px 6px;
   color:#333;
