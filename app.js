@@ -95,7 +95,7 @@ app.dynamicHelpers({
     user: function(req, res) {
         return req.user;
     },
-    messages: require('express-messages-bootstrap'),
+    messages: require('./lib/bootstrap2-messages'),
     req: function(req, res) {
         return req;
     },
