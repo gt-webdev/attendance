@@ -9,44 +9,49 @@
     - var form_url = '/events/' + req.params.id;
   else
     - var form_url = '/events';
-  form#create-event(action=form_url, method='POST').main-form
+  form#create-event(action=form_url, method='POST').form-horizontal
     if update
       input(type='hidden', name='_method', value='PUT')
       input(type='hidden', name='_type', value='update')
-      
-    label(for='title') Title
-    .input
-      input(type='text', name='title', value=event.title)#title
+    
+    .control-group
+      label.control-label(for='title') Title
+      .controls
+        input(type='text', name='title', value=event.title)#title
 
     if !update
-      label(for='org') Organization
-      .input
-        select(name='org')
-          each org in orgs
-            if user.is_admin || org.admins.indexOf(user.id) >= 0
-              option(value= org.id, selected=(req.query.org == org.name))= org.name
+      .control-group
+        label.control-label(for='org') Organization
+        .controls
+          select(name='org')
+            each org in orgs
+              if user.is_admin || org.admins.indexOf(user.id) >= 0
+                option(value= org.id, selected=(req.query.org == org.name))= org.name
+  
+    .control-group
+      label.control-label(for='start_time_date') Start time
+      .controls
+        input(type='text', placeholder='Date')#start_time_date
+        input(type='text', placeholder='Time')#start_time_time
+        input(type='hidden', name='start_time', value=event.start_time)#start_time
 
-    label(for='start_time_date') Start time
-    .input
-      input(type='text', placeholder='Date')#start_time_date
-      input(type='text', placeholder='Time')#start_time_time
-      input(type='hidden', name='start_time', value=event.start_time)#start_time
+    .control-group
+      label.control-label(for='end_time_date') End time
+      .controls
+        input(type='text', placeholder='Date')#end_time_date
+        input(type='text', placeholder='Time')#end_time_time
+        input(type='hidden', name='end_time', value=event.end_time)#end_time
 
-    label(for='end_time_date') End time
-    .input
-      input(type='text', placeholder='Date')#end_time_date
-      input(type='text', placeholder='Time')#end_time_time
-      input(type='hidden', name='end_time', value=event.end_time)#end_time
+    .control-group
+      label.control-label(for='description') Description
+      .controls
+        textarea(name='description', rows=20, cols=200)#description= event.description
 
-    label(for='description') Description
-    .input
-      textarea(name='description', rows=20, cols=200)#description= event.description
-
-    .actions
+    .form-actions
       if update
-        input(type='submit', value='Save').btn.primary
+        input(type='submit', value='Save').btn.btn-primary
       else
-        input(type='submit', value='Create Event').btn.primary
+        input(type='submit', value='Create Event').btn.btn-primary
 
   
 script(type='text/javascript')

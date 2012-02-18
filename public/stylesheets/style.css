@@ -12,6 +12,11 @@ p {
     font-size: 110%;
 }
 
+.btn {
+  padding: 5px 14px 6px;
+  color:#333;
+}
+
 .navbar input {
     margin-right: 3px;
 }
@@ -20,34 +25,23 @@ p {
     margin-left: 2px;
 }
 
-.page-header .btn {
-    margin-top: 4px;
+.navbar .brand,
+.navbar .nav > li > a {
+    color:#BFBFBF
 }
 
-h2 form {
-    margin-top: 4px;
-}
-
-h1 small, h2 small {
-    margin-left: 8px;
-}
-
-.main-form .input {
-    margin-bottom: 6px;
-}
-
-form .actions .btn {
-    margin-right: 3px;
+.page-header { 
+  padding-bottom:0px;
+  margin-top:0px;
 }
 
 textarea#description {
-    width: 400px;
+    width: 86.5%;
 }
 
-.foot-actions {
-    margin-top: 20px;
+.btn-primary {
+  color: white;
 }
-
 @media (max-width: 979px) {
 .navbar .nav > .collapse-hide {
     display:none;
