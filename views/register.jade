@@ -10,6 +10,7 @@ if typeof errors != 'undefined'
     h2 Register
 
   form(action='/register', method='POST').form-horizontal
+    input(type='hidden', name='_csrf', value=req.session._csrf)
     .control-group
       label.control-label(for='first_name') First Name
       .controls

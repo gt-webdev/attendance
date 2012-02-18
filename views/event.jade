@@ -2,6 +2,7 @@
   .page-header
     if user && (user.is_admin || org.admins.indexOf(user.id) >= 0)
       form(action=req.url, method='POST', data-confirm='#confirm-dialog').pull-right
+        input(type='hidden', name='_csrf', value=req.session._csrf)
         input(type='hidden', name='_method', value='DELETE')
         input(type='submit', value='Delete').btn.error
       a(href=req.url + '/edit').btn.pull-right Edit
@@ -22,6 +23,7 @@
 
   if user && event.attendees.indexOf(user.id) < 0
     form(action='/events/' + event.id, method='POST')
+      input(type='hidden', name='_csrf', value=req.session._csrf)
       input(type='hidden', name='_method', value='PUT')
       input(type='hidden', name='_type', value='attend')
   
@@ -42,6 +44,7 @@
               td(style='padding-top: 15px')= attendee.name.first + ' ' + attendee.name.last
               td
                 form(action='/events/' + event.id, method='POST', style='margin-bottom: 0')
+                  input(type='hidden', name='_csrf', value=req.session._csrf)
                   input(type='hidden', name='_method', value='PUT')
                   input(type='hidden', name='_type', value='unattend')
                   input(type='submit', value='X').btn

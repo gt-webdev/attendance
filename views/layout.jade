@@ -32,6 +32,7 @@ html
                   else
                     li
                         form(action='/login', method='POST').navbar-form
+                          input(type='hidden', name='_csrf', value=req.session._csrf)
                           input(type='hidden', name='next', value=req.url)
                           input(type='text', name=everyauth.password.loginFormFieldName, placeholder='GT User ID').input-small
                           input(type='password', name=everyauth.password.passwordFormFieldName, placeholder='Password').input-small

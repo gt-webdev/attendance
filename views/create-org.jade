@@ -11,6 +11,7 @@
   else
     - var form_action = '/orgs';
   form#create-org(action=form_action, method='POST').form-horizontal
+    input(type='hidden', name='_csrf', value=req.session._csrf)
     if update
       input(type='hidden', name='_method', value='PUT')
 

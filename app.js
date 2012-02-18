@@ -76,6 +76,7 @@ app.configure('production', function() {
 });
 
 app.configure(function() {
+    app.use(express.csrf());
     app.use(everyauth.middleware());
     app.use(auth.middleware());
     app.use(app.router);
