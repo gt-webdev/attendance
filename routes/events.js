@@ -251,8 +251,8 @@ exports.update = function(req, res, next) {
         if (event == null) {
             return res.send(404);
         }
-        if (!req.user || !req.user.is_admin
-                 || event.org.admins.indexOf(req.user.id) < 0) {
+        if (!req.user || event.org.admins.indexOf(req.user.id) < 0
+                || !req.user.is_admin) {
             return res.send(403);
         }
         event.title = req.body.title;
