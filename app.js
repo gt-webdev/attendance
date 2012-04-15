@@ -61,13 +61,13 @@ app.configure('development', function() {
 });
 
 app.configure('production', function() {
-    var MongoStore = require('connect-mongo');
+    var MongoStore = require('connect-mongodb');
     var oneWeek = 60 * 60 * 24 * 7;
     app.use(express.session({
         secret: conf.session.secret,
         store: new MongoStore({
-            url: conf.mongo.uri,
-            clear_interval: oneWeek,
+          db: mongoose.connections[0].db,
+          reapInterval: oneWeek,
         }),
         cookie: {
             maxAge: oneWeek * 1000, // milliseconds
