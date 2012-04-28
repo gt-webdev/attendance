@@ -142,6 +142,55 @@ exports.details = function(req, res, next) {
     });
 };
 
+exports.kiosk = function(req,res,next) {
+  async.waterfall([
+        function(cb) {
+            models.Event.findOne({_id: req.params.id}, function(err, event) {
+                if (event == null) {
+                    return res.send(404);
+                } else {
+                    cb(err, event);
+                }
+            });
+        },
+        function(event, cb) {
+            models.Org.findOne({_id: event.org}, function(err, org) {
+                if (org == null) {
+                    res.send(404);
+                } else {
+                    cb(err, event, org);
+                }
+            });
+        },
+        function(event, org, cb) {
+            models.Place.findOne({_id: event.place}, function(err, place) {
+                cb(err, event, org, place);
+            });
+        },
+        function(event, org, place, cb) {
+            async.map(event.attendees, function(user_id, cb) {
+                models.User.findOne({_id: user_id}, cb);
+            }, function(err, attendees) {
+                cb(err, event, org, place, attendees);
+            });
+        },
+    ], function(err, event, org, place, attendees) {
+        if (err) {
+            return next(err);
+        }
+        if (!event) {
+            return res.send(404);
+        }
+        res.render('kiosk', {
+            event: event,
+            org: org,
+            place: place,
+            attendees: attendees,
+        });
+    });
+
+}
+
 exports.list = function(req, res, next) {
     async.waterfall([
         function(cb) {
@@ -251,7 +300,8 @@ exports.update = function(req, res, next) {
         if (event == null) {
             return res.send(404);
         }
-        if (!req.user || event.org.admins.indexOf(req.user.id) < 0) {
+        if ((!req.user || event.org.admins.indexOf(req.user.id) < 0) &&  !req.user.is_admin)  {
+          console.log(require("util").inspect(req.user));
             return res.send(403);
         }
         event.title = req.body.title;

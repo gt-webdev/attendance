@@ -1,6 +1,6 @@
 {
     "name": "attendance"
-  , "version": "0.0.1"
+  , "version": "0.1.0"
   , "homepage": "https://github.com/cc-wit/attendance/"
   , "dependencies": {
       "express": "2.x"
