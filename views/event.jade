@@ -49,9 +49,19 @@
                   input(type='hidden', name='_type', value='unattend')
                   input(type='submit', value='X').btn
           else
-            tr
-              td= attendee.name.first + ' ' + attendee.name.last
-              td
+            if attendee.email
+              tr
+                td= attendee.name.first + ' ' + attendee.name.last
+                td
+            else
+              tr
+                td= attendee.email
+                td
+        each attendee in legacy
+          tr
+            td= attendee.name.first + ' ' + attendee.name.last
+            td
+            
 
 
 

@@ -62,6 +62,8 @@ exports.delete = function(req, res, next) {
                 }
                 if (req.user.is_admin ||
                         (org && org.admins.indexOf(req.user.id) != -1)) {
+                    //delete participation elements before deleting event
+                    models.Part.remove({'event':event._id});
                     return cb(null, event);
                 }
                 res.send(403);
@@ -120,13 +122,31 @@ exports.details = function(req, res, next) {
             });
         },
         function(event, org, place, cb) {
+            /*this is a map which looks for user based on the
+             * attendees list which exist within the "event" object
+             * We now use a combination of a participation and user/guest
+             * models to accomplish this. However, this is kept for legacy
+             * support purposes - NOTE: if the database is ever restarted,
+             * this functionality should be safe to remove! */
             async.map(event.attendees, function(user_id, cb) {
                 models.User.findOne({_id: user_id}, cb);
             }, function(err, attendees) {
                 cb(err, event, org, place, attendees);
             });
         },
-    ], function(err, event, org, place, attendees) {
+        function(event, org, place, legacy_attendees){
+            models.Part.find({'event':event._id}, ['account'],
+                function(err, docs){
+                    async.map(docs, function(user_id, cb) {
+                        models.User.findOne({_id: user_id}, cb);
+                    }, function(err, new_attendees) {
+                        cb(err, event, org, place, legacy_attendees, new_attendees);
+                    });
+
+                }
+            );
+        }
+    ], function(err, event, org, place, legacy_attendees, attendees ) {
         if (err) {
             return next(err);
         }
@@ -138,6 +158,7 @@ exports.details = function(req, res, next) {
             org: org,
             place: place,
             attendees: attendees,
+            legacy:legacy_attendees,
         });
     });
 };
@@ -168,27 +189,45 @@ exports.kiosk = function(req,res,next) {
             });
         },
         function(event, org, place, cb) {
+            /*this is a map which looks for user based on the
+             * attendees list which exist within the "event" object
+             * We now use a combination of a participation and user/guest
+             * models to accomplish this. However, this is kept for legacy
+             * support purposes - NOTE: if the database is ever restarted,
+             * this functionality should be safe to remove! */
             async.map(event.attendees, function(user_id, cb) {
                 models.User.findOne({_id: user_id}, cb);
             }, function(err, attendees) {
                 cb(err, event, org, place, attendees);
             });
         },
-    ], function(err, event, org, place, attendees) {
+        function(event, org, place, legacy_attendees){
+            models.Part.find({'event':event._id}, ['account'],
+                function(err, docs){
+                    async.map(docs, function(user_id, cb) {
+                        models.User.findOne({_id: user_id}, cb);
+                    }, function(err, new_attendees) {
+                        cb(err, event, org, place, legacy_attendees, new_attendees);
+                    });
+
+                }
+            );
+        }
+    ], function(err, event, org, place, legacy_attendees, attendees ) {
         if (err) {
             return next(err);
         }
         if (!event) {
             return res.send(404);
         }
-        res.render('kiosk', {
+        res.render('event', {
             event: event,
             org: org,
             place: place,
             attendees: attendees,
-        });
+            legacy: legacy_attendees,
+        });    
     });
-
 }
 
 exports.list = function(req, res, next) {
@@ -246,6 +285,31 @@ exports.put = function(req, res, next) {
     } else if (req.body._type === 'update') {
         exports.update(req, res, next);
     }
+};
+
+/*
+ * guest function is used in kiosk mode to register "guests" instead 
+ * of users. if the guest information corresponds to a user, that 
+ * user is registered instead. */
+exports.guest = function(req, res, next) {
+    async.waterfall([
+        function(cb) {
+            models.Event.findOne({_id: req.params.id}, cb);
+        },
+        function(event, cb) {
+            if (event.attendees.indexOf(req.user.id) < 0
+                    && (!event.passkey || event.passkey === req.body.passkey)) {
+                event.attendees.push(req.user.id);
+                event.save();
+            }
+            cb();
+        },
+    ], function(err) {
+        if (err) {
+            return next(err);
+        }
+        res.redirect(req.url);
+    });
 };
 
 exports.attend = function(req, res, next) {

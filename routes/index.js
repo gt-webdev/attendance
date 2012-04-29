@@ -28,7 +28,7 @@ exports.registerOn = function(app) {
     app.post('/events', auth.loginRequired, events.post);
     app.put('/events/:id', auth.loginRequired, events.put);
     app.delete('/events/:id', auth.loginRequired, events.delete);
-    app.put('/guest/:id', events.guest);
+    app.put('/events/:id/kiosk', events.guest);
 
     app.get('/recover', users.recover);
     app.post('/recover', users.recover_post);
