@@ -6,6 +6,7 @@
         input(type='hidden', name='_method', value='DELETE')
         input(type='submit', value='Delete').btn.error
       a(href=req.url + '/edit').btn.pull-right Edit
+    a(href=req.url + '/kiosk').btn.pull-right Kiosk
     h1= event.title
       small
         a(href='/orgs/' + org.slug)= org.name
@@ -21,7 +22,7 @@
   h3 End Time
   p(title=event.end_time)= alcohol(event.end_time)
 
-  if user && event.attendees.indexOf(user.id) < 0
+  if user && JSON.parse(JSON.stringify(atts)).indexOf(user.id) < 0
     form(action='/events/' + event.id, method='POST')
       input(type='hidden', name='_csrf', value=req.session._csrf)
       input(type='hidden', name='_method', value='PUT')
@@ -34,11 +35,11 @@
     
       input(type='submit', value="I'm here!").btn.large
   
-  if (attendees.length != 0)
-    h3 Who's going (#{attendees.length})
+  if (att_users.length != 0)
+    h3 Who's going (#{att_users.length})
     table.span5
       tbody
-        each attendee in attendees
+        each attendee in att_users
           if user && attendee.id == user.id
             tr
               td(style='padding-top: 15px')= attendee.name.first + ' ' + attendee.name.last
@@ -49,19 +50,33 @@
                   input(type='hidden', name='_type', value='unattend')
                   input(type='submit', value='X').btn
           else
-            if attendee.email
-              tr
-                td= attendee.name.first + ' ' + attendee.name.last
-                td
-            else
-              tr
-                td= attendee.email
-                td
+            tr
+              td= attendee.name.first + ' ' + attendee.name.last
+              td
         each attendee in legacy
           tr
             td= attendee.name.first + ' ' + attendee.name.last
             td
-            
+   if (att_guests.length != 0)
+    h3(style='clear:both') Guests (#{att_guests.length})
+    table.span5
+      tbody
+        each attendee in att_guests
+          tr
+            td= attendee.email
+            if user && (user.is_admin || org.admins.indexOf(user.id) >= 0)
+              td
+                p.gtid= attendee.gt_id
+              td 
+                form(action='/events/' + event.id, method='POST', style='margin-bottom: 0')
+                  input(type='hidden', name='_csrf', value=req.session._csrf)
+                  input(type='hidden', name='_method', value='PUT')
+                  input(type='hidden', name='guest', value=attendee.id)
+                  input(type='hidden', name='_type', value='unguest')
+                  input(type='submit', value='X').btn
+
+
+         
 
 
 
