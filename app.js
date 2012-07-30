@@ -114,4 +114,3 @@ routes.registerOn(app);
 
 app.listen(conf.port);
 console.log("Express server listening on port %d in %s mode", app.address().port, app.settings.env);
-console.log(process.env.MONGOLAB_URI);

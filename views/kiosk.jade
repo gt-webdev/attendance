@@ -10,16 +10,20 @@
   != md.parse(escape(event.description))
   
   h3 Guest Sign-in
-  form(action='/events/' + event.id + '/kiosk', method='POST')
+  form(action='/events/' + event.id + '/kiosk', method='POST', onsubmit='return validate()')
     input(type='hidden', name='_csrf', value=req.session._csrf)
     input(type='hidden', name='_method', value='PUT')
     input(type='hidden', name='_type', value='guest')
-    label(for='email') E-Mail:
+    label(for='email') e-mail:
     .input
-      input(type='text'  , name='email', autofocus='autofocus')
+      input(type='e-mail'  , name='email', autofocus='autofocus')#email
+    .err#email_err
+      p e-mail must be valid!
     label(for='gtid') gtID:
     .input
-      input(type='nuber' , name='gtid')
+      input(type='number' , name='gtid')#gtid
+    .err#gtid_err
+      p gtid must be 9 digits!
     input(type='submit', value='Guest Attend').btn.large
 
 
@@ -52,3 +56,22 @@
           tr
             td= attendee.email
 
+script(type='text/javascript')
+    function validate(){
+      var email = document.getElementById('email');
+      var gtid = document.getElementById("gtid");
+      var emailre = /\S+@\S+\.\S+/;
+      var gtidre = /\d{9}/;
+      var ret = true
+      document.getElementById("gtid_err").setAttribute("style",'display:none');
+      document.getElementById("email_err").setAttribute("style",'display:none');
+      if (!emailre.test(email.value)){
+        document.getElementById("email_err").setAttribute("style",'display:block');
+        ret =  false;
+      }
+      if (!gtidre.test(gtid.value)){
+        document.getElementById("gtid_err").setAttribute("style",'display:block');
+        ret =  false;
+      }
+      return ret;
+    }

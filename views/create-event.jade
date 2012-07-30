@@ -35,6 +35,7 @@
         input(type='text', placeholder='Date')#start_time_date
         input(type='text', placeholder='Time')#start_time_time
         input(type='hidden', name='start_time', value=event.start_time)#start_time
+        p.timehint (hh:mm am|pm)
 
     .control-group
       label.control-label(for='end_time_date') End time
@@ -42,6 +43,7 @@
         input(type='text', placeholder='Date')#end_time_date
         input(type='text', placeholder='Time')#end_time_time
         input(type='hidden', name='end_time', value=event.end_time)#end_time
+        p.timehint (hh:mm am|pm)
 
     .control-group
       label.control-label(for='description') Description
@@ -68,7 +70,7 @@ script(type='text/javascript')
         $('#end_time_date').datepicker(dp_opts);
 
         var fix_time = function(time) {
-          var digits = time.match(/\\d?\\d:\\d\\d/);
+          var digits = time.match(/\d?\d:\d\d/);
           if (digits) {
             var ampm = time.match(/(am|pm)/i);
             if (ampm) {
