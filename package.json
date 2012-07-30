@@ -7,6 +7,7 @@
     , "jade": ">= 0.0.1"
     , "mongoose": ">= 2.2.1"
     , "everyauth": ">= 0.2.20"
+    , "marked": "*"
     , "bcrypt": ">= 0.3.2"
     , "async": ">= 0.1.10"
     , "less": "1.x"
