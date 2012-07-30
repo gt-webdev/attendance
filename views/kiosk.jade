@@ -1,0 +1,54 @@
+.content
+  .page-header
+    h1= event.title + ' - Kiosk Mode'
+      small
+        a(href='/orgs/' + org.slug)= org.name
+
+  if place != null
+    p= place.name
+
+  != md.parse(escape(event.description))
+  
+  h3 Guest Sign-in
+  form(action='/events/' + event.id + '/kiosk', method='POST')
+    input(type='hidden', name='_csrf', value=req.session._csrf)
+    input(type='hidden', name='_method', value='PUT')
+    input(type='hidden', name='_type', value='guest')
+    label(for='email') E-Mail:
+    .input
+      input(type='text'  , name='email', autofocus='autofocus')
+    label(for='gtid') gtID:
+    .input
+      input(type='nuber' , name='gtid')
+    input(type='submit', value='Guest Attend').btn.large
+
+
+  h3 Start Time
+  p(title=event.start_time)= alcohol(event.start_time)
+
+  h3 End Time
+  p(title=event.end_time)= alcohol(event.end_time)
+
+  
+
+ if (att_users.length != 0 || legacy.length != 0)
+    h3 Who's going (#{att_users.length + legacy.length})
+    table.span5
+      tbody
+        each attendee in att_users
+            tr
+              td= attendee.name.first + ' ' + attendee.name.last
+              td
+        each attendee in legacy
+          tr
+            td= attendee.name.first + ' ' + attendee.name.last
+            td 
+
+  if (att_guests.length != 0)
+    h3(style='clear:both') Guests (#{att_guests.length})
+    table.span5
+      tbody
+        each attendee in att_guests
+          tr
+            td= attendee.email
+

@@ -61,13 +61,13 @@ app.configure('development', function() {
 });
 
 app.configure('production', function() {
-    var MongoStore = require('connect-mongo');
+    var MongoStore = require('connect-mongodb');
     var oneWeek = 60 * 60 * 24 * 7;
     app.use(express.session({
         secret: conf.session.secret,
         store: new MongoStore({
-            url: conf.mongo.uri,
-            clear_interval: oneWeek,
+          db: mongoose.connections[0].db,
+          reapInterval: oneWeek,
         }),
         cookie: {
             maxAge: oneWeek * 1000, // milliseconds
@@ -101,7 +101,7 @@ app.dynamicHelpers({
         return req;
     },
     md: function(req, res) {
-        return require('discount');
+        return require('marked');
     },
     alcohol: function(req, res) {
         return require('./lib/alcohol').stringify;
@@ -114,3 +114,4 @@ routes.registerOn(app);
 
 app.listen(conf.port);
 console.log("Express server listening on port %d in %s mode", app.address().port, app.settings.env);
+console.log(process.env.MONGOLAB_URI);

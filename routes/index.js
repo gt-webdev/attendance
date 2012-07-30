@@ -23,10 +23,12 @@ exports.registerOn = function(app) {
     app.get('/events', events.list);
     app.get('/events/:id', events.details);
     app.get('/events/:id/edit', auth.loginRequired, events.edit);
+    app.get('/events/:id/kiosk', events.kiosk);
     app.get('/create-event', auth.loginRequired, events.create);
     app.post('/events', auth.loginRequired, events.post);
     app.put('/events/:id', auth.loginRequired, events.put);
     app.delete('/events/:id', auth.loginRequired, events.delete);
+    app.put('/events/:id/kiosk', events.guest);
 
     app.get('/recover', users.recover);
     app.post('/recover', users.recover_post);

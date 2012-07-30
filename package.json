@@ -1,20 +1,25 @@
 {
     "name": "attendance"
-  , "version": "0.0.1"
+  , "version": "0.1.0"
   , "homepage": "https://github.com/cc-wit/attendance/"
   , "dependencies": {
       "express": "2.x"
     , "jade": ">= 0.0.1"
     , "mongoose": ">= 2.2.1"
     , "everyauth": ">= 0.2.20"
+    , "marked": "*"
     , "bcrypt": ">= 0.3.2"
     , "async": ">= 0.1.10"
     , "less": "1.x"
     , "discount": "0.2.x"
     , "express-messages-bootstrap": "0.x"
-    , "connect-mongo": "0.x"
+    , "connect-mongodb": "1.x"
     , "vows": "0.x"
     , "coffee-script": "1.x"
     , "mailer": "0.x"
+  }
+  , "engines": {
+    "node": "0.6.x"
+  , "npm": "1.1.x"
   }
 }
