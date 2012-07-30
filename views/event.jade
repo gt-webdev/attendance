@@ -35,8 +35,8 @@
     
       input(type='submit', value="I'm here!").btn.large
   
-  if (att_users.length != 0)
-    h3 Who's going (#{att_users.length})
+  if (att_users.length != 0 || legacy.length != 0)
+    h3 Who's going (#{att_users.length + legacy.length})
     table.span5
       tbody
         each attendee in att_users
