@@ -101,7 +101,7 @@ app.dynamicHelpers({
         return req;
     },
     md: function(req, res) {
-        return require('discount');
+        return require('marked');
     },
     alcohol: function(req, res) {
         return require('./lib/alcohol').stringify;
