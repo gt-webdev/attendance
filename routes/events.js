@@ -4,23 +4,28 @@ var models = require('../lib/models');
 var ONE_HOUR = 1000 * 60 * 60;
 var ONE_WEEK = ONE_HOUR * 24 * 7;
 
+/**
+ * attempts to post new events from POST /events
+ */
 exports.post = function(req, res, next) {
   async.waterfall([
       function(cb) {
+        //retrieve the org which is being passed
         models.Org.findOne({_id: req.body.org}, cb);
       },
       function(org, cb) {
-        // to make an event, must be either an admin
+        // to make an event, must be either an admin of the site
         if (req.user.is_admin) {
           return cb();
         }
-        // or an admin of the Org
+        // ...or an admin of the Org
         if (org.admins.indexOf(req.user.id) >= 0) {
           return cb();
         }
         return res.send(403);
       },
       function(cb) {
+        //confirm the validity of the start and end-time
         if (!req.body.end_time || (req.body.start_time
             && req.body.end_time < req.body.start_time)) {
               req.body.start_time = new Date(req.body.start_time);
@@ -30,12 +35,13 @@ exports.post = function(req, res, next) {
                 return next('Invalid start time');
               }
             }
+        //produce event model and save
         var event = new models.Event({
-          title: req.body.title,
-        org: req.body.org,
-        start_time: req.body.start_time,
-        end_time: req.body.end_time,
-        description: req.body.description,
+          title:        req.body.title,
+          org:          req.body.org,
+          start_time:   req.body.start_time,
+          end_time:     req.body.end_time,
+          description:  req.body.description,
         });
         event.save(function(err) {
           cb(err, event);
@@ -45,29 +51,38 @@ exports.post = function(req, res, next) {
         if (err) {
           return next(err);
         }
+        //flash success notification and redirect to GET handler
         req.flash('success', 'Event created: %s', req.body.title);
         res.redirect('/events/' + event._id);
       });
 };
 
+/**
+ * deletes an event from the event page
+ */
 exports.delete = function(req, res, next) {
   async.waterfall([
       function(cb) {
+        //find the event in db
         models.Event.findOne({_id: req.params.id}, cb);
       },
       function(event, cb) {
+        //find the corresponding org
         models.Org.findOne({_id: event.org}, function(err, org) {
           if (err) {
             return cb(err);
           }
+          //...and make sure the user is allowed to delete the event
           if (req.user.is_admin ||
             (org && org.admins.indexOf(req.user.id) != -1)) {
               return cb(null, event);
             }
+          //forbidden!
           res.send(403);
         });
       },
       function(event, cb) {
+        //remove the event through mongoose
         models.Event.remove({_id: event.id}, function(err) {
           cb(err, event);
         });
@@ -76,16 +91,22 @@ exports.delete = function(req, res, next) {
         if (err) {
           return next(err);
         }
+        //flash message and redirect
         req.flash('success', 'Event deleted: %s', event.title);
         res.redirect('/events/');
       });
 };
 
+/**
+ * show the create-event page for GET /create-event/
+ */
 exports.create = function(req, res, next) {
+  //produce a list of all orgs
   models.Org.find({}, function(err, orgs) {
     if(err) {
       return next(err);
     }
+    //render the page with hde rinh of orgs embedded
     res.render('create-event', {
       event: {},
       orgs: orgs,
@@ -94,9 +115,13 @@ exports.create = function(req, res, next) {
   });
 };
 
+/**
+ * an event details page from GET /events/:id
+ */
 exports.details = function(req, res, next) {
   async.waterfall([
       function(cb) {
+        //find the event by url-embeded param :id
         models.Event.findOne({_id: req.params.id}, function(err, event) {
           if (event == null) {
             return res.send(404);
@@ -106,6 +131,7 @@ exports.details = function(req, res, next) {
         });
       },
       function(event, cb) {
+        //find the org corresponding to the event
         models.Org.findOne({_id: event.org}, function(err, org) {
           if (org == null) {
             res.send(404);
@@ -115,6 +141,7 @@ exports.details = function(req, res, next) {
         });
       },
       function(event, org, cb) {
+        //I'm not sure if this is being used for anything, probably returns null
         models.Place.findOne({_id: event.place}, function(err, place) {
           cb(err, event, org, place);
         });
@@ -126,6 +153,8 @@ exports.details = function(req, res, next) {
          * models to accomplish this. However, this is kept for legacy
          * support purposes - NOTE: if the database is ever restarted,
          * this functionality should be safe to remove! */
+        //further note: production database has been successfully migrated
+        //this function will be removed in future version
         async.map(event.attendees, function(user_id, cb) {
           models.User.findOne({_id: user_id}, cb);
         }, function(err, attendees) {
@@ -133,6 +162,8 @@ exports.details = function(req, res, next) {
         });
       },
       function(event, org, place, legacy_attendees, cb){
+        /* this function uses the Participation model to find guests and users*/
+        //find all participations for the given event
         models.Part.find({'event':event._id}, ['account'],
             function(err, docs){
               async.map(docs, function(user_id, cb) {
@@ -140,6 +171,7 @@ exports.details = function(req, res, next) {
                   cb(null, att);
                 });
               }, function(err, new_attendees) {
+                //filter out guest accounts
                 async.filter(new_attendees, function(att, fcb){
                   if (att){
                     return fcb(true);
@@ -147,6 +179,7 @@ exports.details = function(req, res, next) {
                     return fcb(false);
                   }
                 },function(user_att){
+                  //call the next function with the list of user-attendees
                   cb(err, event, org, place, legacy_attendees, user_att);
                 });
               });
@@ -154,6 +187,8 @@ exports.details = function(req, res, next) {
             );
       },
       function(event,org,place,legacy_attendees,attendees, cb){
+        //does the same as the previous function, but fetches guest accounts
+        //instead of user accounts for the event
         models.Part.find({'event':event._id}, ['account'],
             function(err, docs){
               async.map(docs, function(user_id, cb) {
@@ -179,32 +214,41 @@ exports.details = function(req, res, next) {
         );
       }
   ], function(err, event, org, place, legacy_attendees, attendees, guests, att_ids) {
+    //at this point, all data about the event, including users and guest
+    //attendees has been retrieved
     if (err) {
       return next(err);
     }
     if (!event) {
       return res.send(404);
     }
+    //render the event page with the given data
     res.render('event', {
       event: event,
-    org: org,
-    place: place,
-    att_users: attendees,
-    att_guests: guests,
-    atts: att_ids,
-    legacy:legacy_attendees,
+      org: org,
+      place: place,
+      att_users: attendees,
+      att_guests: guests,
+      atts: att_ids,
+      legacy:legacy_attendees,
     });
   });
 };
 
-
+/**
+ * list events, defaults to upcoming and current event
+ * from GET /events
+ */
 exports.list = function(req, res, next) {
   async.waterfall([
       function(cb) {
+        //calculate which page is requested
         var page = req.query.page || 0;
         var limit = 10;
+        //find all events, and fetch the corresponding org (instead of id)
         var q = models.Event.find().populate('org');
 
+        //calculate page and times to query by
         if (page == 0) {
           q = q.where('end_time').gte(+new Date() - ONE_HOUR)
     .where('start_time').lte(+new Date() + ONE_WEEK)
@@ -217,9 +261,11 @@ exports.list = function(req, res, next) {
     .desc('start_time').limit(limit).skip(limit * (-page - 1));
         }
 
+        //run the query to get results
         q.run(cb);
       },
       function(events, cb) {
+        //check to see if the user is an admin of some orgs
         if (!req.user) {
           return cb(null, events, false);
         }
@@ -233,7 +279,7 @@ exports.list = function(req, res, next) {
         if (err) {
           return next(err);
         }
-
+        //render the page
         res.render('events', {
           title: 'Events',
         events: events,
@@ -242,6 +288,9 @@ exports.list = function(req, res, next) {
       });
 };
 
+/**
+ * produce the kiosk mode page for an event
+ */
 exports.kiosk = function(req,res,next) {
   async.waterfall([
       function(cb) {
@@ -345,44 +394,6 @@ exports.kiosk = function(req,res,next) {
   });
 };
 
-/*
-   function(event, org, place, legacy_attendees, cb){
-   debugger;
-   models.Part.find({'event':event._id}, ['account'],
-   function(err, docs){
-   async.map(docs, function(user_id, cb) {
-   models.User.findOne({_id: user_id.account}, function(err,att){
-   if(att){
-   cb(null, att);
-   }else{
-   models.Guest.findOne({_id:  user_id.account});
-   }
-   });
-   }, function(err, new_attendees) {
-   cb(err, event, org, place, legacy_attendees, new_attendees);
-   });
-
-   }
-   );
-   }
-   ], function(err, event, org, place, legacy_attendees, attendees ) {
-   if (err) {
-   return next(err);
-   }
-   if (!event) {
-   return res.send(404);
-   }
-   console.log(attendees);
-   res.render('kiosk', {
-   event: event,
-   org: org,
-   place: place,
-   attendees: attendees,
-   legacy: legacy_attendees,
-   });    
-   });
-   }
-   */
 exports.guest = function(req, res, next) {
   if (!req.body._type) {
     res.send(400); // Bad Request
@@ -538,7 +549,6 @@ exports.update = function(req, res, next) {
         return res.send(404);
       }
       if ((!req.user || event.org.admins.indexOf(req.user.id) < 0) &&  !req.user.is_admin)  {
-        console.log(require("util").inspect(req.user));
         return res.send(403);
       }
       event.title = req.body.title;
