@@ -12,6 +12,11 @@ p {
   font-size: 110%;
 }
 
+p.helptext {
+  max-width: 550px;
+  color: gray;
+}
+
 h1 small {
   margin-left: 6px;
   display: block;
@@ -130,4 +135,9 @@ textarea#description {
   width: 140px;
   text-align: center;
   border-radius: 5px;
+}
+
+div.events-list {
+  margin: 25px 0;
+  border-top: 1px solid #EEE;
 }

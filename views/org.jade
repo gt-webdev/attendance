@@ -11,6 +11,12 @@
 
   p!= md.parse(escape(org.description))
 
+  .events-list
+    h2 Events
+    each event in events
+      h2
+        a(href='/events/' + event.id)= event.title
+      p(title=event.start_time)= alcohol(event.start_time)
 
 
 #confirm-dialog(style='display: none').modal.hide
