@@ -14,7 +14,7 @@ To run the app locally, you'll need node, npm (packaged with node >=
 First, fork the `cc-wit/attendance` repository on GitHub, then clone
 your fork. For example:
 
-    $ git clone git@github.com:thelastnode/attendance.git
+    $ git clone git@github.com:cc-wit/attendance.git
 
 Then, install all the dependencies and start mongodb:
 
