@@ -7,6 +7,7 @@ var events = exports.events;
 var users = exports.users;
 var auth   = require('../lib/auth');
 
+//new paths should be registered here, see the usual documentation for express
 exports.registerOn = function(app) {
     app.get('/', function(req, res) {
         res.redirect('/orgs');

@@ -106,7 +106,7 @@ exports.create = function(req, res, next) {
     if(err) {
       return next(err);
     }
-    //render the page with hde rinh of orgs embedded
+    //render the page with the list of orgs embedded
     res.render('create-event', {
       event: {},
       orgs: orgs,
@@ -121,13 +121,12 @@ exports.create = function(req, res, next) {
 exports.details = function(req, res, next) {
   async.waterfall([
       function(cb) {
-        //find the event by url-embeded param :id
+        //find the event by url-embedded param :id
         models.Event.findOne({_id: req.params.id}, function(err, event) {
           if (event == null) {
             return res.send(404);
-          } else {
-            cb(err, event);
-          }
+          } 
+          cb(err, event);
         });
       },
       function(event, cb) {
@@ -175,9 +174,8 @@ exports.details = function(req, res, next) {
                 async.filter(new_attendees, function(att, fcb){
                   if (att){
                     return fcb(true);
-                  }else{
-                    return fcb(false);
                   }
+                  return fcb(false);
                 },function(user_att){
                   //call the next function with the list of user-attendees
                   cb(err, event, org, place, legacy_attendees, user_att);
@@ -199,9 +197,8 @@ exports.details = function(req, res, next) {
                 async.filter(new_attendees, function(att, fcb){
                   if (att){
                     return fcb(true);
-                  }else{
-                    return fcb(false);
                   }
+                  return fcb(false);
                 },function(guest_att){
                   async.map(docs, function(doc,cb){
                     cb(null, doc.account);
@@ -252,17 +249,17 @@ exports.list = function(req, res, next) {
         if (page == 0) {
           q = q.where('end_time').gte(+new Date() - ONE_HOUR)
     .where('start_time').lte(+new Date() + ONE_WEEK)
-    .asc('start_time');
+    .sort('start_time', 1);
         } else if (page > 0) {
           q = q.where('start_time').gte(+new Date() + ONE_WEEK)
-    .asc('start_time').limit(limit).skip(limit * (page - 1));
+    .sort('start_time', 1).limit(limit).skip(limit * (page - 1));
         } else if (page < 0) {
           q = q.where('end_time').lte(+new Date() - ONE_HOUR)
-    .desc('start_time').limit(limit).skip(limit * (-page - 1));
+    .sort('start_time', -1).limit(limit).skip(limit * (-page - 1));
         }
 
         //run the query to get results
-        q.run(cb);
+        q.exec(cb);
       },
       function(events, cb) {
         //check to see if the user is an admin of some orgs
@@ -290,20 +287,24 @@ exports.list = function(req, res, next) {
 
 /**
  * produce the kiosk mode page for an event
+ * for GET /events/:id/kiosk
  */
 exports.kiosk = function(req,res,next) {
   async.waterfall([
       function(cb) {
+        //find the even by the id provided in the url
         models.Event.findOne({_id: req.params.id}, function(err, event) {
+          //make sure that an event was found, 404 if not found
           if (event == null) {
             return res.send(404);
-          } else {
-            cb(err, event);
-          }
+          } 
+          cb(err, event);
         });
       },
       function(event, cb) {
+        //find the org listed in the event object
         models.Org.findOne({_id: event.org}, function(err, org) {
+          //404 if couldn't be found
           if (org == null) {
             res.send(404);
           } else {
@@ -312,6 +313,7 @@ exports.kiosk = function(req,res,next) {
         });
       },
       function(event, org, cb) {
+        //search for a place, pretty sure this is disabled
         models.Place.findOne({_id: event.place}, function(err, place) {
           cb(err, event, org, place);
         });
@@ -323,6 +325,7 @@ exports.kiosk = function(req,res,next) {
          * models to accomplish this. However, this is kept for legacy
          * support purposes - NOTE: if the database is ever restarted,
          * this functionality should be safe to remove! */
+        //this is currently migrated, function will be removed in the future;
         async.map(event.attendees, function(user_id, cb) {
           models.User.findOne({_id: user_id}, cb);
         }, function(err, attendees) {
@@ -330,19 +333,21 @@ exports.kiosk = function(req,res,next) {
         });
       },
       function(event, org, place, legacy_attendees, cb){
+        //find participation objects tied to the event
         models.Part.find({'event':event._id}, ['account'],
             function(err, docs){
+              //for each participation object found, look for a user object
               async.map(docs, function(user_id, cb) {
                 models.User.findOne({_id: user_id.account}, function(err,att){
                   cb(null, att);
                 });
               }, function(err, new_attendees) {
+                //filter out all the guest objects
                 async.filter(new_attendees, function(att, fcb){
                   if (att){
                     return fcb(true);
-                  }else{
-                    return fcb(false);
                   }
+                  return fcb(false);
                 },function(user_att){
                   cb(err, event, org, place, legacy_attendees, user_att);
                 });
@@ -351,6 +356,7 @@ exports.kiosk = function(req,res,next) {
             );
       },
       function(event,org,place,legacy_attendees,attendees, cb){
+        //do the same as the previous function, but for guests instead of users
         models.Part.find({'event':event._id}, ['account'],
             function(err, docs){
               async.map(docs, function(user_id, cb) {
@@ -361,9 +367,8 @@ exports.kiosk = function(req,res,next) {
                 async.filter(new_attendees, function(att, fcb){
                   if (att){
                     return fcb(true);
-                  }else{
-                    return fcb(false);
                   }
+                  return fcb(false);
                 },function(guest_att){
                   async.map(docs, function(doc,cb){
                     cb(null, doc.account);
@@ -382,18 +387,24 @@ exports.kiosk = function(req,res,next) {
     if (!event) {
       return res.send(404);
     }
+    //render the page
     res.render('kiosk', {
       event: event,
-    org: org,
-    place: place,
-    att_users: attendees,
-    att_guests: guests,
-    atts: att_ids,
-    legacy:legacy_attendees,
+      org: org,
+      place: place,
+      att_users: attendees,
+      att_guests: guests,
+      atts: att_ids,
+      legacy:legacy_attendees,
     });
   });
 };
 
+/**
+ * function used to register a guest to an event
+ * for PUT /events/:id/kiosk
+ *   -this function only filters out bad requests and calls 'guest_attend'
+ */
 exports.guest = function(req, res, next) {
   if (!req.body._type) {
     res.send(400); // Bad Request
@@ -403,62 +414,86 @@ exports.guest = function(req, res, next) {
   }
 };
 
+/**
+ * handles error checking and db interface for registering guests for an event
+ */
 exports.guest_attend = function(req, res, next) {
+  //validation regex for email and gtids to filter out bad data
   var emailre = /\S+@\S+\.\S+/;
   var gtidre = /\d{9}/;
   if (!emailre.test(req.body.email) || !gtidre.test(req.body.gtid)){
+    //send out an error message if the input data is invalid
     return next("Could not parse e-mail or gtid! try again.");
   }
   async.waterfall([
       function(cb) {
+        //first find an event that matches the url :id
         models.Event.findOne({_id: req.params.id}, cb);
       },
       function(event, cb) {
+        /* we assume that the gtid and email may already exist in the system!
+         * before we register a guest, we check to see if a user who matches
+         * the gtid and e-mail provided exists */ 
         models.User.findOne({'email':req.body.email, 'gt_id':req.body.gtid},
           function(err,doc){
-            debugger;
+            //if the doc doesn't exist, than we also search to see if the same
+            //guest is already in the system
             if (doc==null){
               models.Guest.findOne({'email':req.body.email, 'gt_id':req.body.gtid},
                 function(err,guest_doc){
                   var my_doc;
+                  //case for new guest (first time we see gtid & e-mail)
                   if (!guest_doc){
+                    //create a new guest
                     my_doc = new models.Guest({
                       'email':req.body.email,
                       'gt_id':req.body.gtid
                     });
+                    //save it
                     my_doc.save();
                   } else {
+                    //if the guest is returning, we just pass it along
                     my_doc = guest_doc;
                   }
                   cb(null,event, my_doc);
                 });
             }else{
-              cb(null,event,doc)
+              //if a user was found, just proceed as usual
+              cb(null,event,doc);
             }
           });
       },
       function(event, user, cb) {
+        //query the Participation collection to see if there are matching
         models.Part.count({'event':event._id, 'account':user._id},
             function(err, count){
               if (count==0){
+                //we usually expect no entries to exist beforehand, create a new one
+                //and save it
                 var new_part = new models.Part({
                   'event':event._id,
                   'account':user._id,
                   'date':new Date()
                 });
-                new_part.save()
+                new_part.save();
               }
             });
+        //all done! Continue to the redirect statement
         cb();
       },
       ], function(err) {
         if (err) {
           return next(err);
         }
+        //lead the user back to the kiosk page
         res.redirect(req.url);
       });
 };
 
+/**
+ * handles user actions with an event (attend, un-attend, etc.)
+ * for PUT /events/:id
+ */
 exports.put = function(req, res, next) {
   if (!req.body._type) {
     res.send(400); // Bad Request
@@ -474,14 +509,25 @@ exports.put = function(req, res, next) {
   }
 };
 
+/**
+ * Admins may remove quest accounts who participate in an event from the event page
+ *   see 'exports.put()' above
+ */
 exports.unguest = function(req,res,next){
+  //make sure that the user is an org-admin, or super-admin before allowing un-guesting
+  if ((!req.user || event.org.admins.indexOf(req.user.id) < 0) &&  !req.user.is_admin)  {
+    return res.send(403);
+  }
   async.waterfall([
       function(cb) {
+        //find the event
         models.Event.findOne({_id: req.params.id}, cb);
       },
       function(event, cb) {
+        //remove a participation with the event and the guest-id, if found
         models.Part.remove({'event':event._id, 'account':req.body.guest},
           function(err){
+            //callback for remove operation, once we're here, we're done
             cb();
           });
       },
@@ -489,45 +535,63 @@ exports.unguest = function(req,res,next){
         if (err) {
           return next(err);
         }
+        //redirect back to event page
         res.redirect(req.url);
       });
-}
+};
 
+/**
+ * action triggered by the "I'm here" button
+ *   see 'exports.put()' above
+ */
 exports.attend = function(req, res, next) {
   async.waterfall([
       function(cb) {
+        //find the event
         models.Event.findOne({_id: req.params.id}, cb);
       },
       function(event, cb) {
+        //check to see if the user is already attending the event
         models.Part.count({'event':event._id, 'account':req.user.id},
           function(err,count){
             if (count==0){
+              //if the user isn't already attending, create a new participation object
               var new_part = new models.Part({
                 'event':event._id,
                 'account':req.user.id,
                 'date':new Date()
               });
-              new_part.save()
+              //save thy object
+              new_part.save();
             }
           });
+          //all done!
         cb();
       },
       ], function(err) {
         if (err) {
           return next(err);
         }
+        //redirect back to event page
         res.redirect(req.url);
       });
 };
 
+/**
+ * action triggered when a user cancels his attendance for an event
+ *   see 'exports.put()' above
+ */
 exports.unattend = function(req, res, next) {
   async.waterfall([
       function(cb) {
+        //find the event
         models.Event.findOne({_id: req.params.id}, cb);
       },
       function(event, cb) {
+        //remove participation for the event, and the logged-in user
         models.Part.remove({'event':event._id, 'account':req.user.id},
           function(err){
+            //all done
             cb();
           });
       },
@@ -535,32 +599,48 @@ exports.unattend = function(req, res, next) {
         if (err) {
           return next(err);
         }
+        //redirect to event page
         res.redirect(req.url);
       });
 };
 
+/**
+ * action triggered when an admin updates the details of an event
+ *   see 'exports.put()' above
+ */
 exports.update = function(req, res, next) {
+  //find the event in question
   models.Event.findOne({_id: req.params.id}).populate('org')
-    .run(function(err, event) {
+    .exec(function(err, event) {
       if (err) {
         return next(err);
       }
       if (event == null) {
         return res.send(404);
       }
+      //validate that the user is an admin of the org or a super-admin
       if ((!req.user || event.org.admins.indexOf(req.user.id) < 0) &&  !req.user.is_admin)  {
         return res.send(403);
       }
+      //update the details of the event
       event.title = req.body.title;
       event.start_time = req.body.start_time;
       event.end_time = req.body.end_time;
       event.description = req.body.description;
+      //save the event
       event.save();
+      //redirect to the event page
       res.redirect(req.url);
     });
 };
 
+/**
+ * allows admins to edit the details of an existing event
+ * for GET /events/:id/edit
+ *  - note: anyone can open this page, but only admins can save the changes.
+ */
 exports.edit = function(req, res, next) {
+  //find the event
   models.Event.findOne({_id: req.params.id}, function(err, event) {
     if (err) {
       return next(err);
@@ -568,6 +648,7 @@ exports.edit = function(req, res, next) {
     if (event == null) {
       return res.send(404);
     }
+    //create the create-event page
     res.render('create-event', {
       event: event,
       update: true,
