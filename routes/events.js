@@ -249,10 +249,10 @@ exports.list = function(req, res, next) {
         if (page == 0) {
           q = q.where('end_time').gte(+new Date() - ONE_HOUR)
     .where('start_time').lte(+new Date() + ONE_WEEK)
-    .sort('start_time', 1);
+    .sort('start_time', -1);
         } else if (page > 0) {
           q = q.where('start_time').gte(+new Date() + ONE_WEEK)
-    .sort('start_time', 1).limit(limit).skip(limit * (page - 1));
+    .sort('start_time', -1).limit(limit).skip(limit * (page - 1));
         } else if (page < 0) {
           q = q.where('end_time').lte(+new Date() - ONE_HOUR)
     .sort('start_time', -1).limit(limit).skip(limit * (-page - 1));
