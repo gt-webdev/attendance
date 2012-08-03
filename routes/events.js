@@ -514,10 +514,6 @@ exports.put = function(req, res, next) {
  *   see 'exports.put()' above
  */
 exports.unguest = function(req,res,next){
-  //make sure that the user is an org-admin, or super-admin before allowing un-guesting
-  if ((!req.user || event.org.admins.indexOf(req.user.id) < 0) &&  !req.user.is_admin)  {
-    return res.send(403);
-  }
   async.waterfall([
       function(cb) {
         //find the event
@@ -525,11 +521,20 @@ exports.unguest = function(req,res,next){
       },
       function(event, cb) {
         //remove a participation with the event and the guest-id, if found
-        models.Part.remove({'event':event._id, 'account':req.body.guest},
-          function(err){
-            //callback for remove operation, once we're here, we're done
-            cb();
+        models.Org.findOne({_id:event.org}, function (err, org){
+          if (err){
+            return res.send(500, "db error");
+          }
+          //make sure that the user is an org-admin, or super-admin before allowing un-guesting
+          if ((!req.user || org.admins.indexOf(req.user.id) < 0) &&  !req.user.is_admin)  {
+            return res.send(403);
+          }
+          models.Part.remove({'event':event._id, 'account':req.body.guest},
+            function(err){
+              //callback for remove operation, once we're here, we're done
+              cb();
           });
+        });
       },
       ], function(err) {
         if (err) {
