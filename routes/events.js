@@ -277,6 +277,12 @@ exports.list = function(req, res, next) {
           return next(err);
         }
         //render the page
+        for (i = 0; i < events.length; i += 1){
+          if (events[i].org == null){
+            console.log(events[i]._id);
+            console.log(events[i].org);
+          }
+        }
         res.render('events', {
           title: 'Events',
         events: events,

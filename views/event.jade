@@ -51,12 +51,14 @@
                   input(type='submit', value='X').btn
           else
             tr
-              td= attendee.name.first + ' ' + attendee.name.last
-              td
+              if (attendee)
+                td= attendee.name.first + ' ' + attendee.name.last
+                td
         each attendee in legacy
           tr
-            td= attendee.name.first + ' ' + attendee.name.last
-            td
+            if (attendee)
+              td= attendee.name.first + ' ' + attendee.name.last
+              td
    if (att_guests.length != 0)
     h3(style='clear:both') Guests (#{att_guests.length})
     table.span5
