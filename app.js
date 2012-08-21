@@ -1,11 +1,13 @@
-var coffee = require('coffee-script'),
-    express = require('express'),
-    everyauth = require('everyauth'),
-    mongoose = require('mongoose'),
-    conf = require('./conf'),
+var express = require('express'),
+    app = express(),
+    coffee = require('coffee-script'),
+    everyauth = require("everyauth"),
+    mongoose = require("mongoose"),
+    conf = require("./conf"),
     routes = require('./routes'),
     models = require('./lib/models'),
-    auth = require('./lib/auth');
+    auth = require('./lib/auth'),
+    User = models.User;
 
 //connect to db
 mongoose.connect(conf.mongo.uri);
@@ -18,13 +20,17 @@ everyauth.password
     .authenticate(auth.authenticate)
     .loginLocals(function(req, res) {
         return {
-            next: req.query.next
+            next: req.query.next,
+            req: req,
+            user:req.user
         };
     })
     .respondToLoginSucceed(auth.respondToLoginSucceed)
     .registerLocals(function(req, res) {
         return {
-            next: req.query.next
+            next: req.query.next,
+            req: req,
+            user:req.user
         };
     })
     .respondToRegistrationSucceed(auth.respondToRegistrationSucceed)
@@ -39,83 +45,80 @@ everyauth.password
     .validateRegistration(auth.validateRegistration)
     .registerUser(auth.registerUser);
 
-//create express app
-var app = module.exports = express.createServer();
+everyauth.everymodule.findUserById( function(req, userId, callback){
+  User.findOne({_id: userId}, function(err, user) {
+    if (err) {
+      callback(err);
+      return;
+    }
+    callback(false, user);
+  });
+});
 
-//bind everyauth to express
+//config
+app.configure(function (){
+  app.set('views', __dirname + '/views');
+  app.set('view engine', 'jade');
+  app.use(express.bodyParser());
+  app.use(express.methodOverride());
+  app.use(express.cookieParser());
+});
+
+//development-mode specific config
+app.configure('development', function (){
+  app.use(express.session({
+    secret: conf.session.secret,
+  }));
+});
+
+//production mode config
+app.configure('production', function (){
+  var MongoStore = require('connect-mongodb');
+  var oneWeek = 60 * 60 * 24 * 7;
+  app.use(express.session({
+    secret: conf.session.secret,
+    store: new MongoStore({
+      db: mongoose.connections[0].db,
+      reapInterval: oneWeek
+    }),
+    cookie: {
+      maxAge: oneWeek * 1000 //milliseconds
+    }
+  }));
+});
+
 everyauth.helpExpress(app);
-
-// Configuration
-app.configure(function() {
-    app.set('views', __dirname + '/views');
-    app.set('view engine', 'jade');
-    app.use(express.bodyParser());
-    app.use(express.methodOverride());
-    app.use(express.cookieParser());
-});
-
-//development mode config
-app.configure('development', function() {
-    app.use(express.session({
-        secret: conf.session.secret,
-    }));
-});
-
-//production mode condfig: set a limit on the age of cookies, etc.
-app.configure('production', function() {
-    var MongoStore = require('connect-mongodb');
-    var oneWeek = 60 * 60 * 24 * 7;
-    app.use(express.session({
-        secret: conf.session.secret,
-        store: new MongoStore({
-          db: mongoose.connections[0].db,
-          reapInterval: oneWeek,
-        }),
-        cookie: {
-            maxAge: oneWeek * 1000, // milliseconds - lol javascript
-        },
-    }));
-});
-
-//general config for all modes
+//stupid config that I missed when I migrated old code and then spent an hour debugging
 app.configure(function() {
     app.use(express.csrf());
-    app.use(everyauth.middleware());
+    app.use(everyauth.middleware(app));
     app.use(auth.middleware());
     app.use(app.router);
     app.use(express.static(__dirname + '/public'));
 });
 
-//more development config
+
+
+//aditional development config
 app.configure('development', function(){
     app.use(express.errorHandler({ dumpExceptions: true, showStack: true }));
 });
 
-//don't show errors on production
 app.configure('production', function(){
-    app.use(express.errorHandler({ dumpExceptions: true}));
+  app.use(express.errorHandler({dumpExceptions: true}));
 });
 
-app.dynamicHelpers({
-    user: function(req, res) {
-        return req.user;
-    },
-    messages: require('./lib/bootstrap2-messages'),
-    req: function(req, res) {
-        return req;
-    },
-    md: function(req, res) {
-        return require('marked');
-    },
-    alcohol: function(req, res) {
-        return require('./lib/alcohol').stringify;
-    },
+//local variables to the app
+app.locals({
+  messages: require('./lib/bootstrap2-messages'),
+  md: require('marked'),
+  alcohol: require('./lib/alcohol').stringify
 });
 
-// Routes
+
+//register all routes found in routes file
 routes.registerOn(app);
 
-//start the app
 app.listen(conf.port);
 //quick message for the masses!
-console.log("Express server listening on port %d in %s mode", app.address().port, app.settings.env);
+console.log("Express server listening on port %d in %s mode", conf.port, app.settings.env);

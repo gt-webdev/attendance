@@ -1,13 +1,15 @@
-.content
-  .page-header
-    if (user && user.is_admin) || user_is_admin
-      a(href='/create-event/').pull-right.btn Create an event
-    if req.query.page < 0
-      h1 Older Events
-    else if req.query.page > 0
-      h1 Later Events
-    else
-      h1 Events
+extends layout
+block content
+  .content
+    .page-header
+      if (user && user.is_admin) || user_is_admin
+        a(href='/create-event/').pull-right.btn Create an event
+      if req.query.page < 0
+        h1 Older Events
+      else if req.query.page > 0
+        h1 Later Events
+      else
+        h1 Events
 
   each event in events
     h2
@@ -18,11 +20,11 @@
     p
       a(href='/events/' + event.id + '/kiosk').btn Kiosk
 
-  - var page = req.query.page || 0;
-  .row.foot-actions
-    .span2
-      if +page >= 0 || events.length > 0
-        a(href='/events?page=' + (+page - 1)) &laquo Older Events
-    .span2.offset8
-      if page <= 0 || events.length > 0
-        a(href='/events?page=' + (+page + 1)).pull-right Later Events &raquo
+    - var page = req.query.page || 0;
+    .row.foot-actions
+      .span2
+        if +page >= 0 || events.length > 0
+          a(href='/events?page=' + (+page - 1)) &laquo Older Events
+      .span2.offset8
+        if page <= 0 || events.length > 0
+          a(href='/events?page=' + (+page + 1)).pull-right Later Events &raquo

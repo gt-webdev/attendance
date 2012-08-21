@@ -9,7 +9,7 @@ exports.list = function(req, res, next) {
   async.waterfall([
                   //first, find all the orgs, sort by name (ascending)
                   function(cb) {
-    models.Org.find().sort('name', 1).exec(cb);
+    models.Org.find().sort('-name').exec(cb);
   },
   ], function(err, orgs) {
     if (err) {
@@ -17,6 +17,8 @@ exports.list = function(req, res, next) {
     }
     //render a page with the resulting list
     res.render('orgs', {
+      req:req,
+      user:req.user,
       title: 'All Organizations',
       orgs: orgs,
     });
@@ -36,7 +38,7 @@ exports.details = function(req, res, next) {
   function(org, cb){
     //find all events for the org, sort from latest to earliest, limit to 10
     models.Event.find({org:org._id})
-      .sort('start_time', -1).limit(10).exec(function(err, events){
+      .sort('start_time').limit(10).exec(function(err, events){
       cb(err, org, events);
     });
   }
@@ -49,6 +51,8 @@ exports.details = function(req, res, next) {
     }
     //render the page with the org info and list of latest 10 events
     res.render('org', {
+      req:req,
+      user:req.user,
       org: org,
       events: events
     });
@@ -167,6 +171,8 @@ exports.create = function(req, res, next) {
   //anyone can get to this page, only admins can submit, no prior info needed
   //for rendering the page, except that this is a new org and not an update
   res.render('create-org', {
+      req:req,
+      user:req.user,
     update: false,
     org: {},
   });
@@ -187,6 +193,8 @@ exports.edit = function(req, res, next) {
     }
     //render the page
     res.render('create-org', {
+      req:req,
+      user:req.user,
       update: true,
       org: org,
     });

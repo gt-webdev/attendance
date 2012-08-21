@@ -1,6 +1,4 @@
-node_modules
-*~
 *.swo
 *.swp
-npm-debug.log
-nohup.out
+*~
+node_modules

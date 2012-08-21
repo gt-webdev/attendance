@@ -1,127 +1,129 @@
-.content
-  .page-header
-    if update
-      h2 Edit Event
-    else
-      h2 Create Event
-
-  if update
-    - var form_url = '/events/' + req.params.id;
-  else
-    - var form_url = '/events';
-  form#create-event(action=form_url, method='POST').form-horizontal
-    input(type='hidden', name='_csrf', value=req.session._csrf)
-    if update
-      input(type='hidden', name='_method', value='PUT')
-      input(type='hidden', name='_type', value='update')
-    
-    .control-group
-      label.control-label(for='title') Title
-      .controls
-        input(type='text', name='title', value=event.title)#title
-
-    if !update
-      .control-group
-        label.control-label(for='org') Organization
-        .controls
-          select(name='org')
-            each org in orgs
-              if user.is_admin || org.admins.indexOf(user.id) >= 0
-                option(value= org.id, selected=(req.query.org == org.name))= org.name
-  
-    .control-group
-      label.control-label(for='start_time_date') Start time
-      .controls
-        input(type='text', placeholder='Date')#start_time_date
-        input(type='text', placeholder='Time')#start_time_time
-        input(type='hidden', name='start_time', value=event.start_time)#start_time
-        p.timehint (hh:mm am|pm)
-
-    .control-group
-      label.control-label(for='end_time_date') End time
-      .controls
-        input(type='text', placeholder='Date')#end_time_date
-        input(type='text', placeholder='Time')#end_time_time
-        input(type='hidden', name='end_time', value=event.end_time)#end_time
-        p.timehint (hh:mm am|pm)
-
-    .control-group
-      label.control-label(for='description') Description
-      .controls
-        textarea(name='description', rows=20, cols=200)#description= event.description
-
-    .form-actions
+extends layout
+block content
+  .content
+    .page-header
       if update
-        input(type='submit', value='Save').btn.btn-primary
+        h2 Edit Event
       else
-        input(type='submit', value='Create Event').btn.btn-primary
+        h2 Create Event
 
-  
-script(type='text/javascript')
-    $(function() {
-        $('#name').focus();
-        var dp_opts = {
-            changeMonth: true,
-            changeYear: true,
-            showOtherMonths: true,
-            selectOtherMonths: true
-        };
-        $('#start_time_date').datepicker(dp_opts);
-        $('#end_time_date').datepicker(dp_opts);
+    if update
+      - var form_url = '/events/' + req.params.id;
+    else
+      - var form_url = '/events';
+    form#create-event(action=form_url, method='POST').form-horizontal
+      input(type='hidden', name='_csrf', value=req.session._csrf)
+      if update
+        input(type='hidden', name='_method', value='PUT')
+        input(type='hidden', name='_type', value='update')
+      
+      .control-group
+        label.control-label(for='title') Title
+        .controls
+          input(type='text', name='title', value=event.title)#title
 
-        var fix_time = function(time) {
-          var digits = time.match(/\d?\d:\d\d/);
-          if (digits) {
-            var ampm = time.match(/(am|pm)/i);
-            if (ampm) {
-              return digits[0] + ' ' + ampm[0];
+      if !update
+        .control-group
+          label.control-label(for='org') Organization
+          .controls
+            select(name='org')
+              each org in orgs
+                if user.is_admin || org.admins.indexOf(user.id) >= 0
+                  option(value= org.id, selected=(req.query.org == org.name))= org.name
+    
+      .control-group
+        label.control-label(for='start_time_date') Start time
+        .controls
+          input(type='text', placeholder='Date')#start_time_date
+          input(type='text', placeholder='Time')#start_time_time
+          input(type='hidden', name='start_time', value=event.start_time)#start_time
+          p.timehint (hh:mm am|pm)
+
+      .control-group
+        label.control-label(for='end_time_date') End time
+        .controls
+          input(type='text', placeholder='Date')#end_time_date
+          input(type='text', placeholder='Time')#end_time_time
+          input(type='hidden', name='end_time', value=event.end_time)#end_time
+          p.timehint (hh:mm am|pm)
+
+      .control-group
+        label.control-label(for='description') Description
+        .controls
+          textarea(name='description', rows=20, cols=200)#description= event.description
+
+      .form-actions
+        if update
+          input(type='submit', value='Save').btn.btn-primary
+        else
+          input(type='submit', value='Create Event').btn.btn-primary
+
+    
+  script(type='text/javascript')
+      $(function() {
+          $('#name').focus();
+          var dp_opts = {
+              changeMonth: true,
+              changeYear: true,
+              showOtherMonths: true,
+              selectOtherMonths: true
+          };
+          $('#start_time_date').datepicker(dp_opts);
+          $('#end_time_date').datepicker(dp_opts);
+
+          var fix_time = function(time) {
+            var digits = time.match(/\d?\d:\d\d/);
+            if (digits) {
+              var ampm = time.match(/(am|pm)/i);
+              if (ampm) {
+                return digits[0] + ' ' + ampm[0];
+              }
+              return digits[0];
             }
-            return digits[0];
+            return '0:00';
+          };
+
+          var update_hidden_date = function(selector, event) {
+            var hidden = $(selector);
+            var date = $(selector + '_date');
+            var time = $(selector + '_time');
+
+            hidden.val(new Date(date.val() + ' ' + fix_time(time.val())));
+          };
+
+          var hidden_start = '#start_time';
+          var hidden_end = '#end_time';
+
+          var update_start = _.bind(update_hidden_date, null, hidden_start);
+          var update_end = _.bind(update_hidden_date, null, hidden_end);
+
+          $('#start_time_date').change(update_start);
+          $('#start_time_time').change(update_start);
+          $('#end_time_date').change(update_end);
+          $('#end_time_time').change(update_end);
+      });
+
+      $(function() {
+        var start_time = $('#start_time').val();
+        var end_time = $('#end_time').val();
+
+        var load_time = function(selector) {
+          var t = new Date($(selector).val());
+          $(selector + '_date').val((t.getMonth() + 1) + '/'
+            + t.getDate() + '/'
+            + t.getFullYear());
+          var minute_string = '';
+          if (t.getMinutes() < 10) {
+             minute_string += '0';
           }
-          return '0:00';
+          minute_string += t.getMinutes();
+          $(selector + '_time').val(t.getHours() + ':' + minute_string);
         };
 
-        var update_hidden_date = function(selector, event) {
-          var hidden = $(selector);
-          var date = $(selector + '_date');
-          var time = $(selector + '_time');
-
-          hidden.val(new Date(date.val() + ' ' + fix_time(time.val())));
-        };
-
-        var hidden_start = '#start_time';
-        var hidden_end = '#end_time';
-
-        var update_start = _.bind(update_hidden_date, null, hidden_start);
-        var update_end = _.bind(update_hidden_date, null, hidden_end);
-
-        $('#start_time_date').change(update_start);
-        $('#start_time_time').change(update_start);
-        $('#end_time_date').change(update_end);
-        $('#end_time_time').change(update_end);
-    });
-
-    $(function() {
-      var start_time = $('#start_time').val();
-      var end_time = $('#end_time').val();
-
-      var load_time = function(selector) {
-        var t = new Date($(selector).val());
-        $(selector + '_date').val((t.getMonth() + 1) + '/'
-          + t.getDate() + '/'
-          + t.getFullYear());
-        var minute_string = '';
-        if (t.getMinutes() < 10) {
-           minute_string += '0';
+        if (start_time) {
+          load_time('#start_time');
         }
-        minute_string += t.getMinutes();
-        $(selector + '_time').val(t.getHours() + ':' + minute_string);
-      };
-
-      if (start_time) {
-        load_time('#start_time');
-      }
-      if (end_time) {
-        load_time('#end_time');
-      }
-    });
+        if (end_time) {
+          load_time('#end_time');
+        }
+      });

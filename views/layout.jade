@@ -52,8 +52,7 @@ html
                       li.collapse-show
                           a(href='/logout') Logout
     #content.container
-        != messages()
-        != body
+      block content
 
     script(type='text/javascript', src='/javascripts/bootstrap.min.js')
     script(type='text/javascript', src='/javascripts/confirm.js')

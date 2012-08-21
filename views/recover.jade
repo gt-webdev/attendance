@@ -1,13 +1,15 @@
-.content
-  .page-header
-    h2 Recover
+extends layout
+block content
+  .content
+    .page-header
+      h2 Recover
 
-  form(action='/recover', method='POST').form-horizontal
-    input(type='hidden', name='_csrf', value=req.session._csrf)
-    .control-group
-      label.control-label(for='email') Email:
-      .controls
-        input(type='text', name='email')#email
-    
-    .form-actions
-      input(type='submit', value='Recover').btn.btn-primary
+    form(action='/recover', method='POST').form-horizontal
+      input(type='hidden', name='_csrf', value=req.session._csrf)
+      .control-group
+        label.control-label(for='email') Email:
+        .controls
+          input(type='text', name='email')#email
+      
+      .form-actions
+        input(type='submit', value='Recover').btn.btn-primary

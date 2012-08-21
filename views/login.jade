@@ -1,33 +1,35 @@
-if typeof errors != 'undefined'
-  each error in errors
-    .alert.alert-error(data-dismiss="alert")
-      a(href='#').close ×
-      strong= error
+extends layout
+block content
+  if typeof errors != 'undefined'
+    each error in errors
+      .alert.alert-error(data-dismiss="alert")
+        a(href='#').close ×
+        strong= error
 
 .content
   .page-header
     h2 Login
 
-  form(action='/login', method='POST').form-horizontal
-    input(type='hidden', name='_csrf', value=req.session._csrf)
-    input(type='hidden', name='next', value=next)
-          
-    .control-group
-      label.control-label(for='login') GT User ID
-      .controls
-          input(type='text', name=everyauth.password.loginFormFieldName)#login
+    form(action='/login', method='POST').form-horizontal
+      input(type='hidden', name='_csrf', value=req.session._csrf)
+      input(type='hidden', name='next', value=next)
+            
+      .control-group
+        label.control-label(for='login') GT User ID
+        .controls
+            input(type='text', name=everyauth.password.loginFormFieldName)#login
 
-    .control-group
-      label.control-label(for='password') Password
-      .controls
-          input(type='password', name=everyauth.password.passwordFormFieldName)#password
+      .control-group
+        label.control-label(for='password') Password
+        .controls
+            input(type='password', name=everyauth.password.passwordFormFieldName)#password
 
-    .form-actions
-      input(type='submit', value='Login').btn.btn-primary
-      a(href='/register').btn Register
-      a(href='/recover').btn I forgot my credentials!
+      .form-actions
+        input(type='submit', value='Login').btn.btn-primary
+        a(href='/register').btn Register
+        a(href='/recover').btn I forgot my credentials!
 
-script(type='text/javascript')
-    $(function() {
-        $('#login').focus();
-    });
+  script(type='text/javascript')
+      $(function() {
+          $('#login').focus();
+      });

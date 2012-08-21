@@ -108,6 +108,8 @@ exports.create = function(req, res, next) {
     }
     //render the page with the list of orgs embedded
     res.render('create-event', {
+      req:req,
+      user:req.user,
       event: {},
       orgs: orgs,
       update: false,
@@ -163,7 +165,7 @@ exports.details = function(req, res, next) {
       function(event, org, place, legacy_attendees, cb){
         /* this function uses the Participation model to find guests and users*/
         //find all participations for the given event
-        models.Part.find({'event':event._id}, ['account'],
+        models.Part.find({'event':event._id}, 'account',
             function(err, docs){
               async.map(docs, function(user_id, cb) {
                 models.User.findOne({_id: user_id.account}, function(err,att){
@@ -187,7 +189,7 @@ exports.details = function(req, res, next) {
       function(event,org,place,legacy_attendees,attendees, cb){
         //does the same as the previous function, but fetches guest accounts
         //instead of user accounts for the event
-        models.Part.find({'event':event._id}, ['account'],
+        models.Part.find({'event':event._id}, 'account',
             function(err, docs){
               async.map(docs, function(user_id, cb) {
                 models.Guest.findOne({_id: user_id.account}, function(err,att){
@@ -221,6 +223,8 @@ exports.details = function(req, res, next) {
     }
     //render the event page with the given data
     res.render('event', {
+      req:req,
+      user:req.user,
       event: event,
       org: org,
       place: place,
@@ -249,13 +253,13 @@ exports.list = function(req, res, next) {
         if (page == 0) {
           q = q.where('end_time').gte(+new Date() - ONE_HOUR)
     .where('start_time').lte(+new Date() + ONE_WEEK)
-    .sort('start_time', -1);
+    .sort('-start_time');
         } else if (page > 0) {
           q = q.where('start_time').gte(+new Date() + ONE_WEEK)
-    .sort('start_time', -1).limit(limit).skip(limit * (page - 1));
+    .sort('-start_time').limit(limit).skip(limit * (page - 1));
         } else if (page < 0) {
           q = q.where('end_time').lte(+new Date() - ONE_HOUR)
-    .sort('start_time', -1).limit(limit).skip(limit * (-page - 1));
+    .sort('-start_time').limit(limit).skip(limit * (-page - 1));
         }
 
         //run the query to get results
@@ -277,13 +281,9 @@ exports.list = function(req, res, next) {
           return next(err);
         }
         //render the page
-        for (i = 0; i < events.length; i += 1){
-          if (events[i].org == null){
-            console.log(events[i]._id);
-            console.log(events[i].org);
-          }
-        }
         res.render('events', {
+          req:req,
+          user:req.user,
           title: 'Events',
         events: events,
         user_is_admin: user_is_admin,
@@ -340,7 +340,7 @@ exports.kiosk = function(req,res,next) {
       },
       function(event, org, place, legacy_attendees, cb){
         //find participation objects tied to the event
-        models.Part.find({'event':event._id}, ['account'],
+        models.Part.find({'event':event._id}, 'account',
             function(err, docs){
               //for each participation object found, look for a user object
               async.map(docs, function(user_id, cb) {
@@ -363,7 +363,7 @@ exports.kiosk = function(req,res,next) {
       },
       function(event,org,place,legacy_attendees,attendees, cb){
         //do the same as the previous function, but for guests instead of users
-        models.Part.find({'event':event._id}, ['account'],
+        models.Part.find({'event':event._id}, 'account',
             function(err, docs){
               async.map(docs, function(user_id, cb) {
                 models.Guest.findOne({_id: user_id.account}, function(err,att){
@@ -395,6 +395,8 @@ exports.kiosk = function(req,res,next) {
     }
     //render the page
     res.render('kiosk', {
+      req:req,
+      user:req.user,
       event: event,
       org: org,
       place: place,
@@ -520,16 +522,17 @@ exports.put = function(req, res, next) {
  *   see 'exports.put()' above
  */
 exports.unguest = function(req,res,next){
+  //make sure that the user is an org-admin, or super-admin before allowing un-guesting
   async.waterfall([
       function(cb) {
         //find the event
         models.Event.findOne({_id: req.params.id}, cb);
       },
       function(event, cb) {
-        //remove a participation with the event and the guest-id, if found
-        models.Org.findOne({_id:event.org}, function (err, org){
+        models.Org.findOne({_id:event.org}, function(err, org){
           if (err){
-            return res.send(500, "db error");
+            res.send(404, "Org couldn't be found");
+            cb (true);
           }
           //make sure that the user is an org-admin, or super-admin before allowing un-guesting
           if ((!req.user || org.admins.indexOf(req.user.id) < 0) &&  !req.user.is_admin)  {
@@ -541,6 +544,17 @@ exports.unguest = function(req,res,next){
               cb();
           });
         });
+      },
+      function(event, org, cb) {
+        //remove a participation with the event and the guest-id, if found
+        if ((!req.user || org.admins.indexOf(req.user.id) < 0) &&  !req.user.is_admin)  {
+          return res.send(403);
+        }
+        models.Part.remove({'event':event._id, 'account':req.body.guest},
+          function(err){
+            //callback for remove operation, once we're here, we're done
+            cb();
+          });
       },
       ], function(err) {
         if (err) {
@@ -661,6 +675,8 @@ exports.edit = function(req, res, next) {
     }
     //create the create-event page
     res.render('create-event', {
+      req:req,
+      user:req.user,
       event: event,
       update: true,
     });
