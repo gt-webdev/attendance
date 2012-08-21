@@ -5,10 +5,6 @@ block content
       if user && user.is_admin
         a(href='/create-org/').pull-right.btn Create an org
       h1 All Organizations
-
     each org in orgs
       h2
-
-  each org in orgs
-    h2
-      a(href='/orgs/' + org.slug)= org.name
+        a(href='/orgs/' + org.slug)= org.name

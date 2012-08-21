@@ -20,11 +20,11 @@ block content
     p
       a(href='/events/' + event.id + '/kiosk').btn Kiosk
 
-    - var page = req.query.page || 0;
-    .row.foot-actions
-      .span2
-        if +page >= 0 || events.length > 0
-          a(href='/events?page=' + (+page - 1)) &laquo Older Events
-      .span2.offset8
-        if page <= 0 || events.length > 0
-          a(href='/events?page=' + (+page + 1)).pull-right Later Events &raquo
+  - var page = req.query.page || 0;
+  .row.foot-actions
+    .span2
+      if +page >= 0 || events.length > 0
+        a(href='/events?page=' + (+page - 1)) &laquo Older Events
+    .span2.offset8
+      if page <= 0 || events.length > 0
+        a(href='/events?page=' + (+page + 1)).pull-right Later Events &raquo
