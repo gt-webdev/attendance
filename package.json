@@ -6,7 +6,7 @@
     "express": "3.x",
     "jade": "0.27.x",
     "mongoose": "3.x",
-    "everyauth": "0.3.x",
+    "everyauth": "git://github.com/bnoguchi/everyauth.git#express3",
     "marked": "0.2.x",
     "bcrypt": "0.7.x",
     "async": "0.1.x",

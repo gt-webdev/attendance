@@ -6,7 +6,8 @@ var express = require('express'),
     conf = require("./conf"),
     routes = require('./routes'),
     models = require('./lib/models'),
-    auth = require('./lib/auth');
+    auth = require('./lib/auth'),
+    User = models.User;
 
 //connect to db
 mongoose.connect(conf.mongo.uri);
@@ -44,14 +45,20 @@ everyauth.password
     .validateRegistration(auth.validateRegistration)
     .registerUser(auth.registerUser);
 
+everyauth.everymodule.findUserById( function(req, userId, callback){
+  User.findOne({_id: userId}, function(err, user) {
+    if (err) {
+      callback(err);
+      return;
+    }
+    callback(false, user);
+  });
+});
 
 //config
 app.configure(function (){
   app.set('views', __dirname + '/views');
   app.set('view engine', 'jade');
-  app.set('view options', {
-    everyauth: everyauth
-  });
   app.use(express.bodyParser());
   app.use(express.methodOverride());
   app.use(express.cookieParser());

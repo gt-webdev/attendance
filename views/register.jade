@@ -1,50 +1,52 @@
-if typeof errors != 'undefined'
-  each error in errors
-    .alert-message.error.fade.in
-      a(href='#').close ×
-      p
-        strong= error
+extends layout
+block content
+  if typeof errors != 'undefined'
+    each error in errors
+      .alert-message.error.fade.in
+        a(href='#').close ×
+        p
+          strong= error
 
-.content
-  .page-header
-    h2 Register
+  .content
+    .page-header
+      h2 Register
 
-  form(action='/register', method='POST').form-horizontal
-    input(type='hidden', name='_csrf', value=req.session._csrf)
-    .control-group
-      label.control-label(for='first_name') First Name
-      .controls
-        input(type='text', name='userParams[first_name]')#first_name
+    form(action='/register', method='POST').form-horizontal
+      input(type='hidden', name='_csrf', value=req.session._csrf)
+      .control-group
+        label.control-label(for='first_name') First Name
+        .controls
+          input(type='text', name='userParams[first_name]')#first_name
 
-    .control-group
-      label.control-label(for='last_name') Last Name
-      .controls
-        input(type='text', name='userParams[last_name]')#last_name
+      .control-group
+        label.control-label(for='last_name') Last Name
+        .controls
+          input(type='text', name='userParams[last_name]')#last_name
 
-    .control-group
-      label.control-label(for='email') Email
-      .controls
-        input(type='text', name='userParams[email]')#email
+      .control-group
+        label.control-label(for='email') Email
+        .controls
+          input(type='text', name='userParams[email]')#email
 
-    .control-group
-      label.control-label(for='gt_id') GT ID number (902 number)
-      .controls
-        input(type='text', name='userParams[gt_id]')#gt_id
+      .control-group
+        label.control-label(for='gt_id') GT ID number (902 number)
+        .controls
+          input(type='text', name='userParams[gt_id]')#gt_id
 
-    .control-group
-      label.control-label(for='gt_userid') GT User ID (e.g., jdoe3)
-      .controls
-        input(type='text', name=everyauth.password.loginFormFieldName)#gt_userid
+      .control-group
+        label.control-label(for='gt_userid') GT User ID (e.g., jdoe3)
+        .controls
+          input(type='text', name=everyauth.password.loginFormFieldName)#gt_userid
 
-    .control-group
-      label.control-label(for='password') Password
-      .controls
-        input(type='password', name=everyauth.password.passwordFormFieldName)#password
+      .control-group
+        label.control-label(for='password') Password
+        .controls
+          input(type='password', name=everyauth.password.passwordFormFieldName)#password
 
-    .form-actions
-      input(type='submit', value='Register').btn.btn-primary
+      .form-actions
+        input(type='submit', value='Register').btn.btn-primary
 
-script(type='text/javascript')
-    $(function() {
-        $('#first_name').focus();
-    });
+  script(type='text/javascript')
+      $(function() {
+          $('#first_name').focus();
+      });
