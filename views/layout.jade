@@ -1,0 +1,66 @@
+!!! 5
+html
+  head
+    title College of Computing Student Organizations
+    meta(name="viewport", content="width=device-width, initial-scale=1.0")
+    link(rel='stylesheet', href='/stylesheets/bootstrap.min.css')
+    link(rel='stylesheet', href='/stylesheets/bootstrap-responsive.min.css')
+    link(rel='stylesheet', href='/stylesheets/style.css')
+    link(rel='stylesheet', href='http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/themes/smoothness/jquery-ui.css')
+    script(type='text/javascript', src='http://ajax.googleapis.com/ajax/libs/jquery/1.7.0/jquery.min.js')
+    script(type='text/javascript', src='http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/jquery-ui.min.js')
+    script(type='text/javascript', src='http://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.2.2/underscore-min.js')
+
+  body
+    .navbar.navbar-fixed-top
+      .navbar-inner
+         .container
+             a.btn.btn-navbar(data-toggle='collapse', data-target='.nav-collapse')
+               span.icon-bar
+               span.icon-bar
+               span.icon-bar
+             a.brand(href='/') CoC Student Organizations
+             .nav-collapse
+                ul.nav.pull-right
+                  if req.user
+                    li.dropdown.collapse-hide(data-dropdown='dropdown')
+                      a(href='',data-toggle='dropdown').dropdown-toggle= user.name.first + ' ' + user.name.last
+                        b.caret
+                      ul.dropdown-menu
+                        li
+                          a(href='/logout') Logout
+                  else
+                    li
+                        form(action='/login', method='POST').navbar-form
+                          input(type='hidden', name='_csrf', value=req.session._csrf)
+                          input(type='hidden', name='next', value=req.url)
+                          input(type='text', name=everyauth.password.loginFormFieldName, placeholder='GT User ID').input-small
+                          input(type='password', name=everyauth.password.passwordFormFieldName, placeholder='Password').input-small
+                          button(type='submit').btn Login
+                          button(id='register', onclick="click_register(this.form)").btn Register
+                ul.nav
+                  - var header_elements = [{url: '/orgs', name: 'Orgs'}, {url: '/events', name: 'Events'}];
+                  each h in header_elements
+                    if h.url == req.url || h.url + '/' == req.url
+                      li.active
+                        a(href=h.url)= h.name
+                    else
+                      li
+                        a(href=h.url)= h.name
+                if req.user
+                  ul.nav      
+                      li.collapse-show
+                          a(href='/logout') Logout
+    #content.container
+      block content
+
+    script(type='text/javascript', src='/javascripts/bootstrap.min.js')
+    script(type='text/javascript', src='/javascripts/confirm.js')
+    script(type='text/javascript')
+      //redirect the user to the register page
+      //...this allows us to keep the register button as part of the single form, which is beneficial when we look at compressing/reflowing the page
+      function click_register(form) {
+        form.action='/register';
+        form.method='GET';
+        form.submit();
+      }
