@@ -52,7 +52,7 @@ exports.post = function(req, res, next) {
           return next(err);
         }
         //flash success notification and redirect to GET handler
-        req.flash('success', 'Event created: %s', req.body.title);
+        //req.flash('success', 'Event created: %s', req.body.title);
         res.redirect('/events/' + event._id);
       });
 };
@@ -92,7 +92,7 @@ exports.delete = function(req, res, next) {
           return next(err);
         }
         //flash message and redirect
-        req.flash('success', 'Event deleted: %s', event.title);
+        //req.flash('success', 'Event deleted: %s', event.title);
         res.redirect('/events/');
       });
 };

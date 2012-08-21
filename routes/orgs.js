@@ -66,10 +66,12 @@ exports.details = function(req, res, next) {
 exports.post = function(req, res, next) {
   async.waterfall([
   function(cb) {
+    console.log(req.user);
     //only admins should be allowed to create events, all else get 403!
     if (!req.user.is_admin) {
       return res.send(403);
     }
+    
     cb();
   },
   function(cb) {
@@ -88,7 +90,7 @@ exports.post = function(req, res, next) {
       return next(err);
     }
     //show a "success" message on the next page
-    req.flash('success', 'Org created: %s', req.body.name);
+    //req.flash('success', 'Org created: %s', req.body.name);
     //redirect to the org's new page
     res.redirect('/orgs/' + req.body.slug);
   });
@@ -157,7 +159,7 @@ exports.delete = function(req, res, next) {
       return next(err);
     }
     //flash success message on the next page
-    req.flash('success', 'Org deleted: %s', org.name);
+    //req.flash('success', 'Org deleted: %s', org.name);
     //redirect to the orgs-list page
     res.redirect('/orgs');
   });
