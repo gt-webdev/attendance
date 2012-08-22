@@ -6,6 +6,7 @@ var models = require('../lib/models');
  * for GET /orgs
  */
 exports.list = function(req, res, next) {
+  console.log("orgs/list invoked");
   async.waterfall([
                   //first, find all the orgs, sort by name (ascending)
                   function(cb) {

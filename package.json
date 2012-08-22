@@ -1,7 +1,7 @@
 {
   "name": "Attendance",
   "description": "Attendance App for the CoC",
-  "version": "1.0.1",
+  "version": "1.0.1-6",
   "dependencies": {
     "express": "3.x",
     "jade": "0.27.x",
@@ -19,5 +19,12 @@
   "engines": {
     "node": "0.8.x",
     "npm": "1.1.x"
+  },
+  "env": {
+    "PYTHON": "/opt/local/bin/python2.7"
+  },
+  "subdomain": "ccorgs",
+  "scripts": {
+    "start": "node app.js"
   }
 }
