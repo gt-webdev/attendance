@@ -9,7 +9,7 @@ exports.list = function(req, res, next) {
   async.waterfall([
                   //first, find all the orgs, sort by name (ascending)
                   function(cb) {
-    models.Org.find().sort('-name').exec(cb);
+    models.Org.find().sort('name').exec(cb);
   },
   ], function(err, orgs) {
     if (err) {
@@ -38,7 +38,7 @@ exports.details = function(req, res, next) {
   function(org, cb){
     //find all events for the org, sort from latest to earliest, limit to 10
     models.Event.find({org:org._id})
-      .sort('start_time').limit(10).exec(function(err, events){
+      .sort('-start_time').limit(10).exec(function(err, events){
       cb(err, org, events);
     });
   }
