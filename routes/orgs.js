@@ -118,9 +118,10 @@ exports.put = function(req, res, next) {
     org.description = req.body.description;
     org.slug = req.body.slug;
     //ATTACK THE DB! (save)
-    org.save();
-    //redirect to the org's new page
-    res.redirect('/orgs/' + org.slug);
+    org.save(function(err, neworg){
+      //redirect to the org's new page
+      res.redirect('/orgs/' + neworg.slug);
+    });
   });
 };
 

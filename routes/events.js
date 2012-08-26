@@ -29,10 +29,10 @@ exports.post = function(req, res, next) {
         if (!req.body.end_time || (req.body.start_time
             && req.body.end_time < req.body.start_time)) {
               req.body.start_time = new Date(req.body.start_time);
-              if (req.body.start_time != 'Invalid Date') {
+              if (req.body.start_time != 'Invalid Date' && req.body.end_time != "Invalid Date") {
                 req.body.end_time = +req.body.start_time + ONE_HOUR;
               } else {
-                return next('Invalid start time');
+                return next('Invalid start/endn time');
               }
             }
         //produce event model and save
