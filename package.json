@@ -18,6 +18,7 @@
     "mailer": "0.6.x"
   },
   "engines": {
+    "npm": "1.1.x"
     "node": "0.8.x"
   },
   "env": {
