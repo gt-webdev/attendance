@@ -7,10 +7,22 @@ var express = require('express'),
     routes = require('./routes'),
     models = require('./lib/models'),
     auth = require('./lib/auth'),
+    MongoStore = require('connect-mongodb'),
+    mongo = require('mongodb'),
+    remote_db = null,
     User = models.User;
 
 //connect to db
 mongoose.connect(conf.mongo.uri);
+
+//connect to db through mongodb
+mongo.connect(conf.mongo.uri, {}, function(err, db){
+  if (err){
+    return;
+  }
+  remote_db = db;
+});
+
 
 //generate authenticate paths and functions
 everyauth.password
@@ -73,21 +85,20 @@ app.configure('development', function (){
 
 //production mode config
 app.configure('production', function (){
-  var MongoStore = require('connect-mongodb');
-  var oneWeek = 60 * 60 * 24 * 7;
+  var oneWeek = 60 * 60 * 24 * 7 * 1000;
   app.use(express.session({
     secret: conf.session.secret,
     store: new MongoStore({
-      db: mongoose.connections[0].db,
+      url: conf.mongo.uri,
       reapInterval: oneWeek
     }),
     cookie: {
-      maxAge: oneWeek * 1000 //milliseconds
+      maxAge: oneWeek
     }
   }));
 });
 
-everyauth.helpExpress(app);
+//everyauth.helpExpress(app);
 //stupid config that I missed when I migrated old code and then spent an hour debugging
 app.configure(function() {
     app.use(express.csrf());

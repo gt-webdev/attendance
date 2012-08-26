@@ -6,7 +6,6 @@ var models = require('../lib/models');
  * for GET /orgs
  */
 exports.list = function(req, res, next) {
-  console.log("orgs/list invoked");
   async.waterfall([
                   //first, find all the orgs, sort by name (ascending)
                   function(cb) {
@@ -67,7 +66,6 @@ exports.details = function(req, res, next) {
 exports.post = function(req, res, next) {
   async.waterfall([
   function(cb) {
-    console.log(req.user);
     //only admins should be allowed to create events, all else get 403!
     if (!req.user.is_admin) {
       return res.send(403);

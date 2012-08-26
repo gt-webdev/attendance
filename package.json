@@ -1,14 +1,15 @@
 {
   "name": "Attendance",
   "description": "Attendance App for the CoC",
-  "version": "1.0.1-6",
+  "version": "1.0.1-19",
   "dependencies": {
     "express": "3.x",
     "jade": "0.27.x",
     "mongoose": "3.x",
+    "mongodb": "1.1.x",
     "everyauth": "git://github.com/bnoguchi/everyauth.git#express3",
     "marked": "0.2.x",
-    "bcrypt": "0.7.x",
+    "bcrypt": ">=0.7",
     "async": "0.1.x",
     "less": "1.x",
     "express-messages-bootstrap": "0.1.x",
@@ -17,11 +18,12 @@
     "mailer": "0.6.x"
   },
   "engines": {
-    "node": "0.8.x",
-    "npm": "1.1.x"
+    "node": "0.8.x"
   },
   "env": {
-    "PYTHON": "/opt/local/bin/python2.7"
+    "PYTHON": "/opt/local/bin/python2.7",
+    "MONGOLAB_URI": "mongodb://nodejitsu:09e14571e407e9dfc01f32cd48f2af90@alex.mongohq.com:10018/nodejitsudb803387900016",
+    "PORT": 80
   },
   "subdomain": "ccorgs",
   "scripts": {
