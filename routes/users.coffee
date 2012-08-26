@@ -4,7 +4,7 @@ auth = require '../lib/auth'
 conf = require '../conf'
 
 exports.recover = (req, res, next) ->
-  res.render 'recover'
+  res.render('recover',{req:req})
 
 exports.recover_post = (req, res, next) ->
   models.User.findOne({email: req.body.email}, (err, user) ->
@@ -13,7 +13,7 @@ exports.recover_post = (req, res, next) ->
 
     if !user
       req.flash('error', "Couldn't find a user with that email")
-      return res.render 'recover'
+      return res.render('recover',{req:req})
 
     reset_url = 'http://' + conf.domain + '/recover/' + user.id
 
@@ -27,11 +27,11 @@ exports.recover_post = (req, res, next) ->
     )
 
     req.flash('info', 'Check your email to reset your password')
-    res.render 'recover'
+    res.render('recover', {req:req})
   )
 
 exports.reset_password = (req, res, next) ->
-  res.render 'reset-password'
+  res.render('reset-password', {req:req})
 
 exports.reset_password_post = (req, res, next) ->
   models.User.findOne({_id: req.params.id}, (err, user) ->
