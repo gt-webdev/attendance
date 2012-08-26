@@ -133,3 +133,4 @@ routes.registerOn(app);
 app.listen(conf.port);
 //quick message for the masses!
 console.log("Express server listening on port %d in %s mode", conf.port, app.settings.env);
+console.log("serverinfo", conf.parsedMongo);
