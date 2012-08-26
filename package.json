@@ -18,16 +18,7 @@
     "mailer": "0.6.x"
   },
   "engines": {
-    "npm": "1.1.x"
+    "npm": "1.1.x",
     "node": "0.8.x"
   },
-  "env": {
-    "PYTHON": "/opt/local/bin/python2.7",
-    "MONGOLAB_URI": "mongodb://nodejitsu:09e14571e407e9dfc01f32cd48f2af90@alex.mongohq.com:10018/nodejitsudb803387900016",
-    "PORT": 80
-  },
-  "subdomain": "ccorgs",
-  "scripts": {
-    "start": "node app.js"
-  }
 }
