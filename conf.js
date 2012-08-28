@@ -16,7 +16,7 @@ module.exports = {
 };
 var urire = /mongodb:\/\/(\w+?):(\w+?)@([\w\.]+?):(\d+?)\/(\w+)/,
     res;
-if (urire.test(module.exports.mongo.uri)){
+if (urire.test(module.exports.mongo.uri)) {
   res = urire.exec(module.exports.mongo.uri);
   module.exports.parsedMongo = {
     username: res[1],
