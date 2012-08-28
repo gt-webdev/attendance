@@ -34,7 +34,7 @@ everyauth.password
         return {
             next: req.query.next,
             req: req,
-            user:req.user
+            user: req.user
         };
     })
     .respondToLoginSucceed(auth.respondToLoginSucceed)
@@ -42,14 +42,14 @@ everyauth.password
         return {
             next: req.query.next,
             req: req,
-            user:req.user
+            user: req.user
         };
     })
     .respondToRegistrationSucceed(auth.respondToRegistrationSucceed)
     .getRegisterPath('/register')
     .postRegisterPath('/register')
     .registerView('register')
-    .extractExtraRegistrationParams(function (req) {
+    .extractExtraRegistrationParams(function(req) {
         return {
             userParams: req.body.userParams,
         };
@@ -68,7 +68,7 @@ everyauth.everymodule.findUserById( function(req, userId, callback){
 });
 
 //config
-app.configure(function (){
+app.configure(function(){
   app.set('views', __dirname + '/views');
   app.set('view engine', 'jade');
   app.use(express.bodyParser());
@@ -77,14 +77,14 @@ app.configure(function (){
 });
 
 //development-mode specific config
-app.configure('development', function (){
+app.configure('development', function(){
   app.use(express.session({
     secret: conf.session.secret,
   }));
 });
 
 //production mode config
-app.configure('production', function (){
+app.configure('production', function(){
   var oneWeek = 60 * 60 * 24 * 7 * 1000;
   app.use(express.session({
     secret: conf.session.secret,
@@ -133,3 +133,4 @@ routes.registerOn(app);
 app.listen(conf.port);
 //quick message for the masses!
 console.log("Express server listening on port %d in %s mode", conf.port, app.settings.env);
+console.log("serverinfo", conf.parsedMongo);

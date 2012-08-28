@@ -94,7 +94,8 @@ textarea#description {
 
 @media (min-width: 980px) {
 
-  /* Fixes a bug where the collapse div has overflow:hidden, even after the window is expanded, causing any nav bar dropdowns to be hidden */
+  /* Fixes a bug where the collapse div has overflow:hidden, even after the 
+   * window is expanded, causing any nav bar dropdowns to be hidden */
   .nav-collapse {
     overflow: visible;
     height: 0;

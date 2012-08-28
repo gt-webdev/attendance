@@ -7,22 +7,23 @@ var models = require('../lib/models');
  */
 exports.list = function(req, res, next) {
   async.waterfall([
-                  //first, find all the orgs, sort by name (ascending)
-                  function(cb) {
-    models.Org.find().sort('name').exec(cb);
-  },
-  ], function(err, orgs) {
-    if (err) {
-      return next(err);
+    function(cb) {
+      //first, find all the orgs, sort by name (ascending)
+      models.Org.find().sort('name').exec(cb);
+    }], 
+    function(err, orgs) {
+      if (err) {
+        return next(err);
+      }
+      //render a page with the resulting list
+      res.render('orgs', {
+        req:req,
+        user:req.user,
+        title: 'All Organizations',
+        orgs: orgs,
+      });
     }
-    //render a page with the resulting list
-    res.render('orgs', {
-      req:req,
-      user:req.user,
-      title: 'All Organizations',
-      orgs: orgs,
-    });
-  });
+  );
 };
 
 /**
@@ -31,32 +32,36 @@ exports.list = function(req, res, next) {
  */
 exports.details = function(req, res, next) {
   async.waterfall([
-                  //find one org, specified by the slug in the url
-                  function(cb) {
-    models.Org.findOne({slug: req.params.slug}, cb);
-  },
-  function(org, cb){
-    //find all events for the org, sort from latest to earliest, limit to 10
-    models.Event.find({org:org._id})
-      .sort('-start_time').limit(10).exec(function(err, events){
-      cb(err, org, events);
-    });
-  }
-  ], function(err, org, events) {
-    if (err) {
-      return next(err);
+    function(cb) {
+      //find one org, specified by the slug in the url
+      models.Org.findOne({slug: req.params.slug}, cb);
+    },
+    function(org, cb){
+      if (!org){
+        return cb("Org '"+ req.params.slug +"' was not found");
+      }
+      //find all events for the org, sort from latest to earliest, limit to 10
+      models.Event.find({org:org._id})
+            .sort('-start_time').limit(10).exec(function(err, events){
+        cb(err, org, events);
+      });
+    }], 
+    function(err, org, events) {
+      if (err) {
+        return next(err);
+      }
+      if (!org) {
+        return res.send(404);
+      }
+      //render the page with the org info and list of latest 10 events
+      res.render('org', {
+        req:req,
+        user:req.user,
+        org: org,
+        events: events
+      });
     }
-    if (!org) {
-      return res.send(404);
-    }
-    //render the page with the org info and list of latest 10 events
-    res.render('org', {
-      req:req,
-      user:req.user,
-      org: org,
-      events: events
-    });
-  });
+  );
 };
 
 /**
@@ -83,8 +88,8 @@ exports.post = function(req, res, next) {
     });
     //save to db
     org.save(cb);
-  },
-  ], function(err) {
+  }], 
+  function(err) {
     if (err) {
       return next(err);
     }
@@ -173,8 +178,8 @@ exports.create = function(req, res, next) {
   //anyone can get to this page, only admins can submit, no prior info needed
   //for rendering the page, except that this is a new org and not an update
   res.render('create-org', {
-      req:req,
-      user:req.user,
+    req:req,
+    user:req.user,
     update: false,
     org: {},
   });
