@@ -22,7 +22,8 @@ exports.recover_post = function(req, res, next) {
     email.send({
       to: user.email,
       subject: 'CC Orgs Password Reset',
-      body: "Click here to reset your password:\n#{reset_url}"
+      body: "Click here to reset your password:\n<a href='" + reset_url +
+        "'>" + reset_url + "</a>"
     }, function(error, success) {
       if (!success){
         console.error(error);
