@@ -1,25 +1,32 @@
-.content
-  .page-header
-    if update
-      - var title = 'Update ' + org.name;
-    else
-      - var title = 'Create Org';
-    h2= title
+extends layout
+block content
+  .content
+    .page-header
+      if update
+        - var title = 'Update ' + org.name;
+      else
+        - var title = 'Create Org';
+      h2= title
 
   if update
     - var form_action = '/orgs/' + org.slug;
+    - var meth = 'PUT'
   else
     - var form_action = '/orgs';
-  form#create-org(action=form_action, method='POST').form-horizontal
+    - var meth = 'POST'
+  form#create-org(action=form_action, method="POST").form-horizontal
     input(type='hidden', name='_csrf', value=req.session._csrf)
+    input(type='hidden', name='_method', value=meth)
     if update
-      input(type='hidden', name='_method', value='PUT')
+      - var form_action = '/orgs/' + org.slug;
+    else
+      - var form_action = '/orgs';
 
     .control-group
       label.control-label(for='name') Name:
       .controls
         input(type='text', name='name', value=org.name)#name
-  
+    
     .control-group
     label.control-label(for='slug') Slug:
     .controls
@@ -36,7 +43,7 @@
       input(type='submit', value=title).btn.btn-primary
 
 
-script(type='text/javascript')
-    $(function() {
-        $('#name').focus();
-    });
+  script(type='text/javascript')
+      $(function() {
+          $('#name').focus();
+      });

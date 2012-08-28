@@ -1,0 +1,42 @@
+extends layout
+block content
+  .content
+    .page-header
+      if user && user.is_admin
+        a(href='/create-org/').pull-right.btn Create an org
+      h1 All Organizations
+    each org in orgs
+      .org_div
+        a(href='/create-event/?org=' + escape(org.name)).pull-right.btn Create an event
+        a(href='/orgs/' + org.slug + '/edit').btn.pull-right Edit
+        form(action='/orgs/' + org.slug, method='POST', data-confirm='#confirm-dialog-'+org.slug).pull-right
+          input(type='hidden', name='_csrf', value=req.session._csrf)
+          input(type='hidden', name='_method', value='DELETE')
+          input(type='submit', value='Delete').btn.error
+        div(id='confirm-dialog-'+org.slug, style='display: none').modal.hide
+          .modal-header
+            a(href='#').close ×
+            h3 Delete #{org.name}?
+          .modal-body
+            p Are you sure you want to delete #{org.name}?
+          .modal-footer
+            a(href='#').btn.error.confirm Confirm
+            a(href='#').btn.secondary.cancel Cancel
+        h2
+          a(href='/orgs/' + org.slug)= org.name
+        h4 
+          | mods
+        ul.mod_list
+          each user in users[org.slug]
+            li 
+              p(style='display:inline')= user.name.first + ' ' + user.name.last
+              form(action='/orgs/' + org.slug + '/admin', method='POST', style='display:inline;margin-left:5px;')
+                input(type='hidden', name='_csrf', value=req.session._csrf)
+                input(type='hidden', name='_method', value='DELETE')
+                input(type='hidden', name='user', value=user._id)
+                input(type='submit', value='Delete').btn.error
+          li
+             form(action='/orgs/' + org.slug + '/admin', method='POST', style='display:inline;margin-left:5px;')
+               input(type='hidden', name='_csrf', value=req.session._csrf)
+               input(type='text', name='gt_id', placeholder='gt_id')
+               input(type='submit', value='Add Admin', style='margin-top:-9px').btn

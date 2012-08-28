@@ -1,13 +1,15 @@
-.content
-  .page-header
-    if (user && user.is_admin) || user_is_admin
-      a(href='/create-event/').pull-right.btn Create an event
-    if req.query.page < 0
-      h1 Older Events
-    else if req.query.page > 0
-      h1 Later Events
-    else
-      h1 Events
+extends layout
+block content
+  .content
+    .page-header
+      if (user && user.is_admin) || user_is_admin
+        a(href='/create-event/').pull-right.btn Create an event
+      if req.query.page < 0
+        h1 Older Events
+      else if req.query.page > 0
+        h1 Later Events
+      else
+        h1 Events
 
   each event in events
     h2

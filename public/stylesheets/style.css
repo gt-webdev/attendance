@@ -1,24 +1,31 @@
 body {
-    background: #EEE;
+  background: #EEE;
 }
 
 #content {
-    background: #FFF;
-    padding: 50px 20px 20px;
-    border: 1px #DDD solid;
+  background: #FFF;
+  padding: 50px 20px 20px;
+  border: 1px #DDD solid;
 }
 
 p {
-    font-size: 110%;
+  font-size: 110%;
+}
+
+p.helptext {
+  max-width: 550px;
+  color: gray;
 }
 
 h1 small {
-    margin-left: 6px;
+  margin-left: 6px;
+  display: block;
+  margin-top: 12px;
 }
 
 h2 small {
-    font-size: 16px;
-    margin-left: 6px;
+  font-size: 16px;
+  margin-left: 6px;
 }
 
 h1 small a,
@@ -29,8 +36,8 @@ h2 small a,
 h2 small a:link,
 h2 small a:visited,
 h2 small a:hover {
-    color: #999;
-    text-decoration: none;
+  color: #999;
+  text-decoration: none;
 }
 
 .btn {
@@ -39,16 +46,16 @@ h2 small a:hover {
 }
 
 .navbar input {
-    margin-right: 3px;
+  margin-right: 3px;
 }
 
 .navbar button {
-    margin-left: 2px;
+  margin-left: 2px;
 }
 
 .navbar .brand,
 .navbar .nav > li > a {
-    color:#BFBFBF
+  color:#BFBFBF
 }
 
 .page-header { 
@@ -57,55 +64,81 @@ h2 small a:hover {
 }
 
 textarea#description {
-    width: 86.5%;
+  width: 86.5%;
 }
 
 .btn-primary {
   color: white;
 }
 @media (max-width: 979px) {
-.navbar .nav > .collapse-hide {
+  .navbar .nav > .collapse-hide {
     display:none;
   }
 
-.navbar .nav > .collapse-show {
+  .navbar .nav > .collapse-show {
     display:block;
   }
 
-.navbar .nav > li.collapse-show {
+  .navbar .nav > li.collapse-show {
     display:list-item;
   }
 
-.navbar {
+  .navbar {
     margin-bottom: 0;
   }
 
-#content {
+  #content {
     padding: 15px;
   }
 }
 
 @media (min-width: 980px) {
 
-/* Fixes a bug where the collapse div has overflow:hidden, even after the window is expanded, causing any nav bar dropdowns to be hidden */
+  /* Fixes a bug where the collapse div has overflow:hidden, even after the 
+   * window is expanded, causing any nav bar dropdowns to be hidden */
   .nav-collapse {
     overflow: visible;
     height: 0;
   }
 
-.navbar .nav > .collapse-hide {
+  .navbar .nav > .collapse-hide {
     display:block;
   }
 
-.navbar .nav > li.collapse-hide {
+  .navbar .nav > li.collapse-hide {
     display:list-item;
   }
 
-.navbar .nav > .collapse-show {
+  .navbar .nav > .collapse-show {
     display:none;
   }
 }
 
 .nav-collapse.in.collapse > .nav {
   margin:0px;
+}
+#start_time_time, #end_time_time {
+  width:6em;
+}
+.timehint {
+  display:inline;
+  color: #A3A3A3;
+  padding-left: 0.5em;
+  font-size: 8pt;
+}
+.err {
+  display:none;
+  padding: 0px;
+  margin:3px;
+  background-color: #E67777;
+  color: white;
+  text-shadow: 0 0 3px red;
+  width: 140px;
+  text-align: center;
+  border-radius: 5px;
+}
+
+div.events-list {
+  margin: 25px 0;
+  border-top: 1px solid #EEE;
 }
