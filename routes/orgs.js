@@ -37,6 +37,9 @@ exports.details = function(req, res, next) {
       models.Org.findOne({slug: req.params.slug}, cb);
     },
     function(org, cb){
+      if (!org){
+        return cb("Org '"+ req.params.slug +"' was not found");
+      }
       //find all events for the org, sort from latest to earliest, limit to 10
       models.Event.find({org:org._id})
             .sort('-start_time').limit(10).exec(function(err, events){
