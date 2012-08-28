@@ -6,8 +6,8 @@ var models = require('../lib/models');
  * for GET /admin
  */
 exports.list = function(req, res, next) {
-  if (req.user.is_admin !== true){
-    res.send(403, "BITCHES");
+  if (!req.user || req.user.is_admin !== true){
+    res.send(403);
     return;
   }
   async.waterfall([
@@ -17,16 +17,15 @@ exports.list = function(req, res, next) {
   },
   function(orgs, cb){
     var users = {};
-    console.log(orgs);
     async.map(orgs, function(org, cb){
       async.map(org.admins ,function(user, cb){
       models.User.findOne({_id:user}, cb);
-      }, function(admin_list){
+      }, function(err,admin_list){
         users[org.slug] = admin_list;
         return cb(false, true);
       });
     }, function(final_list){
-      cb(orgs, users);
+      cb(false, orgs, users);
     });
   }
   ], function(err, orgs, users) {
@@ -35,9 +34,9 @@ exports.list = function(req, res, next) {
     }
     //render a page with the resulting list
     res.render('admin_main', {
-      req:req,
-      user:req.user,
-      users:users,
+      req: req,
+      user: req.user,
+      users: users,
       title: 'All Organizations',
       orgs: orgs,
     });

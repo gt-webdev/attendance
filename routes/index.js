@@ -22,6 +22,8 @@ exports.registerOn = function(app) {
     app.post('/orgs', auth.loginRequired, orgs.post);
     app.put('/orgs/:slug', auth.loginRequired, orgs.put);
     app.delete('/orgs/:slug', auth.loginRequired, orgs.delete);
+    app.post('/orgs/:slug/admin', auth.adminRequired, orgs.addAdmin);
+    app.delete('/orgs/:slug/admin', auth.adminRequired, orgs.deleteAdmin);
 
     app.get('/events', events.list);
     app.get('/events/:id', events.details);

@@ -148,6 +148,19 @@ exports.delete = function(req, res, next) {
     return res.send(403);
   },
   function(org, cb) {
+    //find all events tied to the org and delete participations to them
+    models.Event.find({org: org.id}, function(err, events){
+      async.forEach(events, function(event, cb){
+        models.Part.remove({event:event._id}, function(err){
+          cb(err);
+        });
+      },
+      function(err){
+        cb(err, org);
+      });
+    });
+  },
+  function(org,cb) {
     //remove all events tied to the org
     models.Event.remove({org: org.id}, function(err) {
       cb(err, org);
@@ -206,4 +219,50 @@ exports.edit = function(req, res, next) {
       org: org,
     });
   });
+};
+
+/**
+ * adds a new admin to the org in question
+ * for POST /org/:slug/admin
+ */
+exports.addAdmin = function(req, res, next) {
+  models.Org.findOne({slug: req.params.slug}, function(err, org) {
+    if (err) {
+      return next(err);
+    }
+    if (org == null) {
+      return res.send(404);
+    }
+    models.User.findOne({gt_id:req.body.gt_id}, function(err, user){
+      if (err) {
+      return next(err);
+      }
+      if (user == null) {
+        return res.send(404);
+      }
+      org.admins.push(user.id);
+      org.save();
+    });
+  });
+  res.redirect('/admin');
+};
+
+/**
+ * deletes an existing new admin to the org in question
+ * for DELETE /org/:slug/admin
+ */
+exports.deleteAdmin = function(req, res, next) {
+  models.Org.findOne({slug: req.params.slug}, function(err, org) {
+    if (err) {
+      return next(err);
+    }
+    if (org == null) {
+      return res.send(404);
+    }
+    if (org.admins.indexOf(req.body.user) !== -1){
+      org.admins.splice(org.admins.indexOf(req.body.user), 1);
+      org.save();
+    }
+  });
+  res.redirect('/admin');
 };
