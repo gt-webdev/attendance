@@ -1,15 +1,20 @@
 extends layout
 block content
-  .content
-    .page-header
+  if (req.user)
+    .content
       h2 Recover
+      p Please log out before recovering a passwerd!
+  else
+    .content
+      .page-header
+        h2 Recover
 
-    form(action='/recover', method='POST').form-horizontal
-      input(type='hidden', name='_csrf', value=req.session._csrf)
-      .control-group
-        label.control-label(for='email') Email:
-        .controls
-          input(type='text', name='email')#email
-      
-      .form-actions
-        input(type='submit', value='Recover').btn.btn-primary
+      form(action='/recover', method='POST').form-horizontal
+        input(type='hidden', name='_csrf', value='4')
+        .control-group
+          label.control-label(for='email') Email:
+          .controls
+            input(type='text', name='email')#email
+        
+        .form-actions
+          input(type='submit', value='Recover').btn.btn-primary

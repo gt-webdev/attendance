@@ -24,7 +24,7 @@ html
                 ul.nav.pull-right
                   if req.user
                     li.dropdown.collapse-hide(data-dropdown='dropdown')
-                      a(href='',data-toggle='dropdown').dropdown-toggle= user.name.first + ' ' + user.name.last
+                      a(href='',data-toggle='dropdown').dropdown-toggle= req.user.name.first + ' ' + req.user.name.last
                         b.caret
                       ul.dropdown-menu
                         li
