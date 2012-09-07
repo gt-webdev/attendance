@@ -20,13 +20,15 @@ exports.recover_post = function(req, res, next) {
     var recov = new models.Recovery();
     recov.account = user.id;
     recov.expires = new Date(new Date().getTime() + 60*60*1000);
+    //neat little trick to generate a random alphanumeric secret key
+    recov.secret = Math.random().toString(36).substring(7);
     recov.save(function(err, record){
-      console.log(record);
       if (err){
         req.session.messages=['error', "Error occured during recovery attempt."];
         return res.render('recover',{req:req});
       }
-      var reset_url = 'http://' + conf.domain + '/recover/' + record.id;
+      var reset_url = 'http://' + conf.domain + '/recover/' + record.id +
+            "?s=" + record.secret;
       email.send({
         to: user.email,
         subject: 'CC Orgs Password Reset',
@@ -44,7 +46,7 @@ exports.recover_post = function(req, res, next) {
 };
 
 exports.reset_password = function(req, res, next) {
-  res.render('reset-password', {req:req});
+  res.render('reset-password', {req:req, secret:req.query['s']});
 };
 
 exports.reset_password_post = function(req, res, next) {
@@ -56,9 +58,11 @@ exports.reset_password_post = function(req, res, next) {
       return res.send(404, "Recovery attempt ID not recognized");
     }
     if (new Date() > recov.expires){
-        console.log('recov removed');
       recov.remove();
       return res.send(403, "Recovery period expired");
+    }
+    if (req.body.s !== recov.secret){
+      return res.send(403, "Recovery attempt is not approved");
     }
     models.User.findOne({_id: recov.account}, function(err, user){
       if (err){
@@ -73,7 +77,6 @@ exports.reset_password_post = function(req, res, next) {
           return next(err);
         }
         recov.remove();
-        console.log('recov removed');
         req.session.mesasges=['info', 'Password reset successfully'];
         res.redirect('/login');
       });
