@@ -61,7 +61,7 @@ block content
         tbody
           each attendee in att_guests
             tr
-              td= attendee.email
+              td= jumble(attendee.email)
 
   script(type='text/javascript')
       function validate(){
