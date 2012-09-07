@@ -30,7 +30,7 @@ exports.recover_post = function(req, res, next) {
       }
     });
 
-    res.session.messages=['info'+ 'Check your email to reset your password'];
+    req.session.messages=['info', 'Check your email to reset your password'];
     res.render('recover', {req:req});
   });
 };
@@ -53,7 +53,7 @@ exports.reset_password_post = function(req, res, next) {
         return next(err);
       }
 
-      req.session.mesasges=['info'+ 'Password reset successfully'];
+      req.session.mesasges=['info', 'Password reset successfully'];
       res.redirect('/login');
     });
   });
