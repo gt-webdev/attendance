@@ -65,8 +65,8 @@ block content
         tbody
           each attendee in att_guests
             tr
-              td= attendee.email
               if user && (user.is_admin || org.admins.indexOf(user.id) >= 0)
+                td= attendee.email
                 td
                   p.gtid= attendee.gt_id
                 td 
@@ -76,6 +76,8 @@ block content
                     input(type='hidden', name='guest', value=attendee.id)
                     input(type='hidden', name='_type', value='unguest')
                     input(type='submit', value='X').btn
+              else
+                td= jumble(attendee.email)
 
 
            

@@ -123,7 +123,15 @@ app.configure('production', function(){
 app.locals({
   messages: require('./lib/bootstrap2-messages'),
   md: require('marked'),
-  alcohol: require('./lib/alcohol').stringify
+  alcohol: require('./lib/alcohol').stringify,
+  jumble: function(str){
+    var ere = /(.*?)@/;
+    if (ere.test(str)){
+      res = ere.exec(str);
+      return res[1];
+    }
+    return "INVILID E-MAIL";
+  }
 });
 
 
