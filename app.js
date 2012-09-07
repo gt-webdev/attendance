@@ -121,7 +121,10 @@ app.configure('production', function(){
 
 //local variables to the app
 app.locals({
-  messages: require('./lib/bootstrap2-messages'),
+  messages: function(req,res){
+    console.log("IM RUNNING NOW!");
+    return require('./lib/bootstrap2-messages')(req,res);
+  },
   md: require('marked'),
   alcohol: require('./lib/alcohol').stringify
 });

@@ -14,7 +14,7 @@ exports.recover_post = function(req, res, next) {
     }
 
     if (!user){
-      //req.flash('error', "Couldn't find a user with that email");
+      req.session.messages=['error', "Couldn't find a user with that email"];
       return res.render('recover',{req:req});
     }
     var reset_url = 'http://' + conf.domain + '/recover/' + user.id;
@@ -30,7 +30,7 @@ exports.recover_post = function(req, res, next) {
       }
     });
 
-    //res.flash('info', 'Check your email to reset your password');
+    res.session.messages=['info'+ 'Check your email to reset your password'];
     res.render('recover', {req:req});
   });
 };
@@ -53,7 +53,7 @@ exports.reset_password_post = function(req, res, next) {
         return next(err);
       }
 
-      //req.flash('info', 'Password reset successfully');
+      req.session.mesasges=['info'+ 'Password reset successfully'];
       res.redirect('/login');
     });
   });
