@@ -125,10 +125,12 @@ app.locals({
   md: require('marked'),
   alcohol: require('./lib/alcohol').stringify,
   jumble: function(str){
-    var ere = /(.*?)@/;
+    var ere = /(.*?)@/, ret, len;
     if (ere.test(str)){
-      res = ere.exec(str);
-      return res[1];
+      ret = ere.exec(str)[1];
+      len = ret.length;
+      ret = ret.substr(0,3) + "***" + ret.charAt(len - 1);
+      return ret;
     }
     return "INVILID E-MAIL";
   }
