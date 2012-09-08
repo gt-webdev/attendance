@@ -94,7 +94,7 @@ exports.post = function(req, res, next) {
       return next(err);
     }
     //show a "success" message on the next page
-    //req.flash('success', 'Org created: %s', req.body.name);
+    req.session.messages=['success', 'Org created: '+ req.body.name];
     //redirect to the org's new page
     res.redirect('/orgs/' + req.body.slug);
   });
@@ -177,7 +177,7 @@ exports.delete = function(req, res, next) {
       return next(err);
     }
     //flash success message on the next page
-    //req.flash('success', 'Org deleted: %s', org.name);
+    req.session.messages=['success', 'Org deleted: '+ org.name];
     //redirect to the orgs-list page
     res.redirect('/orgs');
   });

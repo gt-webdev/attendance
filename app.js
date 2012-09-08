@@ -34,7 +34,8 @@ everyauth.password
         return {
             next: req.query.next,
             req: req,
-            user: req.user
+            user: req.user,
+            messages: require("./lib/bootstrap2-messages")
         };
     })
     .respondToLoginSucceed(auth.respondToLoginSucceed)
@@ -42,7 +43,8 @@ everyauth.password
         return {
             next: req.query.next,
             req: req,
-            user: req.user
+            user: req.user,
+            messages: require("./lib/bootstrap2-messages")
         };
     })
     .respondToRegistrationSucceed(auth.respondToRegistrationSucceed)
@@ -121,7 +123,7 @@ app.configure('production', function(){
 
 //local variables to the app
 app.locals({
-  messages: require('./lib/bootstrap2-messages'),
+  messages: require("./lib/bootstrap2-messages"),
   md: require('marked'),
   alcohol: require('./lib/alcohol').stringify,
   jumble: function(str){
