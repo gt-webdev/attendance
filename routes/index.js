@@ -29,6 +29,7 @@ exports.registerOn = function(app) {
     app.get('/events/:id', events.details);
     app.get('/events/:id/edit', auth.loginRequired, events.edit);
     app.get('/events/:id/kiosk', events.kiosk);
+    app.get('/events/:id/troy', auth.loginRequired, events.troy);
     app.get('/create-event', auth.loginRequired, events.create);
     app.post('/events', auth.loginRequired, events.post);
     app.put('/events/:id', auth.loginRequired, events.put);
