@@ -1,0 +1,13 @@
+extends layout
+block content
+  .content
+    .page-header
+      h1 #{user.name.first + ' ' + user.name.last}'s Profile
+      form#edit-email(action='/profile/' + user.gt_userid, method='POST').form-horizontal
+        input(type='hidden', name='_csrf', value=req.session._csrf)
+        input(type='hidden', name='_method', value='PUT')
+        input(type='email', placeholder='Primary email', value=user.email, name='email') 
+        input(type='submit', value='Update')
+      if user.additional_email
+        each email in user.additional_email
+          p= email
