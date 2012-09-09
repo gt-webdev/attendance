@@ -39,6 +39,10 @@ exports.registerOn = function(app) {
     app.post('/recover', users.recover_post);
     app.get('/recover/:id', users.reset_password);
     app.post('/recover/:id', users.reset_password_post);
+    app.get('/profile', auth.loginRequired, users.profile);
+    app.get('/profile/:id', auth.adminRequired, users.profile);
+    app.put('/profile', auth.loginRequired, users.put);
+    app.put('/profile/:id', auth.adminRequired, users.put);
 
     app.get('/admin', admin.list);
 };
