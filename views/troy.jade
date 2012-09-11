@@ -3,7 +3,7 @@ block content
   .content
     .page-header
       a(href='kiosk').btn.pull-right Kiosk
-      a(href='/events/' + #{event.id}).btn.pull-right Back
+      a(href='/events/' + event.id).btn.pull-right Back
       h1= event.title
         small
           a(href='/orgs/' + org.slug)= org.name
