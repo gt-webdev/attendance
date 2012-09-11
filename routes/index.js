@@ -43,7 +43,7 @@ exports.registerOn = function(app) {
     app.get('/profile', auth.loginRequired, users.profile);
     app.get('/profile/:id', auth.adminRequired, users.profile);
     app.put('/profile', auth.loginRequired, users.put);
-    app.put('/profile/:id', auth.adminRequired, users.put);
+    app.put('/profile/:id', auth.loginRequired, users.put);
 
     app.get('/admin', admin.list);
 };

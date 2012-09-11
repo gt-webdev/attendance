@@ -107,18 +107,24 @@ exports.profile = function(req, res, next) {
 };
 
 exports.put = function(req, res, next) {
+  var emailre = /\S+@\S+\.\S+/;
   models.User.findOne({gt_userid: req.params.id || req.user.gt_userid}, function(err, user) {
     if (err) {
-      next(err); 
+      return next(err); 
     }
-    if (req.body.email) {
-      user.email = req.body.email;
-      console.log("Saving" + JSON.stringify(user));
-      user.save();
+    if (req.body.email && (req.user.is_admin || ( req.user.gt_userid ==  req.params.id))){
+      if (emailre.test(req.body.email)){
+        user.email = req.body.email;
+        console.log("Saving" + JSON.stringify(user));
+        user.save();
+      } else {
+        req.session.messages=['alert','invalid e-mail'];
+        return res.redirect(req.url);
+      }
     } else {
       //some sort of error
-      res.send(404, 'Error saving your change');
+      return res.send(404, 'Error saving your change');
     } 
+    return res.redirect('/profile');
   });
-  res.redirect('/profile');
 };
