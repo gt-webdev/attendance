@@ -1,5 +1,6 @@
 var async = require('async');
-var models = require('../lib/models');
+var models = require('../lib/models'),
+    email = require('../lib/email');
 
 var ONE_HOUR = 1000 * 60 * 60;
 var ONE_WEEK = ONE_HOUR * 24 * 7;
@@ -475,12 +476,48 @@ exports.guest_attend = function(req, res, next) {
                     'gt_id':req.body.gtid
                   });
                   //save it
-                  my_doc.save();
+                  my_doc.save(function(err, doc){
+
+                    email.send({
+                      to: doc.email,
+                      subject: 'Please register your ccorgs.com account',
+                      body: "REGISTER BITCH"
+                    }, function(error, success) {
+                      if (!success){
+                        console.error(error);
+                      }
+                      var reg = models.Regiquest({
+                        gt_id: doc.gt_id
+                      });
+                      reg.save();
+                      cb(null, event, my_doc);
+                    });
+                  });
                 } else {
                   //if the guest is returning, we just pass it along
                   my_doc = guest_doc;
+                  //quick check to see if the user has a regiquest
+                  models.Regiquest.findOne({'gt_id':guest_doc.gt_id},
+                    function(err, reg){
+                      if (err){
+                        return cb(true);
+                      }
+                      if (reg){
+                        return cb(null, event, my_doc);
+                      }
+                      email.send({
+                        to: guest_doc.email,
+                        subject: 'Please register your ccorgs.com account',
+                        body: "REGISTER BITCH"
+                      }, function(error, success) {
+                        if (!success){
+                          console.error(error);
+                        } 
+                        cb(null, event, my_doc);
+                      });
+                    }
+                  );
                 }
-                cb(null,event, my_doc);
               }
             );
           }else{
