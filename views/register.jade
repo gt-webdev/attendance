@@ -14,29 +14,29 @@ block content
     form(action='/register', method='POST').form-horizontal
       input(type='hidden', name='_csrf', value=req.session._csrf)
       .control-group
-        label.control-label(for='first_name') First Name
-        .controls
-          input(type='text', name='userParams[first_name]')#first_name
-
-      .control-group
-        label.control-label(for='last_name') Last Name
-        .controls
-          input(type='text', name='userParams[last_name]')#last_name
-
-      .control-group
         label.control-label(for='email') Email
         .controls
-          input(type='text', name='userParams[email]')#email
+          input(type='text', name='userParams[email]', value=req.regdata.email)#email
 
       .control-group
         label.control-label(for='gt_id') GT ID number (902 number)
         .controls
-          input(type='text', name='userParams[gt_id]')#gt_id
+          input(type='text', name='userParams[gt_id]', value=req.regdata.gt_id)#gt_id
 
       .control-group
         label.control-label(for='gt_userid') GT User ID (e.g., jdoe3)
         .controls
-          input(type='text', name=everyauth.password.loginFormFieldName)#gt_userid
+          input(type='text', name=everyauth.password.loginFormFieldName, value=req.regdata.gt_userid)#gt_userid
+
+      .control-group
+        label.control-label(for='first_name') First Name
+        .controls
+          input(type='text', name='userParams[first_name]', value=req.regdata.fname)#first_name
+
+      .control-group
+        label.control-label(for='last_name') Last Name
+        .controls
+          input(type='text', name='userParams[last_name]', value=req.regdata.lname)#last_name
 
       .control-group
         label.control-label(for='password') Password
@@ -48,5 +48,9 @@ block content
 
   script(type='text/javascript')
       $(function() {
-          $('#first_name').focus();
+        if ($('#email')[0].value === ""){
+          $('#email').focus();
+        } else {
+          $('#gt_userid').focus();
+        }
       });

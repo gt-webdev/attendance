@@ -481,7 +481,13 @@ exports.guest_attend = function(req, res, next) {
                     email.send({
                       to: doc.email,
                       subject: 'Please register your ccorgs.com account',
-                      body: "REGISTER BITCH"
+                      body: "Thanks for attending an event on"+
+                        " http://ccorgs.com/\n\n In order to keep better"+
+                        " records, we ask that you register a full account.\n"+
+                        " To do so, please open the following url in your"+
+                        " favorite browser (it has to be your favorite :))\n"+
+                        " and complete the registration process!\n"+
+                        "\n http://ccorgs.com/register?guest=" + doc._id
                     }, function(error, success) {
                       if (!success){
                         console.error(error);

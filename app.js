@@ -40,12 +40,12 @@ everyauth.password
     })
     .respondToLoginSucceed(auth.respondToLoginSucceed)
     .registerLocals(function(req, res) {
-        return {
-            next: req.query.next,
-            req: req,
-            user: req.user,
-            messages: require("./lib/bootstrap2-messages")
-        };
+      return {
+        next: req.query.next,
+        req: req,
+        user: req.user,
+        messages: require("./lib/bootstrap2-messages")
+      }
     })
     .respondToRegistrationSucceed(auth.respondToRegistrationSucceed)
     .getRegisterPath('/register')
@@ -103,6 +103,7 @@ app.configure('production', function(){
 //everyauth.helpExpress(app);
 //stupid config that I missed when I migrated old code and then spent an hour debugging
 app.configure(function() {
+    app.use(require('./lib/guests').middleware);
     app.use(express.csrf());
     app.use(everyauth.middleware(app));
     app.use(auth.middleware());
