@@ -513,6 +513,10 @@ exports.guest_attend = function(req, res, next) {
                         if (!success){
                           console.error(error);
                         } 
+                        var newreg = models.Regiquest({
+                          gt_id: guest_doc.gt_id
+                        });
+                        newreg.save();
                         cb(null, event, my_doc);
                       });
                     }
