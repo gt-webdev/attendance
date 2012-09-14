@@ -28,7 +28,7 @@ block content
         p e-mail must be valid!
       label(for='gtid') gtID:
       .input
-        input(type='number' , name='gtid')#gtid
+        input(type='text' ,pattern='[89][0-9]{8}', name='gtid')#gtid
       .err#gtid_err
         p gtid must be 9 digits!
       input(type='submit', value='Guest Attend').btn.large

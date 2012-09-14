@@ -83,3 +83,48 @@ exports.reset_password_post = function(req, res, next) {
     });
   });
 };
+
+exports.profile = function(req, res, next) {
+  if (req.params.id) {
+    models.User.findOne({gt_userid: req.params.id}, function(err, user) {
+      if (err) {
+        next(err);
+      }
+      if (!user) {
+        return res.send(404, 'User not found!'); 
+      }
+      res.render('profile', {
+        req: req,
+        user: user,
+      });
+    });
+  } else {
+    res.render('profile', {
+      req: req,
+      user: req.user, 
+    });
+  }
+};
+
+exports.put = function(req, res, next) {
+  var emailre = /\S+@\S+\.\S+/;
+  models.User.findOne({gt_userid: req.params.id || req.user.gt_userid}, function(err, user) {
+    if (err) {
+      return next(err); 
+    }
+    if (req.body.email && (req.user.is_admin || ( req.user.gt_userid ==  req.params.id))){
+      if (emailre.test(req.body.email)){
+        user.email = req.body.email;
+        console.log("Saving" + JSON.stringify(user));
+        user.save();
+      } else {
+        req.session.messages=['alert','invalid e-mail'];
+        return res.redirect(req.url);
+      }
+    } else {
+      //some sort of error
+      return res.send(404, 'Error saving your change');
+    } 
+    return res.redirect('/profile');
+  });
+};

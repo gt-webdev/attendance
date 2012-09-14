@@ -29,6 +29,7 @@ exports.registerOn = function(app) {
     app.get('/events/:id', events.details);
     app.get('/events/:id/edit', auth.loginRequired, events.edit);
     app.get('/events/:id/kiosk', events.kiosk);
+    app.get('/events/:id/troy', auth.loginRequired, events.troy);
     app.get('/create-event', auth.loginRequired, events.create);
     app.post('/events', auth.loginRequired, events.post);
     app.put('/events/:id', auth.loginRequired, events.put);
@@ -39,6 +40,10 @@ exports.registerOn = function(app) {
     app.post('/recover', users.recover_post);
     app.get('/recover/:id', users.reset_password);
     app.post('/recover/:id', users.reset_password_post);
+    app.get('/profile', auth.loginRequired, users.profile);
+    app.get('/profile/:id', auth.adminRequired, users.profile);
+    app.put('/profile', auth.loginRequired, users.put);
+    app.put('/profile/:id', auth.loginRequired, users.put);
 
     app.get('/admin', admin.list);
 };

@@ -11,16 +11,24 @@ To run the app locally, you'll need node, npm (packaged with node >=
 
 ## Setting up the development environment
 
-First, fork the `cc-wit/attendance` repository on GitHub, then clone
+First, fork the `gt-webdev/attendance` repository on GitHub, then clone
 your fork. For example:
 
-    $ git clone git@github.com:cc-wit/attendance.git
+    $ git clone git@github.com:[github username]/attendance.git
+
+replace `[github username]` with your github username.
 
 Then, install all the dependencies and start mongodb:
 
     $ cd attendance
     $ npm install
     $ sudo /etc/init.d/mongodb start  # or the variant for your system
+
+If you encounter an error with bcrypt during `npm install` it's posible that
+your openssl doesn't have the config files that are installed with 
+`libssl-dev`, installing `libssl-dev` should fix that problem. If you're still
+receving errors, try installing `node-gyp` with `sudo npm install -g node-gyp`.
+
 
 Start the app with:
 

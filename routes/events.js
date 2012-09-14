@@ -1,5 +1,6 @@
 var async = require('async');
-var models = require('../lib/models');
+var models = require('../lib/models'),
+    email = require('../lib/email');
 
 var ONE_HOUR = 1000 * 60 * 60;
 var ONE_WEEK = ONE_HOUR * 24 * 7;
@@ -475,12 +476,58 @@ exports.guest_attend = function(req, res, next) {
                     'gt_id':req.body.gtid
                   });
                   //save it
-                  my_doc.save();
+                  my_doc.save(function(err, doc){
+
+                    email.send({
+                      to: doc.email,
+                      subject: 'Please register your ccorgs.com account',
+                      body: "Thanks for attending an event on"+
+                        " http://ccorgs.com/\n\n In order to keep better"+
+                        " records, we ask that you register a full account.\n"+
+                        " To do so, please open the following url in your"+
+                        " favorite browser (it has to be your favorite :))\n"+
+                        " and complete the registration process!\n"+
+                        "\n http://ccorgs.com/register?guest=" + doc._id
+                    }, function(error, success) {
+                      if (!success){
+                        console.error(error);
+                      }
+                      var reg = models.Regiquest({
+                        gt_id: doc.gt_id
+                      });
+                      reg.save();
+                      cb(null, event, my_doc);
+                    });
+                  });
                 } else {
                   //if the guest is returning, we just pass it along
                   my_doc = guest_doc;
+                  //quick check to see if the user has a regiquest
+                  models.Regiquest.findOne({'gt_id':guest_doc.gt_id},
+                    function(err, reg){
+                      if (err){
+                        return cb(true);
+                      }
+                      if (reg){
+                        return cb(null, event, my_doc);
+                      }
+                      email.send({
+                        to: guest_doc.email,
+                        subject: 'Please register your ccorgs.com account',
+                        body: "REGISTER BITCH"
+                      }, function(error, success) {
+                        if (!success){
+                          console.error(error);
+                        } 
+                        var newreg = models.Regiquest({
+                          gt_id: guest_doc.gt_id
+                        });
+                        newreg.save();
+                        cb(null, event, my_doc);
+                      });
+                    }
+                  );
                 }
-                cb(null,event, my_doc);
               }
             );
           }else{
@@ -710,6 +757,133 @@ exports.edit = function(req, res, next) {
       user:req.user,
       event: event,
       update: true,
+    });
+  });
+};
+
+/**
+ * Allows troy (or any org admin and super admin) to get better information
+ * about an event.
+ * for GET  /events/:id/troy
+ */
+exports.troy = function(req, res, next) {
+  //find the event
+  async.waterfall([
+    function(cb) {
+      //find the event by url-embedded param :id
+      models.Event.findOne({_id: req.params.id}, function(err, event) {
+        if (event == null) {
+          return res.send(404);
+        } 
+        cb(err, event);
+      });
+    },
+    function(event, cb) {
+      //find the org corresponding to the event
+      models.Org.findOne({_id: event.org}, function(err, org) {
+        if (org == null) {
+          res.send(404);
+        } else {
+          cb(err, event, org);
+        }
+      });
+    },
+    function(event, org, cb) {
+      //I'm not sure if this is being used for anything, probably returns null
+      models.Place.findOne({_id: event.place}, function(err, place) {
+        cb(err, event, org, place);
+      });
+    },
+    function(event, org, place, cb) {
+      /*this is a map which looks for user based on the
+       * attendees list which exist within the "event" object
+       * We now use a combination of a participation and user/guest
+       * models to accomplish this. However, this is kept for legacy
+       * support purposes - NOTE: if the database is ever restarted,
+       * this functionality should be safe to remove! */
+      async.map(event.attendees, function(user_id, cb) {
+        models.User.findOne({_id: user_id}, cb);
+      }, function(err, attendees) {
+        cb(err, event, org, place, attendees);
+      });
+    },
+    function(event, org, place, legacy_attendees, cb){
+      /* this function uses the Participation model to find guests and users*/
+      //find all participations for the given event
+      models.Part.find({'event':event._id}, 'account',
+        function(err, docs){
+          async.map(docs, function(user_id, cb) {
+            models.User.findOne({_id: user_id.account}, function(err,att){
+              cb(null, att);
+              }
+            );
+          },
+          function(err, new_attendees) {
+            //filter out guest accounts
+            async.filter(new_attendees, function(att, fcb){
+              if (att){
+                return fcb(true);
+              }
+              return fcb(false);
+            },function(user_att){
+              //call the next function with the list of user-attendees
+              cb(err, event, org, place, legacy_attendees, user_att);
+            });
+          });
+        }
+      );
+    },
+    function(event,org,place,legacy_attendees,attendees, cb){
+      //does the same as the previous function, but fetches guest accounts
+      //instead of user accounts for the event
+      models.Part.find({'event':event._id}, 'account',
+        function(err, docs){
+          async.map(docs, function(user_id, cb) {
+            models.Guest.findOne({_id: user_id.account}, function(err,att){
+              cb(null, att);
+            });
+          }, 
+          function(err, new_attendees) {
+            async.filter(new_attendees, function(att, fcb){
+              if (att){
+                return fcb(true);
+              }
+              return fcb(false);
+            },
+            function(guest_att){
+              async.map(docs, function(doc,cb){
+                cb(null, doc.account);
+              }, 
+              function(err, final_att){
+                cb(err, event, org, place, legacy_attendees, attendees, 
+                   guest_att, final_att);
+              });
+            });
+          });
+        }
+      );
+    }
+  ], 
+  function(err, event, org, place, legacy_attendees, attendees, guests, att_ids) {
+    //at this point, all data about the event, including users and guest
+    //attendees has been retrieved
+    if (err) {
+      return next(err);
+    }
+    if (!event) {
+     return res.send(404);
+    }
+    //render the event page with the given data
+    res.render('troy', {
+      req:req,
+      user:req.user,
+      event: event,
+      org: org,
+      place: place,
+      att_users: attendees,
+      att_guests: guests,
+      atts: att_ids,
+      legacy:legacy_attendees,
     });
   });
 };

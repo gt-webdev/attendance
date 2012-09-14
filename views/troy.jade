@@ -1,0 +1,66 @@
+extends layout
+block content
+  .content
+    .page-header
+      a(href='kiosk').btn.pull-right Kiosk
+      a(href='/events/' + event.id).btn.pull-right Back
+      h1= event.title
+        small
+          a(href='/orgs/' + org.slug)= org.name
+
+    if place != null
+      p= place.name
+
+    != md.parse(escape(event.description))
+
+    h3 Start Time
+    p(title=event.start_time)= alcohol(event.start_time)
+
+    h3 End Time
+    p(title=event.end_time)= alcohol(event.end_time)
+  
+    
+    h3 Participants (#{att_users.length + legacy.length + att_guests.length})
+    table
+      tbody
+        each attendee in att_users
+          tr
+            td(style='padding:0px 3px')= attendee.name.first + ' ' + attendee.name.last
+            td(style='padding:0px 3px')= attendee.email
+            td(style='padding:0px 3px')= attendee.gt_id
+            td(style='padding:0px 3px')= attendee.gt_userid
+        each attendee in legacy
+          tr
+            td(style='padding:0px 3px')= attendee.name.first + ' ' + attendee.name.last
+            td(style='padding:0px 3px')= attendee.email
+            td(style='padding:0px 3px')= attendee.gt_id
+            td(style='padding:0px 3px')= attendee.gt_userid
+        each attendee in att_guests
+          tr
+            td(style='padding:0px 3px') Guest
+            td(style='padding:0px 3px')= attendee.email
+            td(style='padding:0px 3px')= attendee.gt_id
+            td(style='padding:0px 3px') N/A
+
+  h3(style='padding-top:15px') CSV 
+  textarea(rows='15', cols='100', style='width:500px')
+    each attendee in att_users
+      | #{attendee.name.first + ' ' + attendee.name.last},#{attendee.email},#{attendee.gt_id},#{attendee.gt_userid}
+      = "\n"
+    each attendee in legacy
+      | #{attendee.name.first + ' ' + attendee.name.last},#{attendee.email},#{attendee.gt_id},#{attendee.gt_userid}
+      = "\n"
+    each attendee in att_guests
+      | Guest,#{attendee.email},#{attendee.gt_id},N/A
+      = "\n"
+
+
+  #confirm-dialog(style='display: none').modal.hide
+    .modal-header
+      a(href='#').close ×
+      h3 Delete #{event.title}?
+    .modal-body
+      p Are you sure you want to delete #{event.title}?
+    .modal-footer
+      a(href='#').btn.error.confirm Confirm
+      a(href='#').btn.secondary.cancel Cancel
