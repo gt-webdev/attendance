@@ -43,4 +43,17 @@ exports.list = function(req, res, next) {
   });
 };
 
-
+/**
+ * manage user accounts, this would allow you to delete users (and their
+ * check-ins), possible future features.
+ * for GET /admin/users
+ */
+exports.users = function(req, res){
+  models.User.find({},function(err,users){
+    res.render('admin_users', {
+      req: req,
+      user: req.users,
+      users: users
+    });
+  });
+};

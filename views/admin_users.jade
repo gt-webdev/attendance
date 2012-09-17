@@ -1,0 +1,12 @@
+extends layout
+block content
+  .content
+    .page-header
+      h1 User Management
+    input(type='text', placeholder='regex filter')
+    h2 Users
+    script(language='javascript')
+      var users = #{JSON.stringify(users)};
+
+        
+

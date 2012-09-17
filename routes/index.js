@@ -45,5 +45,6 @@ exports.registerOn = function(app) {
     app.put('/profile', auth.loginRequired, users.put);
     app.put('/profile/:id', auth.loginRequired, users.put);
 
-    app.get('/admin', admin.list);
+    app.get('/admin', auth.adminRequired, admin.list);
+    app.get('/admin/users', auth.adminRequired, admin.users);
 };

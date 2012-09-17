@@ -460,19 +460,19 @@ exports.guest_attend = function(req, res, next) {
       /* we assume that the gtid and email may already exist in the system!
        * before we register a guest, we check to see if a user who matches
        * the gtid and e-mail provided exists */ 
-      models.User.findOne({'email':req.body.email, 'gt_id':req.body.gtid},
+      models.User.findOne({'email':req.body.email.toLowerCase(), 'gt_id':req.body.gtid},
         function(err,doc){
           //if the doc doesn't exist, than we also search to see if the same
           //guest is already in the system
           if (doc==null){
-            models.Guest.findOne({'email':req.body.email, 'gt_id':req.body.gtid},
+            models.Guest.findOne({'email':req.body.email.toLowerCase(), 'gt_id':req.body.gtid},
               function(err,guest_doc){
                 var my_doc;
                 //case for new guest (first time we see gtid & e-mail)
                 if (!guest_doc){
                   //create a new guest
                   my_doc = new models.Guest({
-                    'email':req.body.email,
+                    'email':req.body.email.toLowerCase(),
                     'gt_id':req.body.gtid
                   });
                   //save it
@@ -482,11 +482,12 @@ exports.guest_attend = function(req, res, next) {
                       to: doc.email,
                       subject: 'Please register your ccorgs.com account',
                       body: "Thanks for attending an event on"+
-                        " http://ccorgs.com/\n\n In order to keep better"+
-                        " records, we ask that you register a full account.\n"+
-                        " To do so, please open the following url in your"+
-                        " favorite browser (it has to be your favorite :))\n"+
-                        " and complete the registration process!\n"+
+                        "http://ccorgs.com/\n\n"+
+                        "In order to keep better records, we ask that you\n"+
+                        "register a full account. To do so, please open the\n"+
+                        "following url in your favorite browser (it has to\n"+
+                        "be your favorite :)) and complete the registration\n"+
+                        "process!\n"+
                         "\n http://ccorgs.com/register?guest=" + doc._id
                     }, function(error, success) {
                       if (!success){
