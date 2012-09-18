@@ -5,8 +5,12 @@ block content
       h1 User Management
     input(type='text', placeholder='regex filter')
     h2 Users
-    script(language='javascript')
-      var users = #{JSON.stringify(users)};
+    #userlist
+    | <script language='javascript'>
+    !=   "var users =" + JSON.stringify(users) + ";"
+    | </script>
+    script(language='javascript', src='/javascripts/userman.js')
+
 
         
 
