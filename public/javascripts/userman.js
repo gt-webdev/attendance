@@ -12,9 +12,38 @@
         }
         return newth;
       },
+      createForm = function(user, cb){
+        var form, hidden, method ,csrf ,submit;
+        form = document.createElement("form");
+        form.setAttribute('method', 'post');
+        form.setAttribute('action', '/admin/users');
+        method = document.createElement('input');
+        method.setAttribute('type', 'hidden');
+        method.setAttribute('name', '_method');
+        method.setAttribute('value', 'delete');
+        csrf = document.createElement('input');
+        csrf.setAttribute('type', 'hidden');
+        csrf.setAttribute('name', '_csrf');
+        csrf.setAttribute('value', ccorg_csrf );
+        hidden = document.createElement('input');
+        hidden.setAttribute('type', 'hidden');
+        hidden.setAttribute('name', 'user_id');
+        hidden.setAttribute('value', user._id);
+        submit = document.createElement('input');
+        submit.setAttribute('type', 'submit');
+        submit.setAttribute('value', 'delete users');
+        form.appendChild(method);
+        form.appendChild(csrf);
+        form.appendChild(hidden);
+        form.appendChild(submit);
+        if (cb){
+          return cb(form);
+        }
+        return form;
+      },
       createTr = function(user, cb){
         var newtr = document.createElement("tr"),
-            emailtd, nametd, gtidtd, optd;
+            emailtd, nametd, gtidtd, optd, form, hidden, submit;
         emailtd = document.createElement("td");
         nametd = document.createElement("td");
         gtidtd = document.createElement("td");
@@ -22,7 +51,7 @@
         emailtd.innerHTML = user.email;
         nametd.innerHTML = user.name.first + ' ' + user.name.last;
         gtidtd.innerHTML = user.gt_id;
-        optd.innerHTML = "COMMANDS";
+        optd.appendChild(createForm(user));
         newtr.appendChild(emailtd);
         newtr.appendChild(nametd);
         newtr.appendChild(gtidtd);

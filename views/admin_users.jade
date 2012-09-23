@@ -8,6 +8,7 @@ block content
     #userlist
     | <script language='javascript'>
     !=   "var users =" + JSON.stringify(users) + ";"
+    !=   "var ccorg_csrf ='" + req.session._csrf + "';"
     | </script>
     script(language='javascript', src='/javascripts/userman.js')
 

@@ -1,5 +1,6 @@
-var async = require('async');
-var models = require('../lib/models');
+var async = require('async'),
+    auth = require('../lib/auth'),
+    models = require('../lib/models');
 
 /**
  * shows a list of the organizations in the system and their mods
@@ -55,5 +56,19 @@ exports.users = function(req, res){
       user: req.users,
       users: users
     });
+  });
+};
+
+/**
+ * delete a user and all their attached participations
+ * for DELETE /admin/users
+ */
+exports.delete_user = function(req, res){
+  var user_id = req.body.user_id;
+  auth.deleteUser(user_id, function(err){
+    if (err){
+      return res.send(err[0],err[1]);
+    }
+    res.redirect(req.url);
   });
 };

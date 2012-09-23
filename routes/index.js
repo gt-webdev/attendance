@@ -47,4 +47,5 @@ exports.registerOn = function(app) {
 
     app.get('/admin', auth.adminRequired, admin.list);
     app.get('/admin/users', auth.adminRequired, admin.users);
+    app.delete('/admin/users', auth.adminRequired, admin.delete_user);
 };
