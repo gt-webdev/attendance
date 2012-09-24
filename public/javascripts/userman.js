@@ -1,6 +1,7 @@
 (function(){
   var i,
       newdiv,
+      regfield,
       ulistdiv = document.getElementById("userlist"),
       table = document.createElement("table"),
       createTh = function(header, cb){
@@ -56,6 +57,9 @@
         newtr.appendChild(nametd);
         newtr.appendChild(gtidtd);
         newtr.appendChild(optd);
+        emailtd.style.setProperty('padding-right','5px');
+        nametd.style.setProperty('padding-right','5px');
+        gtidtd.style.setProperty('padding-right','5px');
         if (cb){
           return cb(newtr, user);
         }
@@ -71,4 +75,17 @@
     table.appendChild(usertr);
   }
   document.getElementsByClassName("content")[0].appendChild(table);
+  regfield = document.getElementById('regfield');
+  regfield.oninput= function(e){
+    var re = new RegExp(regfield.value, 'i'), i, tr;
+    for (i = 4; i < table.children.length; i += 1){
+      tr = table.children[i];
+      if (re.test(tr.children[0].innerHTML) || re.test(tr.children[1].innerHTML) || 
+          re.test(tr.children[2].innerHTML)){
+        tr.style.setProperty('display','table-row');
+      } else {
+        tr.style.setProperty('display','none');
+      }
+    }
+  };
 }());
