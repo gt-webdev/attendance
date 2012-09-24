@@ -445,11 +445,12 @@ exports.guest = function(req, res, next) {
  */
 exports.guest_attend = function(req, res, next) {
   //validation regex for email and gtids to filter out bad data
-  var emailre = /\S+@\S+\.\S+/;
-  var gtidre = /\d{9}/;
+  var emailre = /[a-zA-Z0-9-_]+@[a-zA-Z0-9-_]+\.[a-zA-Z0-9-_]+/;
+  var gtidre = /[98]\d{8}/;
   if (!emailre.test(req.body.email) || !gtidre.test(req.body.gtid)){
     //send out an error message if the input data is invalid
-    return next("Could not parse e-mail or gtid! try again.");
+    req.session.messages=['error','e-mail or gt-id are invalid!'];
+    return res.redirect(req.url);
   }
   async.waterfall([
     function(cb) {

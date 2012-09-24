@@ -33,6 +33,9 @@
         submit = document.createElement('input');
         submit.setAttribute('type', 'submit');
         submit.setAttribute('value', 'delete users');
+        submit.setAttribute('class', 'btn');
+        submit.style.setProperty('margin-bottom','-14px');
+        submit.style.setProperty('height','30px');
         form.appendChild(method);
         form.appendChild(csrf);
         form.appendChild(hidden);
