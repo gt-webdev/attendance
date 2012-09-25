@@ -19,14 +19,16 @@ block content
           input(type='text', name='userParams[email]', value=req.regdata.email)#email
 
       .control-group
-        label.control-label(for='gt_id') GT ID number (902 number)
+        label.control-label(for='gt_id') GT ID number
         .controls
           input(type='text', name='userParams[gt_id]', value=req.regdata.gt_id)#gt_id
+          p(style='font-size:8pt;color:gray;margin-bottom:3px;') (902 number, on your buzzcard) 
 
       .control-group
-        label.control-label(for='gt_userid') GT User ID (e.g., jdoe3)
+        label.control-label(for='gt_userid') GT User ID
         .controls
           input(type='text', name=everyauth.password.loginFormFieldName, value=req.regdata.gt_userid)#gt_userid
+          p(style='font-size:8pt;color:gray;margin-bottom:3px;') e.g. jdoe3, jsmith335
 
       .control-group
         label.control-label(for='first_name') First Name
@@ -42,6 +44,7 @@ block content
         label.control-label(for='password') Password
         .controls
           input(type='password', name=everyauth.password.passwordFormFieldName)#password
+          p(style='font-size:8pt;color:gray;margin-bottom:3px;') password must be 6 characters or longer
 
       .form-actions
         input(type='submit', value='Register').btn.btn-primary

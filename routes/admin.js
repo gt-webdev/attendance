@@ -1,5 +1,6 @@
-var async = require('async');
-var models = require('../lib/models');
+var async = require('async'),
+    auth = require('../lib/auth'),
+    models = require('../lib/models');
 
 /**
  * shows a list of the organizations in the system and their mods
@@ -43,4 +44,31 @@ exports.list = function(req, res, next) {
   });
 };
 
+/**
+ * manage user accounts, this would allow you to delete users (and their
+ * check-ins), possible future features.
+ * for GET /admin/users
+ */
+exports.users = function(req, res){
+  models.User.find({},function(err,users){
+    res.render('admin_users', {
+      req: req,
+      user: req.users,
+      users: users
+    });
+  });
+};
 
+/**
+ * delete a user and all their attached participations
+ * for DELETE /admin/users
+ */
+exports.delete_user = function(req, res){
+  var user_id = req.body.user_id;
+  auth.deleteUser(user_id, function(err){
+    if (err){
+      return res.send(err[0],err[1]);
+    }
+    res.redirect(req.url);
+  });
+};

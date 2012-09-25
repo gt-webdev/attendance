@@ -1,0 +1,17 @@
+extends layout
+block content
+  .content
+    .page-header
+      h1 User Management
+    input(id='regfield', type='text', placeholder='regex filter')
+    h2 Users
+    #userlist
+    | <script language='javascript'>
+    !=   "var users =" + JSON.stringify(users) + ";"
+    !=   "var ccorg_csrf ='" + req.session._csrf + "';"
+    | </script>
+    script(language='javascript', src='/javascripts/userman.js')
+
+
+        
+
