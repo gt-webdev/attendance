@@ -80,8 +80,8 @@
   document.getElementsByClassName("content")[0].appendChild(table);
   regfield = document.getElementById('regfield');
   regfield.oninput= function(e){
-    var re = new RegExp(regfield.value, 'i'), i, tr;
-    for (i = 4; i < table.children.length; i += 1){
+    var re = new RegExp(regfield.value, 'i'), i, tr, row_width = 4;
+    for (i = row_width; i < table.children.length; i += 1){
       tr = table.children[i];
       if (re.test(tr.children[0].innerHTML) || re.test(tr.children[1].innerHTML) || 
           re.test(tr.children[2].innerHTML)){

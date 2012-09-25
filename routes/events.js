@@ -1,9 +1,9 @@
-var async = require('async');
-var models = require('../lib/models'),
-    email = require('../lib/email');
-
-var ONE_HOUR = 1000 * 60 * 60;
-var ONE_WEEK = ONE_HOUR * 24 * 7;
+var async = require('async'),
+    models = require('../lib/models'),
+    re = require('../lib/regexutils'),
+    email = require('../lib/email'),
+    ONE_HOUR = 1000 * 60 * 60,
+    ONE_WEEK = ONE_HOUR * 24 * 7;
 
 /**
  * attempts to post new events from POST /events
@@ -445,9 +445,7 @@ exports.guest = function(req, res, next) {
  */
 exports.guest_attend = function(req, res, next) {
   //validation regex for email and gtids to filter out bad data
-  var emailre = /[a-zA-Z0-9-_]+@[a-zA-Z0-9-_]+\.[a-zA-Z0-9-_]+/;
-  var gtidre = /[98]\d{8}/;
-  if (!emailre.test(req.body.email) || !gtidre.test(req.body.gtid)){
+  if (!re.emailre.test(req.body.email) || !re.gtidre.test(req.body.gtid)){
     //send out an error message if the input data is invalid
     req.session.messages=['error','e-mail or gt-id are invalid!'];
     return res.redirect(req.url);
