@@ -2,6 +2,28 @@ body {
   background: #EEE;
 }
 
+.tabs ul{
+  list-style-type: none;
+  margin-left:0px;
+}
+
+.tabs ul li{
+  display:inline;
+  margin:5px;
+  padding:5px;
+}
+
+.tabs ul li:hover{
+  cursor:pointer;
+}
+
+.tabs ul li.selected{
+  cursor:default;
+  border:1px solid #CCC;
+  border-radius:3px;
+  background:white;
+}
+
 #content {
   background: #FFF;
   padding: 50px 20px 20px;
